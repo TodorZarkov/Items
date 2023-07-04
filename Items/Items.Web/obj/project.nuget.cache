@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QBzpioEASxMbONWcHEJ+hm9qJT0bgUkq+/sB9SnZM6PUZKlT3Hfs3hWjA/RpyUI6GO1vRqgM+2INFREkee1i4Q==",
+  "dgSpecHash": "pmt2MGpfZ0z+q0Dck1pcuPfNXxiaK5UslxXIJx0G5I77klQ32o7DnMqqnUP3hNOsLC/4KzifQ2u2fwJqf5GcRA==",
   "success": true,
-  "projectFilePath": "C:\\repos\\Items\\Items\\Items.Web\\Items.Web.csproj",
+  "projectFilePath": "C:\\repos\\Items-CSharpWebProject2023\\Items\\Items.Web\\Items.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Iri\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Iri\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.16\\microsoft.aspnetcore.cryptography.internal.6.0.16.nupkg.sha512",

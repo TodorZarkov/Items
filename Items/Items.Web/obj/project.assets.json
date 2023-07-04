@@ -2459,11 +2459,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\repos\\Items\\Items\\Items.Web\\Items.Web.csproj",
+      "projectUniqueName": "C:\\repos\\Items-CSharpWebProject2023\\Items\\Items.Web\\Items.Web.csproj",
       "projectName": "Items.Web",
-      "projectPath": "C:\\repos\\Items\\Items\\Items.Web\\Items.Web.csproj",
+      "projectPath": "C:\\repos\\Items-CSharpWebProject2023\\Items\\Items.Web\\Items.Web.csproj",
       "packagesPath": "C:\\Users\\Iri\\.nuget\\packages\\",
-      "outputPath": "C:\\repos\\Items\\Items\\Items.Web\\obj\\",
+      "outputPath": "C:\\repos\\Items-CSharpWebProject2023\\Items\\Items.Web\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Iri\\AppData\\Roaming\\NuGet\\NuGet.Config",

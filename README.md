@@ -15,6 +15,8 @@
     - **location**
     - **category**
     - name
+    - quantity
+    - unit
     - description
     - **main picture address**
     - **pictures**
@@ -55,5 +57,8 @@
     - name
     - location
     - description
+- currencies
+    - id
+    - currency
 
-### Bussiness logic
+### entity relations 

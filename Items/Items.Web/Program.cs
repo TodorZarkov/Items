@@ -4,8 +4,9 @@ namespace Items.Web
 	using Microsoft.EntityFrameworkCore;
 
 	using Items.Data;
+    using Items.Data.Models;
 
-	public class Program
+    public class Program
 	{
 		public static void Main(string[] args)
 		{
@@ -15,15 +16,15 @@ namespace Items.Web
 			var connectionString = 
 				builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-			builder.Services.AddDbContext<ApplicationDbContext>(options =>
+			builder.Services.AddDbContext<ItemsDbContext>(options =>
 				options.UseSqlServer(connectionString));
 
 			builder.Services
-				.AddDefaultIdentity<IdentityUser>(options =>
+				.AddDefaultIdentity<User>(options =>
 			{
 				options.SignIn.RequireConfirmedAccount = true;
 			})
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+				.AddEntityFrameworkStores<ItemsDbContext>();
 
 			builder.Services.AddControllersWithViews();
 

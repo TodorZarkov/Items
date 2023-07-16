@@ -9,10 +9,11 @@
         public Location()
         {
             Places = new HashSet<Place>();
+            Id = Guid.NewGuid();
         }
 
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
 
         [Required]

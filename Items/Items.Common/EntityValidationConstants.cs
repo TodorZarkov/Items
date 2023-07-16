@@ -35,5 +35,17 @@
             public const int SymbolMaxLength = 4;
         }
 
+        public static class Document
+        {
+            public const int UriMinLength = 1;
+            public const int UriMaxLength = 2048;
+        }
+
+        public static class Picture
+        {
+            public const int UriMinLength = 1;
+            public const int UriMaxLength = 2048;
+        }
+
     }
 }

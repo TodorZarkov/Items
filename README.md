@@ -49,12 +49,12 @@
     - barter item
 
 - pictures
-    - web address
+    - uri
     - isMain
     - item
 
 - documents
-    - web address
+    - uri
     - item
 - places
     - name

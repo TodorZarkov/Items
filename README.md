@@ -62,6 +62,8 @@
     - description
 - currencies
     - id
-    - currency
+    - iso
+    - name
+    - symbol
 
 ### entity relations 

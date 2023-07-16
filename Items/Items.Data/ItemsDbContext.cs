@@ -6,7 +6,7 @@
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
-    public class ItemsDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+    public class ItemsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public ItemsDbContext(DbContextOptions<ItemsDbContext> options)
             : base(options)

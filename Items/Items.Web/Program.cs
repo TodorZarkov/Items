@@ -5,6 +5,7 @@ namespace Items.Web
 
 	using Items.Data;
     using Items.Data.Models;
+    using Microsoft.Extensions.Configuration;
 
     public class Program
 	{
@@ -20,9 +21,34 @@ namespace Items.Web
 				options.UseSqlServer(connectionString));
 
 			builder.Services
-				.AddDefaultIdentity<User>(options =>
+				.AddDefaultIdentity<ApplicationUser>(options =>
 			{
-				options.SignIn.RequireConfirmedAccount = true;
+				options.SignIn.RequireConfirmedAccount	
+					= builder.Configuration.GetValue<bool>("SignIn:RequireConfirmedAccount");
+
+				options.Password.RequireNonAlphanumeric 
+					= builder.Configuration.GetValue<bool>("Password:RequireNonAlphanumeric");
+
+				options.Password.RequireUppercase		
+					= builder.Configuration.GetValue<bool>("Password:RequireUppercase");
+
+				options.Password.RequireLowercase		
+					= builder.Configuration.GetValue<bool>("Password:RequireLowercase");
+
+				options.Password.RequireDigit			
+					= builder.Configuration.GetValue<bool>("Password:RequireDigit");
+
+				options.Password.RequiredLength			
+					= builder.Configuration.GetValue<int>("Password:RequiredLength");
+
+				options.User.RequireUniqueEmail			
+					= builder.Configuration.GetValue<bool>("User:RequireUniqueEmail");
+
+				options.Lockout.DefaultLockoutTimeSpan 
+					= TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("Lockout:DefaultLockoutTimeSpan"));
+
+				options.Lockout.MaxFailedAccessAttempts 
+					= builder.Configuration.GetValue<int>("Lockout:MaxFailedAccessAttempts");
 			})
 				.AddEntityFrameworkStores<ItemsDbContext>();
 

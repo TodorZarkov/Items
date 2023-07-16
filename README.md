@@ -13,6 +13,7 @@
     - creator
 - items
     - **location**
+    - **place**
     - **category**
     - name
     - quantity
@@ -26,16 +27,18 @@
     - **offeredPrices**
     - **sellLocation**
 
+- categoriesItems
+
+
 - locations
-    - name
-    - gps coordinates
+    - ownerId (requ.)
+    - name (requ.)
     - description
-    - owner
-    - country
-    - town
-    - street
-    - number
-    - isPrivate(not sell location)
+    - geolocation(-82.25330474983343, 179.91566825082487)
+    - country (requ.)
+    - town (requ.)
+    - address
+    - isPrivate(not sell location, requ.)
     - **place**
 
 - offers

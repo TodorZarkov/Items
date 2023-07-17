@@ -8,9 +8,9 @@
     - locations
 
 - categories
-    - items
     - name
     - creator
+    - items
 - items
     - **location**
     - **place**
@@ -27,7 +27,7 @@
     - **offeredPrices**
     - **sellLocation**
 
-- categoriesItems
+- itemsCategories
 
 
 - locations

@@ -47,5 +47,10 @@
             public const int UriMaxLength = 2048;
         }
 
+        public static class Category
+        {
+            public const int NameMinLength = 2;
+            public const int NameMaxLength = 200;
+        }
     }
 }

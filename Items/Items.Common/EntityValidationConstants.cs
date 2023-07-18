@@ -52,5 +52,17 @@
             public const int NameMinLength = 2;
             public const int NameMaxLength = 200;
         }
+
+        public static class Item
+        {
+            public const int NameMinLength = 2;
+            public const int NameMaxLength = 200;
+
+            public const int DescriptionMinLength = 10;
+            public const int DescriptionMaxLength = 1000;
+
+            public const int DocumentUriMinLength = 1;
+            public const int DocumentUriMaxLength = 2048;
+        }
     }
 }

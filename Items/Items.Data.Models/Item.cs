@@ -3,6 +3,8 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    using static Common.EntityValidationConstants.Item;
+
     public class Item
     {
         public Item()
@@ -17,23 +19,22 @@
         public Guid Id { get; set; }
 
         [Required]
-        [MaxLength]
+        [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
 
         public decimal Quantity { get; set; }
 
         [Required]
-        [MaxLength]
-        public string Unit { get; set; } = null!;
+        public Unit Unit { get; set; } = null!;
 
-        [MaxLength]
+        [MaxLength(DescriptionMaxLength)]
         public string? Description { get; set; }
 
         public Price? AcquiredPrice { get; set; }
 
         public DateTime? AcquiredDate { get; set; }
 
-        [MaxLength]
+        [MaxLength(DocumentUriMaxLength)]
         public string? AcquireDocumentUri { get; set; }
 
 

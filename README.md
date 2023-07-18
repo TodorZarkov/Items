@@ -3,6 +3,7 @@
 ### **entities**
 - users
     - default user
+    - Guid id
     - items
     - own categories
     - locations
@@ -12,20 +13,19 @@
     - creator
     - items
 - items
-    - **location**
-    - **place**
-    - **category**
     - name
     - quantity
     - unit
     - description
-    - **main picture address**
-    - **pictures**
-    - acquired date
     - acquired price
+    - acquired date
     - acquire document(pdf)
-    - **offeredPrices**
+    - **category**
+    - **place**
+    - **location**
     - **sellLocation**
+    - **pictures**
+    - **offers**
 
 - itemsCategories
 
@@ -47,6 +47,7 @@
     - offeredPrice
     - buyerLocation
     - barter item
+    - date
 
 - pictures
     - uri
@@ -65,5 +66,9 @@
     - iso
     - name
     - symbol
+
+- price
+    - value
+    - currency
 
 ### entity relations 

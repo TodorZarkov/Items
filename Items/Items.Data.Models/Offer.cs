@@ -22,7 +22,8 @@
         public Item Item { get; set; }
 
 
-        public decimal OfferecPrice { get; set; }
+        [Required]
+        public Price OfferedPrice { get; set; } = null!;
 
         public Location? BuyerLocation { get; set; }
 

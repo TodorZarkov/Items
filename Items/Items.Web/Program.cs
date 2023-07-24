@@ -18,7 +18,10 @@ namespace Items.Web
 				builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 			builder.Services.AddDbContext<ItemsDbContext>(options =>
-				options.UseSqlServer(connectionString));
+			{
+				options.UseSqlServer(connectionString, x => x.UseNetTopologySuite());
+            }); 
+			
 
 			builder.Services
 				.AddDefaultIdentity<ApplicationUser>(options =>

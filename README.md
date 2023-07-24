@@ -17,13 +17,13 @@
     - quantity
     - unit
     - description
+    - owner
     - acquired price
     - acquired date
     - acquire document(pdf)
     - **category**
     - **place**
     - **location**
-    - **sellLocation**
     - **pictures**
     - **offers**
 
@@ -38,7 +38,7 @@
     - country (requ.)
     - town (requ.)
     - address
-    - isPrivate(not sell location, requ.)
+    - isPublic(false - not sell location, requ.)
     - **place**
 
 - offers
@@ -53,6 +53,7 @@
     - uri
     - isMain
     - item
+    - isPrivate
 
 - documents
     - uri
@@ -71,4 +72,47 @@
     - value
     - currency
 
+- unit
+    - name
+    - symbol
+
 ### entity relations 
+- user 
+    - has many items
+    - has many locations
+    - has many categories
+- item
+    - has one price (acquired price)
+    - has one user (owner)
+    - has one document (AcquireDocument)
+    - has one location
+    - has one place
+    - has one unit (to measure quantity)
+    - has many categories
+    - has many offers
+    - has many pictures
+- category
+    - has one user (creator)
+    - has many items
+- document
+    - has many items
+- location
+    - has one user
+    - has many places
+- offer
+    - has one user (buyer)
+    - has one item
+    - has one price
+    - has one location
+    - has one item (for barter)
+- picture
+    - has one item
+- place
+    - has one location
+- price
+    - has one currency
+
+### managed by Admin
+- categories - add, modify
+- currencies - add, modify
+- unit - add, modify

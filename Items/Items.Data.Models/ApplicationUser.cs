@@ -7,13 +7,16 @@
         public ApplicationUser() 
         {
             Items = new HashSet<Item>();
-            OwnCategories = new HashSet<Category>();
+            Categories = new HashSet<Category>();
             Locations = new HashSet<Location>();
+            Offers = new HashSet<Offer>();
         }
         public ICollection<Item> Items { get; set; }
 
-        public ICollection<Category> OwnCategories { get; set; }
+        public ICollection<Category> Categories { get; set; }
 
         public ICollection<Location> Locations { get; set; }
+
+        public ICollection<Offer> Offers { get; set; }
     }
 }

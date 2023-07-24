@@ -7,6 +7,11 @@
 
     public class Place
     {
+        public Place()
+        {
+            Items = new HashSet<Item>();
+        }
+
         [Key]
         public int Id { get; set; }
 
@@ -15,15 +20,18 @@
         [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
 
+
         [MaxLength(DescriptionMaxLength)]
         public string? Description { get; set; }
 
-        [MaxLength()]
-        [ForeignKey(nameof(Location))]
-        public int LocationId { get; set; }
 
+        [ForeignKey(nameof(Location))]
+        public Guid LocationId { get; set; }
+
+        [Required]
         public Location Location { get; set; } = null!;
 
 
+        public ICollection<Item> Items { get; set; }
     }
 }

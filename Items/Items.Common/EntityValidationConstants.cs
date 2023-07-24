@@ -12,6 +12,9 @@
 
             public const int AddressMinLength = 2;
             public const int AddressMaxLength = 500;
+
+            public const int DescriptionMinLength = 2;
+            public const int DescriptionMaxLength = 500;
         }
 
         public static class Place
@@ -63,6 +66,23 @@
 
             public const int DocumentUriMinLength = 1;
             public const int DocumentUriMaxLength = 2048;
+
+            public const int QuantityPrecision = 18;
+            public const int QuantityScale = 6;
+
+        }
+
+        public static class Offer
+        {
+            public const int MessageMinLength = 1;
+            public const int MessageMaxLength = 1000;
+        }
+
+        public static class Price
+        {
+            public const int ValuePrecision = 18;
+            public const int ValueScale = 6;
+
         }
     }
 }

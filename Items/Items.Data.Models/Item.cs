@@ -29,6 +29,9 @@
         public decimal Quantity { get; set; }
 
 
+        [ForeignKey(nameof(Unit))]
+        public int UnitId { get; set; }
+
         [Required]
         public Unit Unit { get; set; } = null!;
 

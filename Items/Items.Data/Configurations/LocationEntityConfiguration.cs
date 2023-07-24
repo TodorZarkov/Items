@@ -13,6 +13,12 @@
                 .WithMany(e => e.Locations)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasMany(e => e.Places)
+                .WithOne(e => e.Location)
+                .HasForeignKey(e => e.LocationId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -20,7 +20,11 @@
                 .HasForeignKey(e => e.ItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            
+            builder
+                .HasOne(e => e.OfferedPrice)
+                .WithMany()
+                .HasForeignKey(e => e.OfferedPriceId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -34,7 +34,6 @@
 
         public DbSet<Place> Places { get; set; } = null!;
 
-        public DbSet<Price> Prices { get; set; } = null!;
 
         public DbSet<Unit> Units { get; set; } = null!;
 

@@ -13,7 +13,7 @@ using NetTopologySuite.Geometries;
 namespace Items.Data.Migrations
 {
     [DbContext(typeof(ItemsDbContext))]
-    [Migration("20230724211217_initial")]
+    [Migration("20230724233514_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,11 +166,21 @@ namespace Items.Data.Migrations
                     b.Property<DateTime?>("AcquiredDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal?>("AcquiredPrice")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<int?>("CurrencyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<Guid?>("DocumentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ItemVisibilityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("LocationId")
@@ -187,9 +197,6 @@ namespace Items.Data.Migrations
                     b.Property<int>("PlaceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PriceId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Quantity")
                         .HasPrecision(18, 6)
                         .HasColumnType("decimal(18,6)");
@@ -199,15 +206,18 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CurrencyId");
+
                     b.HasIndex("DocumentId");
+
+                    b.HasIndex("ItemVisibilityId")
+                        .IsUnique();
 
                     b.HasIndex("LocationId");
 
                     b.HasIndex("OwnerId");
 
                     b.HasIndex("PlaceId");
-
-                    b.HasIndex("PriceId");
 
                     b.HasIndex("UnitId");
 
@@ -227,6 +237,44 @@ namespace Items.Data.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("ItemsCategories");
+                });
+
+            modelBuilder.Entity("Items.Data.Models.ItemVisibility", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AcquireDocument")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AcquiredDate")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AcquiredPrice")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Description")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Location")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Offers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Owner")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ItemVisibility");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Location", b =>
@@ -255,22 +303,61 @@ namespace Items.Data.Migrations
                     b.Property<Point>("GeoLocation")
                         .HasColumnType("geography");
 
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
+                    b.Property<Guid>("LocationVisibilityId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("Town")
+                        .HasMaxLength(90)
+                        .HasColumnType("nvarchar(90)");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocationVisibilityId")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("Items.Data.Models.LocationVisibility", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Address")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Border")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Country")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Description")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GeoLocation")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Town")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LocationVisibility");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Offer", b =>
@@ -282,6 +369,9 @@ namespace Items.Data.Migrations
                     b.Property<Guid>("BuyerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("CurrencyId")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uniqueidentifier");
 
@@ -292,18 +382,19 @@ namespace Items.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("OfferedPriceId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Value")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BuyerId");
 
+                    b.HasIndex("CurrencyId");
+
                     b.HasIndex("ItemId");
 
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("OfferedPriceId");
 
                     b.ToTable("Offers");
                 });
@@ -359,28 +450,6 @@ namespace Items.Data.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Places");
-                });
-
-            modelBuilder.Entity("Items.Data.Models.Price", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Value")
-                        .HasPrecision(18, 6)
-                        .HasColumnType("decimal(18,6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
-
-                    b.ToTable("Prices");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Unit", b =>
@@ -551,9 +620,20 @@ namespace Items.Data.Migrations
 
             modelBuilder.Entity("Items.Data.Models.Item", b =>
                 {
+                    b.HasOne("Items.Data.Models.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Items.Data.Models.Document", "AcquireDocument")
                         .WithMany("Items")
                         .HasForeignKey("DocumentId");
+
+                    b.HasOne("Items.Data.Models.ItemVisibility", "ItemVisibility")
+                        .WithOne("Item")
+                        .HasForeignKey("Items.Data.Models.Item", "ItemVisibilityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Items.Data.Models.Location", "Location")
                         .WithMany("Items")
@@ -573,10 +653,6 @@ namespace Items.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Items.Data.Models.Price", "AcquiredPrice")
-                        .WithMany()
-                        .HasForeignKey("PriceId");
-
                     b.HasOne("Items.Data.Models.Unit", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId")
@@ -585,7 +661,9 @@ namespace Items.Data.Migrations
 
                     b.Navigation("AcquireDocument");
 
-                    b.Navigation("AcquiredPrice");
+                    b.Navigation("Currency");
+
+                    b.Navigation("ItemVisibility");
 
                     b.Navigation("Location");
 
@@ -617,11 +695,19 @@ namespace Items.Data.Migrations
 
             modelBuilder.Entity("Items.Data.Models.Location", b =>
                 {
+                    b.HasOne("Items.Data.Models.LocationVisibility", "LocationVisibility")
+                        .WithOne("Location")
+                        .HasForeignKey("Items.Data.Models.Location", "LocationVisibilityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Items.Data.Models.ApplicationUser", "User")
                         .WithMany("Locations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("LocationVisibility");
 
                     b.Navigation("User");
                 });
@@ -631,6 +717,12 @@ namespace Items.Data.Migrations
                     b.HasOne("Items.Data.Models.ApplicationUser", "Buyer")
                         .WithMany("Offers")
                         .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Items.Data.Models.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -644,19 +736,13 @@ namespace Items.Data.Migrations
                         .WithMany()
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("Items.Data.Models.Price", "OfferedPrice")
-                        .WithMany()
-                        .HasForeignKey("OfferedPriceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Buyer");
 
                     b.Navigation("BuyerLocation");
 
-                    b.Navigation("Item");
+                    b.Navigation("Currency");
 
-                    b.Navigation("OfferedPrice");
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Picture", b =>
@@ -679,17 +765,6 @@ namespace Items.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Location");
-                });
-
-            modelBuilder.Entity("Items.Data.Models.Price", b =>
-                {
-                    b.HasOne("Items.Data.Models.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Currency");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -773,11 +848,23 @@ namespace Items.Data.Migrations
                     b.Navigation("Pictures");
                 });
 
+            modelBuilder.Entity("Items.Data.Models.ItemVisibility", b =>
+                {
+                    b.Navigation("Item")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Items.Data.Models.Location", b =>
                 {
                     b.Navigation("Items");
 
                     b.Navigation("Places");
+                });
+
+            modelBuilder.Entity("Items.Data.Models.LocationVisibility", b =>
+                {
+                    b.Navigation("Location")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Items.Data.Models.Place", b =>

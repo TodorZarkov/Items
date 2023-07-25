@@ -77,6 +77,44 @@ namespace Items.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ItemVisibility",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<int>(type: "int", nullable: false),
+                    AcquiredPrice = table.Column<int>(type: "int", nullable: false),
+                    AcquiredDate = table.Column<int>(type: "int", nullable: false),
+                    AcquireDocument = table.Column<int>(type: "int", nullable: false),
+                    Owner = table.Column<int>(type: "int", nullable: false),
+                    Location = table.Column<int>(type: "int", nullable: false),
+                    Offers = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemVisibility", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LocationVisibility",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<int>(type: "int", nullable: false),
+                    GeoLocation = table.Column<int>(type: "int", nullable: false),
+                    Border = table.Column<int>(type: "int", nullable: false),
+                    Country = table.Column<int>(type: "int", nullable: false),
+                    Town = table.Column<int>(type: "int", nullable: false),
+                    Address = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LocationVisibility", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Units",
                 columns: table => new
                 {
@@ -221,13 +259,14 @@ namespace Items.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsPublic = table.Column<bool>(type: "bit", nullable: false),
+                    LocationVisibilityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     GeoLocation = table.Column<Point>(type: "geography", nullable: true),
                     Border = table.Column<Geometry>(type: "geography", nullable: true),
                     Country = table.Column<string>(type: "nvarchar(90)", maxLength: 90, nullable: false),
+                    Town = table.Column<string>(type: "nvarchar(90)", maxLength: 90, nullable: true),
                     Address = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
@@ -239,24 +278,10 @@ namespace Items.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Prices",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Value = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
-                    CurrencyId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Prices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Prices_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
+                        name: "FK_Locations_LocationVisibility_LocationVisibilityId",
+                        column: x => x.LocationVisibilityId,
+                        principalTable: "LocationVisibility",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -287,11 +312,13 @@ namespace Items.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ItemVisibilityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Quantity = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
                     UnitId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    PriceId = table.Column<int>(type: "int", nullable: true),
+                    AcquiredPrice = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: true),
+                    CurrencyId = table.Column<int>(type: "int", nullable: true),
                     AcquiredDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DocumentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -308,10 +335,22 @@ namespace Items.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_Items_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Items_Documents_DocumentId",
                         column: x => x.DocumentId,
                         principalTable: "Documents",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Items_ItemVisibility_ItemVisibilityId",
+                        column: x => x.ItemVisibilityId,
+                        principalTable: "ItemVisibility",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Items_Locations_LocationId",
                         column: x => x.LocationId,
@@ -324,11 +363,6 @@ namespace Items.Data.Migrations
                         principalTable: "Places",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Items_Prices_PriceId",
-                        column: x => x.PriceId,
-                        principalTable: "Prices",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Items_Units_UnitId",
                         column: x => x.UnitId,
@@ -369,7 +403,8 @@ namespace Items.Data.Migrations
                     Message = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     BuyerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OfferedPriceId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
+                    CurrencyId = table.Column<int>(type: "int", nullable: false),
                     LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -379,6 +414,12 @@ namespace Items.Data.Migrations
                         name: "FK_Offers_AspNetUsers_BuyerId",
                         column: x => x.BuyerId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Offers_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -392,12 +433,6 @@ namespace Items.Data.Migrations
                         column: x => x.LocationId,
                         principalTable: "Locations",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Offers_Prices_OfferedPriceId",
-                        column: x => x.OfferedPriceId,
-                        principalTable: "Prices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -466,9 +501,20 @@ namespace Items.Data.Migrations
                 column: "CreatorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Items_CurrencyId",
+                table: "Items",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_DocumentId",
                 table: "Items",
                 column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Items_ItemVisibilityId",
+                table: "Items",
+                column: "ItemVisibilityId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_LocationId",
@@ -486,11 +532,6 @@ namespace Items.Data.Migrations
                 column: "PlaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_PriceId",
-                table: "Items",
-                column: "PriceId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Items_UnitId",
                 table: "Items",
                 column: "UnitId");
@@ -499,6 +540,12 @@ namespace Items.Data.Migrations
                 name: "IX_ItemsCategories_ItemId",
                 table: "ItemsCategories",
                 column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Locations_LocationVisibilityId",
+                table: "Locations",
+                column: "LocationVisibilityId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Locations_UserId",
@@ -511,6 +558,11 @@ namespace Items.Data.Migrations
                 column: "BuyerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Offers_CurrencyId",
+                table: "Offers",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Offers_ItemId",
                 table: "Offers",
                 column: "ItemId");
@@ -521,11 +573,6 @@ namespace Items.Data.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Offers_OfferedPriceId",
-                table: "Offers",
-                column: "OfferedPriceId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Pictures_ItemId",
                 table: "Pictures",
                 column: "ItemId");
@@ -534,11 +581,6 @@ namespace Items.Data.Migrations
                 name: "IX_Places_LocationId",
                 table: "Places",
                 column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Prices_CurrencyId",
-                table: "Prices",
-                column: "CurrencyId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -577,13 +619,16 @@ namespace Items.Data.Migrations
                 name: "Items");
 
             migrationBuilder.DropTable(
+                name: "Currencies");
+
+            migrationBuilder.DropTable(
                 name: "Documents");
 
             migrationBuilder.DropTable(
-                name: "Places");
+                name: "ItemVisibility");
 
             migrationBuilder.DropTable(
-                name: "Prices");
+                name: "Places");
 
             migrationBuilder.DropTable(
                 name: "Units");
@@ -592,10 +637,10 @@ namespace Items.Data.Migrations
                 name: "Locations");
 
             migrationBuilder.DropTable(
-                name: "Currencies");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "LocationVisibility");
         }
     }
 }

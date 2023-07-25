@@ -19,6 +19,11 @@
                 .WithOne(e => e.Location)
                 .HasForeignKey(e => e.LocationId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(e => e.LocationVisibility)
+                .WithOne(e => e.Location)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

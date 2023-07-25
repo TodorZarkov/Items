@@ -21,9 +21,9 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder
-                .HasOne(e => e.OfferedPrice)
+                .HasOne(e => e.Currency)
                 .WithMany()
-                .HasForeignKey(e => e.OfferedPriceId)
+                .HasForeignKey(e => e.CurrencyId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

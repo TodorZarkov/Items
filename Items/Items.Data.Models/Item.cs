@@ -20,6 +20,13 @@
         public Guid Id { get; set; }
 
 
+        [ForeignKey(nameof(ItemVisibility))]
+        public Guid ItemVisibilityId { get; set; }
+
+        [Required]
+        public ItemVisibility ItemVisibility { get; set; } = null!;
+
+
         [Required]
         [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
@@ -40,9 +47,14 @@
         public string? Description { get; set; }
 
 
-        [ForeignKey(nameof(AcquiredPrice))]
-        public int? PriceId { get; set; }
-        public Price? AcquiredPrice { get; set; }
+        [Precision(ValuePrecision, ValueScale)]
+        public decimal? AcquiredPrice { get; set; }
+
+
+        [ForeignKey(nameof(Currency))]
+        public int? CurrencyId { get; set; }
+
+        public Currency? Currency { get; set; }
 
 
         public DateTime? AcquiredDate { get; set; }

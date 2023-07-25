@@ -43,6 +43,17 @@
                 .WithMany()
                 .HasForeignKey(e => e.UnitId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(e => e.Currency)
+                .WithMany()
+                .HasForeignKey(e => e.CurrencyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(e => e.ItemVisibility)
+                .WithOne(e => e.Item)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

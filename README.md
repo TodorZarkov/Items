@@ -13,19 +13,24 @@
     - creator
     - items
 - items
+    - itemVisibility
+    - 
     - name
+    - **category**
+    - description
+    - 
     - quantity
     - unit
-    - description
-    - owner
     - acquired price
+    - currency
     - acquired date
     - acquire document(pdf)
-    - **category**
-    - **place**
     - **location**
     - **pictures**
+    - owner
     - **offers**
+    - 
+    - **place**
 
 - itemsCategories
 
@@ -44,7 +49,8 @@
 - offers
     - buyer
     - item
-    - offeredPrice
+    - value
+    - currency
     - buyerLocation
     - barter item
     - date
@@ -68,13 +74,12 @@
     - name
     - symbol
 
-- price
-    - value
-    - currency
 
 - unit
     - name
     - symbol
+- itemVisibility
+    -item
 
 ### entity relations 
 - user 
@@ -88,6 +93,8 @@
     - has one location
     - has one place
     - has one unit (to measure quantity)
+    - has one currency
+    - has one itemVisibility
     - has many categories
     - has many offers
     - has many pictures
@@ -102,15 +109,15 @@
 - offer
     - has one user (buyer)
     - has one item
-    - has one price
+    - has one currency
     - has one location
     - has one item (for barter)
 - picture
     - has one item
 - place
     - has one location
-- price
-    - has one currency
+- itemVisibility
+    - has one item
 
 ### managed by Admin
 - categories - add, modify

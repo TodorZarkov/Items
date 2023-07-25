@@ -1,5 +1,6 @@
 ﻿namespace Items.Data.Models
 {
+    using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -31,11 +32,16 @@
         public Item Item { get; set; } = null!;
 
 
-        [ForeignKey(nameof(OfferedPrice))]
-        public int OfferedPriceId { get; set; }
+        
+        [Precision(ValuePrecision, ValueScale)]
+        public decimal Value { get; set; }
 
-        [Required]
-        public Price OfferedPrice { get; set; } = null!;
+
+        [ForeignKey(nameof(Currency))]
+        public int CurrencyId { get; set; }
+
+        public Currency Currency { get; set; } = null!;
+
 
 
         [ForeignKey(nameof(BuyerLocation))]
@@ -43,9 +49,5 @@
 
         public Location? BuyerLocation { get; set; }
 
-
-        //[ForeignKey(nameof(Barter))]
-        //public Guid? BarterItemId { get; set; }
-        //public Item? Barter { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Items.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
-
+    using System.ComponentModel.DataAnnotations.Schema;
     using NetTopologySuite.Geometries;
 
     using static Common.EntityValidationConstants.Location;
@@ -19,7 +19,11 @@
         public Guid Id { get; set; }
 
 
-        public bool IsPublic { get; set; }
+        [ForeignKey(nameof(LocationVisibility))]
+        public Guid LocationVisibilityId { get; set; }
+
+        [Required]
+        public LocationVisibility LocationVisibility { get; set; } = null!;
 
 
         [Required]
@@ -47,6 +51,10 @@
         [Required]
         [MaxLength(CountryMaxLength)]
         public string Country { get; set; } = null!;
+
+
+        [MaxLength(CountryMaxLength)]
+        public string? Town { get; set; }
 
 
         [Required]

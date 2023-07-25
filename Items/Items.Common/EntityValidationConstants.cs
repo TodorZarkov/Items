@@ -70,19 +70,20 @@
             public const int QuantityPrecision = 18;
             public const int QuantityScale = 6;
 
+            public const int ValuePrecision = 18;
+            public const int ValueScale = 6;
+
         }
 
         public static class Offer
         {
             public const int MessageMinLength = 1;
             public const int MessageMaxLength = 1000;
-        }
 
-        public static class Price
-        {
             public const int ValuePrecision = 18;
             public const int ValueScale = 6;
-
         }
+
+        
     }
 }

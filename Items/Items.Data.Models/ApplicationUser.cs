@@ -10,6 +10,7 @@
             Categories = new HashSet<Category>();
             Locations = new HashSet<Location>();
             Offers = new HashSet<Offer>();
+            Accounts = new HashSet<Account>();
         }
         public ICollection<Item> Items { get; set; }
 
@@ -18,5 +19,7 @@
         public ICollection<Location> Locations { get; set; }
 
         public ICollection<Offer> Offers { get; set; }
+
+        public ICollection<Account> Accounts { get; set; }
     }
 }

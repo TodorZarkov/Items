@@ -49,6 +49,11 @@
 
         [Precision(ValuePrecision, ValueScale)]
         public decimal? AcquiredPrice { get; set; }
+        
+        [Precision(ValuePrecision, ValueScale)]
+        public decimal? CurrentPrice { get; set; }
+
+        
 
 
         [ForeignKey(nameof(Currency))]
@@ -90,6 +95,14 @@
         [Required]
         public Location Location { get; set; } = null!;
 
+
+        public DateTime AddedOn { get; set; }
+
+
+        public DateTime? StartSell { get; set; }
+
+
+        public DateTime? EndSell { get; set; }
 
 
         public ICollection<Picture> Pictures { get; set; }

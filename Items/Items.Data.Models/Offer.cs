@@ -43,6 +43,9 @@
         public Currency Currency { get; set; } = null!;
 
 
+        [Precision(QuantityPrecision, QuantityScale)]
+        public decimal Quantity { get; set; }
+
 
         [ForeignKey(nameof(BuyerLocation))]
         public Guid? LocationId { get; set; }

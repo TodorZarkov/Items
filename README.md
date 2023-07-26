@@ -22,6 +22,7 @@
     - quantity
     - unit
     - acquired price
+    - current price
     - currency
     - acquired date
     - acquire document(pdf)
@@ -51,8 +52,9 @@
     - item
     - value
     - currency
+    - quantity
     - buyerLocation
-    - barter item
+    - barter item (not present)
     - date
 
 - pictures
@@ -79,13 +81,27 @@
     - name
     - symbol
 - itemVisibility
-    -item
+    - item
+- accounts
+    - balance
+    - currency
+- contract
+    - item
+    - buyer
+    - seller
+    - price
+    - currency
+    - send due
+    - deliver due
+    - contract date
+    - 
 
 ### entity relations 
 - user 
     - has many items
     - has many locations
     - has many categories
+    - has many accounts
 - item
     - has one price (acquired price)
     - has one user (owner)
@@ -98,6 +114,7 @@
     - has many categories
     - has many offers
     - has many pictures
+    
 - category
     - has one user (creator)
     - has many items
@@ -118,6 +135,9 @@
     - has one location
 - itemVisibility
     - has one item
+- account
+    - has one user
+    - has one currency
 
 ### managed by Admin
 - categories - add, modify

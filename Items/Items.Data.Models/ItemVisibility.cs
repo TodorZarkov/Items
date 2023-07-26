@@ -23,6 +23,8 @@
         
         public AccessModifier AcquiredPrice { get; set; }
         
+        public AccessModifier CurrentPrice { get; set; }
+        
         public AccessModifier AcquiredDate { get; set; }
         
         public AccessModifier AcquireDocument { get; set; }
@@ -32,6 +34,8 @@
         public AccessModifier Location { get; set; }
         
         public AccessModifier Offers { get; set; }
+        
+        public AccessModifier AddedOn { get; set; }
 
 
         //[ForeignKey(nameof(Item))]

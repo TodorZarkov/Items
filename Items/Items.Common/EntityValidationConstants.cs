@@ -82,6 +82,15 @@
 
             public const int ValuePrecision = 18;
             public const int ValueScale = 6;
+
+            public const int QuantityPrecision = 18;
+            public const int QuantityScale = 6;
+        }
+        
+        public static class Account
+        {
+            public const int ValuePrecision = 18;
+            public const int ValueScale = 6;
         }
 
         

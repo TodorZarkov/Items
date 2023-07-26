@@ -26,7 +26,11 @@
 
         public DbSet<ItemCategory> ItemsCategories { get; set; } = null!;
 
+        public DbSet<ItemVisibility> ItemVisibilities { get; set; } = null!;
+
         public DbSet<Location> Locations { get; set; } = null!;
+
+        public DbSet<LocationVisibility> LocationVisibilities { get; set; } = null!;
 
         public DbSet<Offer> Offers { get; set; } = null!;
 

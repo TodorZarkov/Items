@@ -13,8 +13,8 @@ using NetTopologySuite.Geometries;
 namespace Items.Data.Migrations
 {
     [DbContext(typeof(ItemsDbContext))]
-    [Migration("20230724233514_initial")]
-    partial class initial
+    [Migration("20230725122135_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -274,7 +274,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemVisibility");
+                    b.ToTable("ItemVisibilities");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Location", b =>
@@ -357,7 +357,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LocationVisibility");
+                    b.ToTable("LocationVisibilities");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Offer", b =>

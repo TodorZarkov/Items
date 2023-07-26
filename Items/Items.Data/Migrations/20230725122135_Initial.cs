@@ -6,7 +6,7 @@ using NetTopologySuite.Geometries;
 
 namespace Items.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -77,7 +77,7 @@ namespace Items.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemVisibility",
+                name: "ItemVisibilities",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -93,11 +93,11 @@ namespace Items.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemVisibility", x => x.Id);
+                    table.PrimaryKey("PK_ItemVisibilities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "LocationVisibility",
+                name: "LocationVisibilities",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -111,7 +111,7 @@ namespace Items.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LocationVisibility", x => x.Id);
+                    table.PrimaryKey("PK_LocationVisibilities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -279,9 +279,9 @@ namespace Items.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Locations_LocationVisibility_LocationVisibilityId",
+                        name: "FK_Locations_LocationVisibilities_LocationVisibilityId",
                         column: x => x.LocationVisibilityId,
-                        principalTable: "LocationVisibility",
+                        principalTable: "LocationVisibilities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -346,9 +346,9 @@ namespace Items.Data.Migrations
                         principalTable: "Documents",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Items_ItemVisibility_ItemVisibilityId",
+                        name: "FK_Items_ItemVisibilities_ItemVisibilityId",
                         column: x => x.ItemVisibilityId,
-                        principalTable: "ItemVisibility",
+                        principalTable: "ItemVisibilities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -625,7 +625,7 @@ namespace Items.Data.Migrations
                 name: "Documents");
 
             migrationBuilder.DropTable(
-                name: "ItemVisibility");
+                name: "ItemVisibilities");
 
             migrationBuilder.DropTable(
                 name: "Places");
@@ -640,7 +640,7 @@ namespace Items.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "LocationVisibility");
+                name: "LocationVisibilities");
         }
     }
 }

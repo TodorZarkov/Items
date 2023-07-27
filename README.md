@@ -94,7 +94,12 @@
     - send due
     - deliver due
     - contract date
-    - 
+    - sellerOk
+    - buyerOk
+    - fulfilled
+    - sellerComment
+    - buyerComment
+    - buyerConfirmed
 
 ### entity relations 
 - user 

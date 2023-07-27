@@ -4,20 +4,17 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-    public class AccountEntityConfiguration : IEntityTypeConfiguration<Account>
+    public class ContractEntityConfiguration : IEntityTypeConfiguration<Contract>
     {
-        public void Configure(EntityTypeBuilder<Account> builder)
+        public void Configure(EntityTypeBuilder<Contract> builder)
         {
-            builder
-                .HasOne(e => e.User)
-                .WithMany(e => e.Accounts)
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             builder
                 .HasOne(e => e.Currency)
                 .WithMany()
+                .HasForeignKey(e => e.CurrencyId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            
         }
     }
 }

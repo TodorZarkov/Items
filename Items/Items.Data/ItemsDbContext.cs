@@ -18,6 +18,8 @@
 
         public DbSet<Category> Categories { get; set; } = null!;
 
+        public DbSet<Contract> Contracts { get; set; } = null!;
+
         public DbSet<Currency> Currencies { get; set; } = null!;
 
         public DbSet<Document> Documents { get; set; } = null!;
@@ -38,8 +40,10 @@
 
         public DbSet<Place> Places { get; set; } = null!;
 
-
         public DbSet<Unit> Units { get; set; } = null!;
+
+        public DbSet<UserContract> UsersContracts { get; set; } = null!;
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)

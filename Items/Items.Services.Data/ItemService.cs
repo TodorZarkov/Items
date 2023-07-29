@@ -20,12 +20,18 @@
         public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IEnumerable<IndexViewModel> lastThree = await dbContext.Items
-				.Where(i => i.Access == AccessModifier.Public)
+				.Where(i => i.Access == AccessModifier.Public &&
+							(i.EndSell == null || i.EndSell > DateTime.UtcNow))
 				.OrderByDescending(i => i.AddedOn)
 				.Take(numberOfItems)
 				.Select(i => new IndexViewModel
 				{
-
+					Id = i.Id,
+					Name = i.Name,
+					MainPictureUri = i.MainPicture.Uri,
+					CurrentPrice = i.CurrentPrice,
+					CurrencySymbol = i.Currency == null ? null : i.Currency.Symbol,
+					IsAuction = i.IsAuction
 				})
 				.ToArrayAsync();
 

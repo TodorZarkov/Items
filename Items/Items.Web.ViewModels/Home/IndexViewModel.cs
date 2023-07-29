@@ -9,7 +9,9 @@
 		public string MainPictureUri { get; set; } = null!;
 
 
-		public double CurrentPrice { get; set; }
+		public decimal? CurrentPrice { get; set; }
+
+		public string? CurrencySymbol { get; set; }
 
 
         public bool IsAuction { get; set; }

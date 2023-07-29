@@ -1,21 +1,27 @@
 ﻿namespace Items.Web.Controllers
 {
-
-    using Items.Web.ViewModels.Home;
+	using Items.Services.Data.Interfaces;
+	using Items.Web.ViewModels.Home;
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
     using System.Diagnostics;
 
     public class HomeController : BaseController
     {
-        public HomeController()
+        private readonly IItemService itemService;
+        private const int numberOfItems = 3;
+        public HomeController(IItemService itemService)
         {
+            this.itemService = itemService;
         }
 
         [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IEnumerable<IndexViewModel> viewModel = 
+                await itemService.LastPublicItemsAsync(numberOfItems);
+
+            return View(viewModel);
         }
 
 

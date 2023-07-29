@@ -1,6 +1,7 @@
 ﻿namespace Items.Data.Models
 {
-    using Microsoft.EntityFrameworkCore;
+	using Items.Common.Enums;
+	using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,15 +12,20 @@
         public Item()
         {
             Id = Guid.NewGuid();
+            AddedOn = DateTime.UtcNow;
             ItemsCategories = new HashSet<ItemCategory>();
             Pictures = new HashSet<Picture>();
             Offers = new HashSet<Offer>();
             AsBarterForOffers = new HashSet<Offer>();
-
+			Access = AccessModifier.Private;
 		}
 
         [Key]
         public Guid Id { get; set; }
+
+
+        [Required]
+        public AccessModifier Access { get; set; }
 
 
         [ForeignKey(nameof(ItemVisibility))]

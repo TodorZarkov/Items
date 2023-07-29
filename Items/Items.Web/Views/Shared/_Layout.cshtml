@@ -23,10 +23,11 @@
 				}
 				else
 				{
+					@*here latest items*@
 					<a class="navbar-brand"
 					   asp-area=""
 					   asp-controller="Home"
-					   asp-action="Latest">@SiteName</a>
+					   asp-action="Index">@SiteName</a>
 				}
 				<button class="navbar-toggler"
 						type="button"
@@ -48,7 +49,7 @@
 						@if (User.Identity?.IsAuthenticated ?? false)
 						{
 							<li class="nav-item">
-								<a class="nav-link "
+								<a class="nav-link active"
 								   asp-area=""
 								   asp-controller="Item"
 								   asp-action="Mine">My Items</a>

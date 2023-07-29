@@ -15,7 +15,7 @@
     - items
 - items
     - itemVisibility
-    - 
+    - access
     - name
     - **category**
     - description

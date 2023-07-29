@@ -2,15 +2,17 @@
 {
 
     using Items.Web.ViewModels.Home;
-    using Microsoft.AspNetCore.Mvc;
+	using Microsoft.AspNetCore.Authorization;
+	using Microsoft.AspNetCore.Mvc;
     using System.Diagnostics;
 
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         public HomeController()
         {
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();

@@ -10,12 +10,24 @@
         public ItemVisibility()
         {
             Id = Guid.NewGuid();
-        }
+            Description =       AccessModifier.Public;
+            CurrentPrice =      AccessModifier.Public;
+
+            Location =          AccessModifier.Private;
+            Offers =            AccessModifier.Private;
+            AddedOn =           AccessModifier.Private;
+
+            Quantity =          AccessModifier.Private;
+            AcquiredPrice =     AccessModifier.Private;
+            AcquiredDate =      AccessModifier.Private;
+            AcquireDocument =   AccessModifier.Private;
+            Owner =             AccessModifier.Private;
+		}
 
         [Key]
         public Guid Id { get; set; }
 
-        public AccessModifier Name { get; set; }
+        //public AccessModifier Name { get; set; }
 
         public AccessModifier Quantity { get; set; }
         

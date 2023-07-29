@@ -29,6 +29,7 @@
     - acquire document(pdf)
     - **location**
     - **pictures**
+    - main picture
     - owner
     - **offers**
     - 

@@ -9,6 +9,15 @@
         public LocationVisibility()
         {
             Id = Guid.NewGuid();
+            Country = AccessModifier.Public;
+            Town = AccessModifier.Public;
+
+            GeoLocation = AccessModifier.Private;
+
+            Name = AccessModifier.Private;
+            Description = AccessModifier.Private;
+            Border = AccessModifier.Private;
+            Address = AccessModifier.Private;
         }
 
         [Key]
@@ -28,9 +37,6 @@
 
         public AccessModifier Address { get; set; }
 
-        
-        //[ForeignKey(nameof(Location))]
-        //public Guid LocationId { get; set; }
 
         [Required]
         public Location Location { get; set; } = null!;

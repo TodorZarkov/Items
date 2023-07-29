@@ -42,8 +42,6 @@
 
         public DbSet<Unit> Units { get; set; } = null!;
 
-        public DbSet<UserContract> UsersContracts { get; set; } = null!;
-
 
 
         protected override void OnModelCreating(ModelBuilder builder)

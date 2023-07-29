@@ -12,24 +12,28 @@
         public Contract()
         {
             Id = Guid.NewGuid();
-            UsersContracts = new HashSet<UserContract>();
         }
 
         [Key]
         public Guid Id { get; set; }
 
 
-        [ForeignKey(nameof(ApplicationUser))]
+        [ForeignKey(nameof(Buyer))]
         [Required]
         public Guid BuyerId { get; set; }
 
 
-        [ForeignKey(nameof(ApplicationUser))]
+        [ForeignKey(nameof(Seller))]
         [Required]
         public Guid SellerId { get; set; }
 
 
-        public ICollection<UserContract> UsersContracts { get; set; }
+        [Required]
+        public ApplicationUser Buyer { get; set; } = null!;
+
+        [Required]
+        public ApplicationUser Seller { get; set; } = null!;
+
 
 
         [Precision(ValuePrecision, ValueScale)]

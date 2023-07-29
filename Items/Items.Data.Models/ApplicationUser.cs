@@ -7,10 +7,15 @@
         public ApplicationUser() 
         {
             Items = new HashSet<Item>();
+
             Categories = new HashSet<Category>();
+
             Locations = new HashSet<Location>();
+
             Offers = new HashSet<Offer>();
-            UsersContracts = new HashSet<UserContract>();
+
+            ContractsAsBuyer = new HashSet<Contract>();
+            ContractsAsSeller = new HashSet<Contract>();
         }
         public ICollection<Item> Items { get; set; }
 
@@ -20,6 +25,9 @@
 
         public ICollection<Offer> Offers { get; set; }
 
-        public ICollection<UserContract> UsersContracts { get; set; }
+
+        public ICollection<Contract> ContractsAsBuyer { get; set; }
+        public ICollection<Contract> ContractsAsSeller { get; set; }
+
     }
 }

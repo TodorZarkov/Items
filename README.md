@@ -7,6 +7,7 @@
     - items
     - own categories
     - locations
+    - contracts
 
 - categories
     - name
@@ -101,12 +102,15 @@
     - buyerComment
     - buyerConfirmed
 
+- userContract
+
 ### entity relations 
 - user 
     - has many items
     - has many locations
     - has many categories
     - has many accounts
+    - has many contracts
 - item
     - has one price (acquired price)
     - has one user (owner)
@@ -143,8 +147,35 @@
 - account
     - has one user
     - has one currency
-
+- contract
+    - has many users (2)
+    - has one currency
+    - has one item
 ### managed by Admin
 - categories - add, modify
 - currencies - add, modify
 - unit - add, modify
+
+
+### when Guest
+- can see all public items with all their properties(if visible):
+- cannot buy or bid on any item
+- can see all categories
+- search
+#### views
+- home(latest as landing)
+- all
+- categories(drop)
+- search(on the bar)
+## when User
+- home (daily rotation)
+- all
+- my items
+- categories
+- my categories
+- my bids
+- my sells
+- deals
+- locations
+- places
+- search

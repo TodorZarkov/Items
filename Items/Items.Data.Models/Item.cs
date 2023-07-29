@@ -14,7 +14,9 @@
             ItemsCategories = new HashSet<ItemCategory>();
             Pictures = new HashSet<Picture>();
             Offers = new HashSet<Offer>();
-        }
+            AsBarterForOffers = new HashSet<Offer>();
+
+		}
 
         [Key]
         public Guid Id { get; set; }
@@ -32,8 +34,13 @@
         public string Name { get; set; } = null!;
 
 
+
+
+
         [Precision(QuantityPrecision, QuantityScale)]
         public decimal Quantity { get; set; }
+
+
 
 
         [ForeignKey(nameof(Unit))]
@@ -43,8 +50,13 @@
         public Unit Unit { get; set; } = null!;
 
 
+
+
         [MaxLength(DescriptionMaxLength)]
         public string? Description { get; set; }
+
+
+
 
 
         [Precision(ValuePrecision, ValueScale)]
@@ -56,18 +68,27 @@
         
 
 
+
+
         [ForeignKey(nameof(Currency))]
         public int? CurrencyId { get; set; }
 
         public Currency? Currency { get; set; }
 
 
+
+
+
         public DateTime? AcquiredDate { get; set; }
+
+
 
 
         [ForeignKey(nameof(AcquireDocument))]
         public Guid? DocumentId { get; set; }
         public Document? AcquireDocument { get; set; }
+
+
 
 
         [Required]
@@ -77,7 +98,13 @@
         [Required]
         public ApplicationUser Owner { get; set; } = null!;
 
+
+
+
         public ICollection<ItemCategory> ItemsCategories { get; set; }
+
+
+
 
 
         [Required]
@@ -96,6 +123,8 @@
         public Location Location { get; set; } = null!;
 
 
+
+
         public DateTime AddedOn { get; set; }
 
 
@@ -105,9 +134,17 @@
         public DateTime? EndSell { get; set; }
 
 
+
+
+
         public ICollection<Picture> Pictures { get; set; }
 
 
+
+
         public ICollection<Offer> Offers { get; set; }
+
+
+        public ICollection<Offer> AsBarterForOffers { get; set; }
     }
 }

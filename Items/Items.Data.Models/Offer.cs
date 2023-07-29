@@ -12,8 +12,12 @@
         public Guid Id { get; set; }
 
 
+
+
         [MaxLength(MessageMaxLength)]
         public string? Message { get; set; }
+
+
 
 
         [Required]
@@ -24,6 +28,8 @@
         public ApplicationUser Buyer { get; set; } = null!;
 
 
+
+
         [Required]
         [ForeignKey(nameof(Item))]
         public Guid ItemId { get; set; }
@@ -32,8 +38,14 @@
         public Item Item { get; set; } = null!;
 
 
-        
-        [Precision(ValuePrecision, ValueScale)]
+		[Precision(QuantityPrecision, QuantityScale)]
+		public decimal Quantity { get; set; }
+
+
+
+
+
+		[Precision(ValuePrecision, ValueScale)]
         public decimal Value { get; set; }
 
 
@@ -43,11 +55,21 @@
         public Currency Currency { get; set; } = null!;
 
 
-        [Precision(QuantityPrecision, QuantityScale)]
-        public decimal Quantity { get; set; }
+
+		[ForeignKey(nameof(BarterItem))]
+		public Guid? BarterItemId { get; set; }
+
+		public Item? BarterItem { get; set; }
 
 
-        [ForeignKey(nameof(BuyerLocation))]
+		[Precision(QuantityPrecision, QuantityScale)]
+		public decimal? BarterQuantity { get; set; }
+
+
+
+
+
+		[ForeignKey(nameof(BuyerLocation))]
         public Guid? LocationId { get; set; }
 
         public Location? BuyerLocation { get; set; }

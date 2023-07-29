@@ -4,6 +4,6 @@
 
 	public interface IItemService
 	{
-		IEnumerable<IndexViewModel> LastThreePublicItemsAsync();
+		Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems);
 	}
 }

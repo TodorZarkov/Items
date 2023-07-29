@@ -16,8 +16,6 @@
         public string Uri { get; set; } = null!;
 
 
-        public bool IsMain { get; set; }
-
 
         public bool IsPrivate { get; set; }
 

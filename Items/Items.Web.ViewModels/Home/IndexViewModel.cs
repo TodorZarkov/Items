@@ -2,6 +2,8 @@
 {
 	public class IndexViewModel
 	{
+		public Guid Id { get; set; }
+
 
 	}
 }

@@ -54,6 +54,11 @@
                 .HasOne(e => e.ItemVisibility)
                 .WithOne(e => e.Item)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(e => e.MainPicture)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

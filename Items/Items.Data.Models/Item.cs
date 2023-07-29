@@ -140,7 +140,11 @@
         public DateTime? EndSell { get; set; }
 
 
+        [Required]
+        [ForeignKey(nameof(MainPicture))]
+        public Guid MainPictureId { get; set; }
 
+        public Picture MainPicture { get; set; } = null!;
 
 
         public ICollection<Picture> Pictures { get; set; }

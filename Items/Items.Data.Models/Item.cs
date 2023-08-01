@@ -103,11 +103,12 @@
 
 		public ICollection<Picture> Pictures { get; set; }
 
+        [Required]
+        public string MainPictureUri { get; set; } = null!;
 
 
 
-
-		[Precision(ValuePrecision, ValueScale)]
+        [Precision(ValuePrecision, ValueScale)]
         public decimal? CurrentPrice { get; set; }
         
 

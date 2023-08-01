@@ -18,14 +18,25 @@
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                return RedirectToAction("DailyRotation");
+            }
+
             IEnumerable<IndexViewModel> viewModel = 
                 await itemService.LastPublicItemsAsync(numberOfItems);
 
             return View(viewModel);
         }
 
+        public async Task<IActionResult> DailyRotation()
+        {
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+            return View();
+        }
+
+
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

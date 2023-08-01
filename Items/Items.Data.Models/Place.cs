@@ -10,6 +10,7 @@
         public Place()
         {
             Items = new HashSet<Item>();
+            
         }
 
         [Key]

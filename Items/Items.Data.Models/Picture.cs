@@ -7,6 +7,11 @@
 
     public class Picture
     {
+        public Picture()
+        {
+            Id = Guid.NewGuid();
+        }
+
         [Key]
         public Guid Id { get; set; }
 
@@ -16,6 +21,7 @@
         public string Uri { get; set; } = null!;
 
 
+        public bool IsMain { get; set; }
 
         public bool IsPrivate { get; set; }
 

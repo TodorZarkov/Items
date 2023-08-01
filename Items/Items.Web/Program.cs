@@ -6,6 +6,8 @@ namespace Items.Web
 	using Items.Data;
     using Items.Data.Models;
     using Microsoft.Extensions.Configuration;
+    using Items.Services.Data.Interfaces;
+    using Items.Services.Data;
 
     public class Program
 	{
@@ -56,6 +58,8 @@ namespace Items.Web
 				.AddEntityFrameworkStores<ItemsDbContext>();
 
 			builder.Services.AddControllersWithViews();
+
+			builder.Services.AddScoped<IItemService, ItemService>();
 
 			var app = builder.Build();
 

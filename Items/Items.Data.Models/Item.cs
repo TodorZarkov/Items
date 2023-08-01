@@ -101,14 +101,6 @@
 		public Location Location { get; set; } = null!;
 
 
-
-		[Required]
-		[ForeignKey(nameof(MainPicture))]
-		public Guid MainPictureId { get; set; }
-
-		public Picture MainPicture { get; set; } = null!;
-
-
 		public ICollection<Picture> Pictures { get; set; }
 
 
@@ -132,7 +124,7 @@
         public DateTime? EndSell { get; set; }
 
 
-        public bool IsAuction { get; set; }
+        public bool? IsAuction { get; set; }
 
 
         public ICollection<Offer> Offers { get; set; }

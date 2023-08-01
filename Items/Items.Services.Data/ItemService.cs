@@ -28,7 +28,7 @@
 				{
 					Id = i.Id,
 					Name = i.Name,
-					MainPictureUri = i.MainPicture.Uri,
+					MainPictureUri = i.Pictures.First(p => p.IsMain).Uri,
 					CurrentPrice = i.CurrentPrice,
 					CurrencySymbol = i.Currency == null ? null : i.Currency.Symbol,
 					IsAuction = i.IsAuction

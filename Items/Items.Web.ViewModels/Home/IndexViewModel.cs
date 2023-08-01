@@ -14,7 +14,7 @@
 		public string? CurrencySymbol { get; set; }
 
 
-        public bool IsAuction { get; set; }
+        public bool? IsAuction { get; set; }
 
     }
 }

@@ -73,7 +73,10 @@
             public const int ValuePrecision = 18;
             public const int ValueScale = 6;
 
-        }
+			public const int UriMinLength = 1;
+			public const int UriMaxLength = 2048;
+
+		}
 
         public static class Offer
         {

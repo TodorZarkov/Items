@@ -104,6 +104,7 @@
 		public ICollection<Picture> Pictures { get; set; }
 
         [Required]
+        [MaxLength(UriMaxLength)]
         public string MainPictureUri { get; set; } = null!;
 
 

@@ -1,6 +1,7 @@
 ﻿namespace Items.Data.Configurations
 {
-    using Items.Data.Models;
+	using Items.Common.Enums;
+	using Items.Data.Models;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -80,6 +81,13 @@
                 LocationId = Guid.Parse("F9182575-B31F-4D24-BB44-17A062DFE6FE"),
                 
                 CurrencyId = 1,
+
+				Access = AccessModifier.Public,
+				StartSell = DateTime.Parse("12-12-2023"),
+                EndSell = DateTime.Parse("01-08-2024"),
+                CurrentPrice = 55m,
+                IsAuction = true,
+
 				MainPictureUri = "https://i5.walmartimages.com/asr/19fe13d7-ea2e-47f7-8547-202ce8c88717_1.bc800cefd11bb60ebc07ebdd7fac8ff6.jpeg",
 			};
             items.Add(item);
@@ -105,6 +113,12 @@
                 //ItemCategory - toys, cars
                 PlaceId = 1,
                 CurrencyId = 1,
+
+                Access = AccessModifier.Public,
+                StartSell = DateTime.Parse("11-11-2023"),
+                EndSell = DateTime.Parse("01-08-2024"),
+                CurrentPrice = 55m,
+
                 MainPictureUri = "https://image.pushauction.com/0/0/77191e32-26bc-45d1-b916-1425f6513281/4533eb18-a6eb-4783-b444-aad16f842869.jpg",
 			};
             items.Add(item);
@@ -130,6 +144,12 @@
 						   //ItemCategory - toys, cars
 				PlaceId = 1,
 				CurrencyId = 1,
+
+                Access = AccessModifier.Public,
+                StartSell = DateTime.Parse("10-10-2023"),
+                EndSell = DateTime.Parse("01-08-2024"),
+                CurrentPrice = 55m,
+
                 MainPictureUri = "https://static2.redcart.pl/templates/images/thumb/10281/800/9999/pl/0/templates/images/products/10281/067a782229f0ab90838b869e943673ca.jpg",
 			};
 			items.Add(item);
@@ -191,8 +211,12 @@
 				Description = "Brown - Welly 24008 - 1/24 scale",
 				AcquiredPrice = 110m,
 				AcquiredDate = DateTime.Parse("12-12-2021"),
-				
 
+				Access = AccessModifier.Public,
+				StartSell = DateTime.Parse("09-09-2023"),
+				EndSell = DateTime.Parse("01-08-2024"),
+                CurrentPrice = 55m,
+				IsAuction = true,
 
 
 				OwnerId = Guid.Parse("8B5B3B04-BF70-4018-FFBF-08DB913996C1"),//stamat
@@ -216,9 +240,12 @@
 				Description = "Puzzle from cars movie. 500pcs",
 				AcquiredPrice = 8m,
 				AcquiredDate = DateTime.Parse("12-12-2021"),
-				
 
 
+				Access = AccessModifier.Public,
+				StartSell = DateTime.Parse("08-08-2023"),
+				EndSell = DateTime.Parse("01-08-2024"),
+                CurrentPrice = 55m,
 
 				OwnerId = Guid.Parse("8B5B3B04-BF70-4018-FFBF-08DB913996C1"),//stamat
 				LocationId = Guid.Parse("6E1F7BE8-13DC-4C6B-BB59-D6EE7CEC35D8"), //stamat's location
@@ -241,8 +268,6 @@
 				Description = "Hape knob puzzle vehicles",
 				AcquiredPrice = 9m,
 				AcquiredDate = DateTime.Parse("12-12-2021"),
-				
-
 
 
 				OwnerId = Guid.Parse("8B5B3B04-BF70-4018-FFBF-08DB913996C1"),//stamat

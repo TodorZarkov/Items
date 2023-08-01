@@ -9,7 +9,9 @@
     public class HomeController : BaseController
     {
         private readonly IItemService itemService;
-        private const int numberOfItems = 3;
+        private const int numberOfItems = 5;
+
+
         public HomeController(IItemService itemService)
         {
             this.itemService = itemService;

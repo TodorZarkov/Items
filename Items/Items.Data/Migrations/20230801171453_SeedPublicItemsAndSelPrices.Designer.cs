@@ -4,6 +4,7 @@ using Items.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
@@ -12,9 +13,10 @@ using NetTopologySuite.Geometries;
 namespace Items.Data.Migrations
 {
     [DbContext(typeof(ItemsDbContext))]
-    partial class ItemsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230801171453_SeedPublicItemsAndSelPrices")]
+    partial class SeedPublicItemsAndSelPrices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -370,7 +372,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 60m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6698),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4450),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "The Ford Mustang Mach 1 is a performance-oriented option package[1] of the Ford Mustang muscle car, originally introduced in August 1968 for the 1969 model year. It was available until 1978, returned briefly in 2003, 2004, and most recently in 2021.\r\n\r\nAs part of a Ford heritage program, the Mach 1 package returned in 2003 as a high-performance version of the New Edge platform. Visual connections to the 1969 model were integrated into the design to pay homage to the original. This generation of the Mach 1 was discontinued after the 2004 model year, with the introduction of the fifth generation Mustang.\r\n\r\nFord first used the name \"Mach 1\" in its 1969 display of a concept called the \"Levacar Mach I\" at the Ford Rotunda. This concept vehicle used a cushion of air as propulsion on a circular dais. ",
@@ -383,7 +385,7 @@ namespace Items.Data.Migrations
                             OwnerId = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
                             PlaceId = 1,
                             Quantity = 1m,
-                            StartSell = new DateTime(2023, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartSell = new DateTime(2023, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UnitId = 1
                         },
                         new
@@ -392,7 +394,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 10m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6812),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4574),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "Very cool small SUV",
@@ -404,7 +406,7 @@ namespace Items.Data.Migrations
                             OwnerId = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
                             PlaceId = 1,
                             Quantity = 1m,
-                            StartSell = new DateTime(2023, 11, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartSell = new DateTime(2023, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UnitId = 1
                         },
                         new
@@ -413,7 +415,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 11m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6832),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4595),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "Old Cardboard Vehicle from GDR",
@@ -425,7 +427,7 @@ namespace Items.Data.Migrations
                             OwnerId = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
                             PlaceId = 1,
                             Quantity = 1m,
-                            StartSell = new DateTime(2023, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartSell = new DateTime(2023, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UnitId = 1
                         },
                         new
@@ -434,7 +436,7 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2020, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 22m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6849),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4629),
                             CurrencyId = 1,
                             Description = "The Porsche 911 (pronounced Nine Eleven or in German: Neunelf) is a two-door 2+2 high performance rear-engined sports car introduced in September 1964 by Porsche AG of Stuttgart, Germany. It has a rear-mounted flat-six engine and originally a torsion bar suspension. The car has been continuously enhanced through the years but the basic concept has remained unchanged.[1] The engines were air-cooled until the introduction of the 996 series in 1998.[",
                             ItemVisibilityId = new Guid("a33dd8ed-4619-4d18-a25c-2bb25b7bb456"),
@@ -452,7 +454,7 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2020, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 23m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6859),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4641),
                             CurrencyId = 1,
                             Description = "Hollywood Rides 1:24 Scale 2006",
                             ItemVisibilityId = new Guid("d009129e-5655-4cd2-ba67-114e2e792b8c"),
@@ -470,7 +472,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 110m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6881),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4654),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "Brown - Welly 24008 - 1/24 scale",
@@ -483,7 +485,7 @@ namespace Items.Data.Migrations
                             OwnerId = new Guid("8b5b3b04-bf70-4018-ffbf-08db913996c1"),
                             PlaceId = 3,
                             Quantity = 1m,
-                            StartSell = new DateTime(2023, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartSell = new DateTime(2023, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UnitId = 1
                         },
                         new
@@ -492,7 +494,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 8m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6903),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4769),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "Puzzle from cars movie. 500pcs",
@@ -504,7 +506,7 @@ namespace Items.Data.Migrations
                             OwnerId = new Guid("8b5b3b04-bf70-4018-ffbf-08db913996c1"),
                             PlaceId = 4,
                             Quantity = 1m,
-                            StartSell = new DateTime(2023, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartSell = new DateTime(2023, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UnitId = 1
                         },
                         new
@@ -513,7 +515,7 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 9m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6918),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4790),
                             CurrencyId = 1,
                             Description = "Hape knob puzzle vehicles",
                             ItemVisibilityId = new Guid("cbd7bd12-aa21-4e33-95cf-fd9c342db010"),
@@ -531,7 +533,7 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2022, 2, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 50m,
-                            AddedOn = new DateTime(2023, 8, 1, 18, 25, 56, 617, DateTimeKind.Utc).AddTicks(6928),
+                            AddedOn = new DateTime(2023, 8, 1, 17, 14, 52, 359, DateTimeKind.Utc).AddTicks(4801),
                             CurrencyId = 1,
                             ItemVisibilityId = new Guid("49abfa42-69f7-4240-a2ef-4e1b3ef7c16c"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),

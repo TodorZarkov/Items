@@ -19,23 +19,32 @@
 
         public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
-			IEnumerable<IndexViewModel> lastThree = await dbContext.Items
+			IEnumerable<IndexViewModel> items = await dbContext.Items
 				.Where(i => i.Access == AccessModifier.Public &&
 							(i.EndSell == null || i.EndSell > DateTime.UtcNow))
-				.OrderByDescending(i => i.AddedOn)
+				.OrderByDescending(i => i.StartSell)
 				.Take(numberOfItems)
 				.Select(i => new IndexViewModel
 				{
 					Id = i.Id,
 					Name = i.Name,
-					MainPictureUri = i.Pictures.First(p => p.IsMain).Uri,
-					CurrentPrice = i.CurrentPrice,
-					CurrencySymbol = i.Currency == null ? null : i.Currency.Symbol,
-					IsAuction = i.IsAuction
+					MainPictureUri = i.MainPictureUri,
+
+					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2") ,
+					CurrencySymbol = 
+						!i.CurrentPrice.HasValue || 
+						i.Currency == null 
+						? "" : i.Currency.Symbol,
+					IsAuction = i.IsAuction,
+
+					Categories = i.ItemsCategories
+						.Where(ic => ic.ItemId == i.Id)
+						.Select(ic => ic.Category.Name)
+						.ToArray()
 				})
 				.ToArrayAsync();
 
-			return lastThree;
+			return items;
 		}
 	}
 }

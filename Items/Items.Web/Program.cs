@@ -60,6 +60,7 @@ namespace Items.Web
 			builder.Services.AddControllersWithViews();
 
 			builder.Services.AddScoped<IItemService, ItemService>();
+			builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 			var app = builder.Build();
 

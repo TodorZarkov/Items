@@ -62,6 +62,14 @@
                 Name = "Puzzles"
             };
             categories.Add(category);
+            
+            category = new Category
+            {
+                CreatorId = Guid.Parse("7BEE3220-A1A1-4502-EFEA-08DB9037BC59"),
+                Id = 6,
+                Name = "Instruments"
+            };
+            categories.Add(category);
 
 
             return categories.ToArray();

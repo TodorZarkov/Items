@@ -23,7 +23,6 @@
 				}
 				else
 				{
-					@*here latest items*@
 					<a class="navbar-brand"
 					   asp-area=""
 					   asp-controller="Home"
@@ -39,13 +38,16 @@
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
 					<ul class="navbar-nav flex-grow-1">
+
 						<li class="nav-item">
 							<a class="nav-link "
 							   asp-area=""
 							   asp-controller="Item"
 							   asp-action="All">All Items</a>
 						</li>
+
 						@if (User.Identity?.IsAuthenticated ?? false)
 						{
 							<li class="nav-item">
@@ -54,52 +56,39 @@
 								   asp-controller="Item"
 								   asp-action="Mine">My Items</a>
 							</li>
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle"
-								   href="#"
-								   id="navbarDropdown"
-								   role="button"
-								   data-bs-toggle="dropdown"
-								   aria-expanded="false">Categories</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-									<li><a class="dropdown-item" href="#">MyCategory1</a></li>
-									<li><a class="dropdown-item" href="#">MyCategory2</a></li>
-									<li><a class="dropdown-item" href="#">.</a></li>
-									<li><a class="dropdown-item" href="#">.</a></li>
-									<li><a class="dropdown-item" href="#">.</a></li>
-									<li><a class="dropdown-item" href="#">PublicCategory1</a></li>
-									<li><a class="dropdown-item" href="#">PublicCategory1</a></li>
-									<li><a class="dropdown-item" href="#">.</a></li>
-									<li><a class="dropdown-item" href="#">.</a></li>
-									<li><a class="dropdown-item" href="#">.</a></li>
-									<li><hr class="dropdown-divider"></li>
-									<li><a class="dropdown-item" href="#">Add Category</a></li>
-								</ul>
-							</li>
+						}
+							<vc:nav-dropdown />
+
+						@if (User.Identity?.IsAuthenticated ?? false)
+						{
 							<li class="nav-item ms-3">
 								<a class="nav-link "
 								   asp-area=""
 								   asp-controller="Location"
 								   asp-action="Mine">Locations</a>
 							</li>
+
 							<li class="nav-item">
 								<a class="nav-link "
 								   asp-area=""
 								   asp-controller="Place"
 								   asp-action="Mine">Places</a>
 							</li>
+
 							<li class="nav-item ms-3">
 								<a class="nav-link "
 								   asp-area=""
 								   asp-controller="Item"
 								   asp-action="Bids">Bids</a>
 							</li>
+
 							<li class="nav-item">
 								<a class="nav-link "
 								   asp-area=""
 								   asp-controller="Item"
 								   asp-action="Sells">Sells</a>
 							</li>
+
 							<li class="nav-item">
 								<a class="nav-link "
 								   asp-area=""
@@ -107,24 +96,11 @@
 								   asp-action="Deals">Deals</a>
 							</li>
 						}
-						else
-						{
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle"
-								   href="#"
-								   id="navbarDropdown"
-								   role="button"
-								   data-bs-toggle="dropdown"
-								   aria-expanded="false">Categories</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-									<li><a class="dropdown-item" href="#">PublicCategory1</a></li>
-									<li><a class="dropdown-item" href="#">PublicCategory2</a></li>
-									<li><hr class="dropdown-divider"></li>
-									<li><a class="dropdown-item" href="#">Something else here</a></li>
-								</ul>
-							</li>
-						}
+						
 					</ul>
+
+
+
 					<form class="d-flex">
 						<input class="form-control me-2"
 							   type="search"
@@ -132,7 +108,11 @@
 							   aria-label="Search">
 						<button class="btn btn-outline-success" type="submit">Search</button>
 					</form>
+
+
+
 					<partial name="_LoginPartial" />
+
 				</div>
 			</div>
 		</nav>

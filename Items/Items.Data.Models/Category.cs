@@ -22,9 +22,9 @@
 
 
         [ForeignKey(nameof(Creator))]
-        public Guid? CreatorId { get; set; }
+        public Guid CreatorId { get; set; }
 
-        public ApplicationUser? Creator { get; set; }
+        public ApplicationUser Creator { get; set; }
 
        
         public ICollection<ItemCategory> ItemsCategories { get; set; } = null!;

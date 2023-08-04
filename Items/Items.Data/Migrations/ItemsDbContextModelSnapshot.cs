@@ -109,7 +109,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -210,7 +210,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Contracts");
+                    b.ToTable("Contracts", (string)null);
                 });
 
             modelBuilder.Entity("Items.Data.Models.Currency", b =>
@@ -237,7 +237,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
 
                     b.HasData(
                         new
@@ -276,7 +276,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Documents", (string)null);
                 });
 
             modelBuilder.Entity("Items.Data.Models.Item", b =>
@@ -367,7 +367,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
 
                     b.HasData(
                         new
@@ -562,7 +562,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemsCategories");
+                    b.ToTable("ItemsCategories", (string)null);
 
                     b.HasData(
                         new
@@ -710,7 +710,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemVisibilities");
+                    b.ToTable("ItemVisibilities", (string)null);
 
                     b.HasData(
                         new
@@ -889,7 +889,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
 
                     b.HasData(
                         new
@@ -943,7 +943,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LocationVisibilities");
+                    b.ToTable("LocationVisibilities", (string)null);
 
                     b.HasData(
                         new
@@ -1019,7 +1019,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("Items.Data.Models.Picture", b =>
@@ -1045,7 +1045,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("Pictures");
+                    b.ToTable("Pictures", (string)null);
 
                     b.HasData(
                         new
@@ -1146,7 +1146,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Places");
+                    b.ToTable("Places", (string)null);
 
                     b.HasData(
                         new
@@ -1193,7 +1193,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
 
                     b.HasData(
                         new

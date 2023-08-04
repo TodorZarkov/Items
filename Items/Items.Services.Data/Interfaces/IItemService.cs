@@ -7,8 +7,15 @@
 	{
 		Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems);
 
-		Task<IEnumerable<AllItemViewModel>> GetByCategoryCombinationAsync(int[] categories);
+		Task<IEnumerable<AllItemViewModel>> GetByCategoriesOnSaleItemsAsync(
+			int[] categories, Guid? userId);
+		Task<IEnumerable<AllItemViewModel>> GetByCategoriesMineItemsAsync(
+			int[] categories, Guid userId);
+		Task<IEnumerable<AllItemViewModel>> GetByCategoriesAllItemsAsync(
+			int[] categories, Guid userId);
 
 		Task<IEnumerable<AllItemViewModel>> AllPublic();
+
+		Task<IEnumerable<AllItemViewModel>> All(Guid userId);
 	}
 }

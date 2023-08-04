@@ -17,25 +17,25 @@
 
 			@if (User.Identity?.IsAuthenticated ?? false)
 			{
-			<li class="dropdown-item-text">My Categories</li>
+			<li class="dropdown-item-text fw-bold">My Categories</li>
 
 
-				@for(int i = 0; i < Model["Mine"].Count; i++)
+				@for (int i = 0; i < Model["Mine"].Count; i++)
 				{
 				<li class="dropdown-item">
 					<input class="form-check-input me-1" type="checkbox" asp-for="@Model["Mine"][i].Selected">
-					<input type="hidden" asp-for="@Model["Mine"][i].Id" >
-					<input type="hidden" asp-for="@Model["Mine"][i].Name" >
+					<input type="hidden" asp-for="@Model["Mine"][i].Id">
+					<input type="hidden" asp-for="@Model["Mine"][i].Name">
 						@Model["Mine"][i].Name
 				</li>
 				}
 			<li><a class="dropdown-item" href="#">Add Category</a></li>
 			<li><hr class="dropdown-divider"></li>
-			<li class="dropdown-item-text">All Categories</li>
+			<li class="dropdown-item-text fw-bold">All Categories</li>
 			}
 
 
-			@for(int i = 0; i < Model["All"].Count; i++)
+			@for (int i = 0; i < Model["All"].Count; i++)
 			{
 			<li class="dropdown-item">
 				<input class="form-check-input me-1" type="checkbox" asp-for="@Model["All"][i].Selected">
@@ -46,7 +46,17 @@
 			}
 
 		<li><hr class="dropdown-divider"></li>
-		<li><button class="dropdown-item" href="#">Filter</button></li>
+			@if (User.Identity?.IsAuthenticated ?? false)
+			{
+			<li class="dropdown-item-text fw-bold">Filter</li>
+			<button class="dropdown-item" type="submit" name="type" value="Sale">Items On Sale</button>
+			<button class="dropdown-item" type="submit" name="type" value="Mine">My Items</button>
+			<button class="dropdown-item" type="submit" name="type" value="All">All Items</button>
+			}
+			else
+			{
+			<button class="dropdown-item" type="submit" name="type" value="Sale">Filter</button>
+			}
 		</form>
 
 

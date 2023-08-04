@@ -1,9 +1,10 @@
 ﻿namespace Items.Web.ViewComponents
 {
-	using Items.Services.Data.Interfaces;
-	using Items.Web.ViewModels.Category;
 	using Microsoft.AspNetCore.Mvc;
-	using System.Security.Claims;
+
+	using Items.Services.Data.Interfaces;
+	using Items.Web.Extensions;
+	using Items.Web.ViewModels.Category;
 
 	public class NavDropdownViewComponent : ViewComponent
 	{
@@ -24,8 +25,7 @@
 			if (User.Identity?.IsAuthenticated ?? false)
 			{
 
-				string? userId = UserClaimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+				string? userId = UserClaimsPrincipal.GetId();
 				//todo: can userId be null here???
 
 				categories["Mine"] = (await categoryService.GetMineAsync(new Guid(userId))).ToList();

@@ -16,8 +16,13 @@
 
 		public bool? IsAuction { get; set; }
 
+        public bool IsMine { get; set; }
 
-		public string[] Categories { get; set; } = null!;
+        public string? Quantity { get; set; }
+
+        public string? Unit { get; set; }
+
+        public string[] Categories { get; set; } = null!;
 		public int[] CategoryIds { get; set; } = null!;
 	}
 }

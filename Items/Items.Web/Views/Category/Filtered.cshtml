@@ -1,0 +1,15 @@
+﻿@using Items.Web.ViewModels.Item;
+@model IEnumerable<AllItemViewModel>
+
+@if (Model.Any())
+{
+	<partial name="_AllItemsPartial" />
+}
+else
+{
+	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
+		<h3>No Matches</h3>
+	</div>
+}
+
+

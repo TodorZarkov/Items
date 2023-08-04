@@ -4,8 +4,8 @@
 
 	public interface ICategoryService
 	{
-		Task<IEnumerable<CategoryViewModel>> GetAllAsync();
+		Task<ICollection<CategoryFilterViewModel>> GetAllAsync();
 
-		Task<IEnumerable<CategoryViewModel>> GetMineAsync(Guid userId);
+		Task<ICollection<CategoryFilterViewModel>> GetMineAsync(Guid userId);
 	}
 }

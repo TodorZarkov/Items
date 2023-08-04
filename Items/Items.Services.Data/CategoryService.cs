@@ -17,7 +17,7 @@
         }
 
 
-        public async Task<IEnumerable<CategoryViewModel>> GetAllAsync()
+        public async Task<ICollection<CategoryFilterViewModel>> GetAllAsync()
 		{
 			var adminRoleId = await dbContext.Roles
 				.Where(r => r.NormalizedName == "ADMIN")
@@ -31,9 +31,9 @@
 				.ToArrayAsync();
 
 
-			IEnumerable<CategoryViewModel> categoryViewModels = await dbContext.Categories
+			ICollection<CategoryFilterViewModel> categoryViewModels = await dbContext.Categories
 				.Where(c => adminIds.Contains(c.CreatorId))
-				.Select(c => new CategoryViewModel
+				.Select(c => new CategoryFilterViewModel
 				{
 					Id = c.Id,
 					Name = c.Name
@@ -43,11 +43,11 @@
 			return categoryViewModels;
 		}
 
-		public async Task<IEnumerable<CategoryViewModel>> GetMineAsync(Guid userId)
+		public async Task<ICollection<CategoryFilterViewModel>> GetMineAsync(Guid userId)
 		{
-			IEnumerable<CategoryViewModel> categories = await dbContext.Categories
+			ICollection<CategoryFilterViewModel> categories = await dbContext.Categories
 				.Where(c => c.CreatorId == userId)
-				.Select(c => new CategoryViewModel
+				.Select(c => new CategoryFilterViewModel
 				{
 					Id = c.Id,
 					Name = c.Name

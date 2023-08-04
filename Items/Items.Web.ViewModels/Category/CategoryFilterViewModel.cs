@@ -1,12 +1,11 @@
 ﻿namespace Items.Web.ViewModels.Category
 {
-	using System.ComponentModel.DataAnnotations;
-
-	public class CategoryViewModel
+	public class CategoryFilterViewModel
 	{
 		public int Id { get; set; }
 
-
 		public string Name { get; set; } = null!;
+
+		public bool Selected { get; set; }
 	}
 }

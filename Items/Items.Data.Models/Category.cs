@@ -21,10 +21,12 @@
         public string Name { get; set; } = null!;
 
 
+        [Required]
         [ForeignKey(nameof(Creator))]
         public Guid CreatorId { get; set; }
 
-        public ApplicationUser Creator { get; set; }
+        [Required]
+        public ApplicationUser Creator { get; set; } = null!;
 
        
         public ICollection<ItemCategory> ItemsCategories { get; set; } = null!;

@@ -1,0 +1,54 @@
+﻿@using Items.Web.ViewModels.Category;
+@model Dictionary<string,List<CategoryFilterViewModel>>
+
+
+<li class="nav-item dropdown">
+	<a class="nav-link dropdown-toggle"
+	   href="#"
+	   id="navbarDropdown"
+	   role="button"
+	   data-bs-toggle="dropdown"
+	   aria-expanded="false">Categories</a>
+	<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+		<form asp-area=""
+			  asp-controller="Category"
+			  asp-action="Filtered"
+			  method="get">
+
+			@if (User.Identity?.IsAuthenticated ?? false)
+			{
+			<li class="dropdown-item-text">My Categories</li>
+
+
+				@for(int i = 0; i < Model["Mine"].Count; i++)
+				{
+				<li class="dropdown-item">
+					<input class="form-check-input me-1" type="checkbox" asp-for="@Model["Mine"][i].Selected">
+					<input type="hidden" asp-for="@Model["Mine"][i].Id" >
+					<input type="hidden" asp-for="@Model["Mine"][i].Name" >
+						@Model["Mine"][i].Name
+				</li>
+				}
+			<li><a class="dropdown-item" href="#">Add Category</a></li>
+			<li><hr class="dropdown-divider"></li>
+			<li class="dropdown-item-text">All Categories</li>
+			}
+
+
+			@for(int i = 0; i < Model["All"].Count; i++)
+			{
+			<li class="dropdown-item">
+				<input class="form-check-input me-1" type="checkbox" asp-for="@Model["All"][i].Selected">
+				<input type="hidden" asp-for="@Model["All"][i].Id">
+				<input type="hidden" asp-for="@Model["All"][i].Name">
+					@Model["All"][i].Name
+			</li>
+			}
+
+		<li><hr class="dropdown-divider"></li>
+		<li><button class="dropdown-item" href="#">Filter</button></li>
+		</form>
+
+
+	</ul>
+</li>

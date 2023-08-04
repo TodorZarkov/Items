@@ -9,38 +9,30 @@
 	{
 		private readonly ICategoryService categoryService;
 
-        public NavDropdownViewComponent(ICategoryService categoryService)
-        {
+		public NavDropdownViewComponent(ICategoryService categoryService)
+		{
 			this.categoryService = categoryService;
-        }
+		}
 
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
+			Dictionary<string, List<CategoryFilterViewModel>> categories =
+				new Dictionary<string, List<CategoryFilterViewModel>>();
+
+			categories["All"] = (await categoryService.GetAllAsync()).ToList();
+
 			if (User.Identity?.IsAuthenticated ?? false)
 			{
-				Dictionary<string, IEnumerable<CategoryViewModel>> categories =
-				new Dictionary<string, IEnumerable<CategoryViewModel>>();
-
-				categories["All"] = await categoryService.GetAllAsync();
 
 				string? userId = UserClaimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 				//todo: can userId be null here???
 
-				categories["Mine"] = await categoryService.GetMineAsync(new Guid(userId));
-
-
-
-				return View("MineAndAll", categories);
+				categories["Mine"] = (await categoryService.GetMineAsync(new Guid(userId))).ToList();
 			}
-			else
-			{
-				IEnumerable<CategoryViewModel> categories =
-				await categoryService.GetAllAsync();
 
-				return View("All", categories);
-			}
-			
+			return View(categories);
+
 		}
-    }
+	}
 }

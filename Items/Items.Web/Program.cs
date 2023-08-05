@@ -1,9 +1,9 @@
 namespace Items.Web
 {
-	using Microsoft.AspNetCore.Identity;
-	using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
 
-	using Items.Data;
+    using Items.Data;
     using Items.Data.Models;
     using Microsoft.Extensions.Configuration;
     using Items.Services.Data.Interfaces;
@@ -61,6 +61,7 @@ namespace Items.Web
 
 			builder.Services.AddScoped<IItemService, ItemService>();
 			builder.Services.AddScoped<ICategoryService, CategoryService>();
+			builder.Services.AddScoped<ILocationService, LocationService>();
 
 			var app = builder.Build();
 

@@ -137,7 +137,7 @@
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
-				.OrderByDescending(i => i.AddedOn) //todo: add column  in db "ModifiedOn"
+				.OrderByDescending(i => i.ModifiedOn) 
 				.Select(i => new AllItemViewModel
 				{
 					Id = i.Id,
@@ -183,7 +183,7 @@
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.Where(i => i.OwnerId == userId || i.Access == AccessModifier.Public)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
-				.OrderByDescending(i => i.AddedOn) //todo: add column  in db "ModifiedOn"
+				.OrderByDescending(i => i.ModifiedOn) 
 				.Select(i => new AllItemViewModel
 				{
 					Id = i.Id,
@@ -224,7 +224,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.Where(i => i.OwnerId == userId || i.Access == AccessModifier.Public)
-				.OrderByDescending(i => i.AddedOn) //todo: add column  in db "ModifiedOn"
+				.OrderByDescending(i => i.ModifiedOn) 
 				.Select(i => new AllItemViewModel
 				{
 					Id = i.Id,
@@ -251,6 +251,40 @@
 						.Where(ic => ic.ItemId == i.Id)
 						.Select(ic => ic.Category.Id)
 						.ToArray()
+				})
+				.ToArrayAsync();
+
+
+			return items;
+		}
+
+		public async Task<IEnumerable<MyItemViewModel>> Mine(Guid userId)
+		{
+			IEnumerable<MyItemViewModel> items = await dbContext.Items
+				.Where(i => i.OwnerId == userId)
+				.OrderByDescending(i => i.ModifiedOn)
+				.Select(i => new MyItemViewModel
+				{
+					Id = i.Id,
+					Name = i.Name,
+					MainPictureUri = i.MainPictureUri,
+					
+					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,
+					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
+
+					IsAuction = i.IsAuction,
+					IsOnMarket = i.Access == AccessModifier.Public,
+					
+					Categories = i.ItemsCategories
+						.Where(ic => ic.ItemId == i.Id)
+						.Select(ic => ic.Category.Name)
+						.ToArray(),
+
+					Offers = i.Offers.Count,
+
+					Location = i.Location.Name,
+
+					Place = i.Place.Name,
 				})
 				.ToArrayAsync();
 

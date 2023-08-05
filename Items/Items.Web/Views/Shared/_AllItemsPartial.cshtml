@@ -1,74 +1,68 @@
 ﻿
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-	
+<div class="d-flex flex-wrap gap-3 mt-3">
 
 	@foreach (var item in Model)
 	{
-		<div class="col">
-			<div class="card border-success mb-3" style="width: 18rem;">
-				<img src="@item.MainPictureUri" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">@item.Name</h5>
+		<div class="card border-success mb-3" style="width: 18rem;">
+			<img src="@item.MainPictureUri" class="card-img-top" alt="...">
+			<div class="card-body">
+				<h5 class="card-title">@item.Name</h5>
 
-					@if (item.IsMine)
+				@if (item.IsMine)
+				{
+					<p class="card-text">Quantity: @item.Quantity @item.Unit</p>
+					@if (item.IsAuction ?? false)
 					{
-						<p class="card-text">Quantity: @item.Quantity @item.Unit</p>
-						@if (item.IsAuction ?? false)
-						{
-							<p class="card-text">On Auction!</p>
-							<h6 class="card-text">
-								Starting Price: @item.CurrentPrice @item.CurrencySymbol
-							</h6>
-							<a href="#" class="btn btn-danger">Stop Auction</a>
-						}
-						else if (!string.IsNullOrEmpty(item.CurrencySymbol))
-						{
-							<p class="card-text">On Sale!</p>
-							<h6 class="card-text">
-								Price: @item.CurrentPrice @item.CurrencySymbol
-							</h6>
-							<a href="#" class="btn btn-danger">Stop Sell</a>
-						}
-						else
-						{
-							<a href="#" class="btn btn-danger">Put on The Market</a>
-						}
-
-						<a href="#" class="btn btn-dark">Edit</a>
-
-						
-						
+						<p class="card-text">On Auction!</p>
+						<h6 class="card-text">
+							Starting Price: @item.CurrentPrice @item.CurrencySymbol
+						</h6>
+						<a href="#" class="btn btn-sm btn-danger">Stop Auction</a>
+					}
+					else if (!string.IsNullOrEmpty(item.CurrencySymbol))
+					{
+						<p class="card-text">On Sale!</p>
+						<h6 class="card-text">
+							Price: @item.CurrentPrice @item.CurrencySymbol
+						</h6>
+						<a href="#" class="btn btn-sm btn-danger">Stop Sell</a>
 					}
 					else
 					{
-						@if (item.IsAuction ?? false)
-						{
-							<p class="card-text">On Auction!</p>
-							<h6 class="card-text">
-								Starting Price: @item.CurrentPrice @item.CurrencySymbol
-							</h6>
-							<a href="#" class="btn btn-warning">Bid</a>
-						}
-						else
-						{
-							<p class="card-text">On Sale!</p>
-							<h6 class="card-text">
-								Price: @item.CurrentPrice @item.CurrencySymbol
-							</h6>
-							<a href="#" class="btn btn-primary">Buy</a>
-						}
+						<a href="#" class="btn btn-sm btn-danger">Put on The Market</a>
 					}
 
-					<p class="card-text pt-3">Categories: @string.Join(", ",item.Categories)</p>
+					<a href="#" class="btn btn-sm btn-dark">Edit</a>
 
-					<a href="#" class="btn btn-info ms-auto d-block">Details</a>
-				</div>
+
+
+				}
+				else
+				{
+					@if (item.IsAuction ?? false)
+					{
+						<p class="card-text">On Auction!</p>
+						<h6 class="card-text">
+							Starting Price: @item.CurrentPrice @item.CurrencySymbol
+						</h6>
+						<a href="#" class="btn btn-sm btn-warning">Bid</a>
+					}
+					else
+					{
+						<p class="card-text">On Sale!</p>
+						<h6 class="card-text">
+							Price: @item.CurrentPrice @item.CurrencySymbol
+						</h6>
+						<a href="#" class="btn btn-sm btn-primary">Buy</a>
+					}
+				}
+
+				<p class="card-text pt-3">Categories: @string.Join(", ",item.Categories)</p>
+
+				<a href="#" class="btn btn-sm btn-info ms-auto d-block">Details</a>
 			</div>
 		</div>
 	}
-
-
-
 
 </div>

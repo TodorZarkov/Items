@@ -31,5 +31,13 @@
 			}
 			return View(model);
 		}
+
+		public async Task<IActionResult> Mine()
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			IEnumerable<MyItemViewModel> model = await itemService.Mine(userId);
+
+			return View(model);
+		}
 	}
 }

@@ -1,0 +1,49 @@
+﻿@using Items.Web.ViewModels.Item;
+@model IEnumerable<MyItemViewModel>
+
+@{
+	ViewData["Title"] = "My Items";
+	ViewBag.ActiveLink = "MineItem";
+}
+
+<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+	<div class="dropdown me-2">
+		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+			Order By
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+			<li><a class="dropdown-item" href="#">Action</a></li>
+			<li><a class="dropdown-item" href="#">Another action</a></li>
+			<li><a class="dropdown-item" href="#">Something else here</a></li>
+		</ul>
+	</div>
+	<div class="dropdown me-5 ">
+		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+			Group By
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+			<li><a class="dropdown-item" href="#">Action</a></li>
+			<li><a class="dropdown-item" href="#">Another action</a></li>
+			<li><a class="dropdown-item" href="#">Something else here</a></li>
+		</ul>
+	</div>
+
+
+	<button type="button" class="btn btn-primary me-2">Add</button>
+	<button type="button" class="btn btn-primary me-2">Quick Add</button>
+
+</div>
+
+	
+
+@if (Model.Any())
+{
+	<partial name="_MyItemsPartial" />
+}
+else
+{
+	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
+		<h3>No Items!</h3>
+	</div>
+}

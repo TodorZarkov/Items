@@ -62,10 +62,10 @@
 						@if (User.Identity?.IsAuthenticated ?? false)
 						{
 							<li class="nav-item ms-3">
-								<a class="nav-link @(ViewBag.ActiveLink == "MineLocation" ? "active" : string.Empty)"
+								<a class="nav-link @(ViewBag.ActiveLink == "AllLocation" ? "active" : string.Empty)"
 								   asp-area=""
 								   asp-controller="Location"
-								   asp-action="Mine">Locations</a>
+								   asp-action="All">Locations</a>
 							</li>
 
 							<li class="nav-item">

@@ -174,7 +174,7 @@
 - home (daily rotation)
 - all not owner - bid/buy, details; if owner - details, put on market, remove from sell/auction, edit
 - categories(is filter)
-- my items 
+- my items - order/group by, add, quick add, ; edit, details, change place, change location
 - my categories
 - my bids
 - my sells

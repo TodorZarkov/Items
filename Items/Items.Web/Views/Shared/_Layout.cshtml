@@ -42,7 +42,7 @@
 					<ul class="navbar-nav flex-grow-1">
 
 						<li class="nav-item">
-							<a class="nav-link "
+							<a class="nav-link @(ViewBag.ActiveLink == "AllItem" ? "active" : string.Empty)"
 							   asp-area=""
 							   asp-controller="Item"
 							   asp-action="All">All Items</a>
@@ -51,7 +51,7 @@
 						@if (User.Identity?.IsAuthenticated ?? false)
 						{
 							<li class="nav-item">
-								<a class="nav-link active"
+								<a class="nav-link @(ViewBag.ActiveLink == "MineItem" ? "active" : string.Empty)"
 								   asp-area=""
 								   asp-controller="Item"
 								   asp-action="Mine">My Items</a>
@@ -62,35 +62,35 @@
 						@if (User.Identity?.IsAuthenticated ?? false)
 						{
 							<li class="nav-item ms-3">
-								<a class="nav-link "
+								<a class="nav-link @(ViewBag.ActiveLink == "MineLocation" ? "active" : string.Empty)"
 								   asp-area=""
 								   asp-controller="Location"
 								   asp-action="Mine">Locations</a>
 							</li>
 
 							<li class="nav-item">
-								<a class="nav-link "
+								<a class="nav-link @(ViewBag.ActiveLink == "MinePlace" ? "active" : string.Empty)"
 								   asp-area=""
 								   asp-controller="Place"
 								   asp-action="Mine">Places</a>
 							</li>
 
 							<li class="nav-item ms-3">
-								<a class="nav-link "
+								<a class="nav-link @(ViewBag.ActiveLink == "BidsItem" ? "active" : string.Empty)"
 								   asp-area=""
 								   asp-controller="Item"
 								   asp-action="Bids">Bids</a>
 							</li>
 
 							<li class="nav-item">
-								<a class="nav-link "
+								<a class="nav-link @(ViewBag.ActiveLink == "SellsItem" ? "active" : string.Empty)"
 								   asp-area=""
 								   asp-controller="Item"
 								   asp-action="Sells">Sells</a>
 							</li>
 
 							<li class="nav-item">
-								<a class="nav-link "
+								<a class="nav-link @(ViewBag.ActiveLink == "DealsItem" ? "active" : string.Empty)"
 								   asp-area=""
 								   asp-controller="Item"
 								   asp-action="Deals">Deals</a>

@@ -17,7 +17,7 @@
         }
 
 
-        public async Task<ICollection<CategoryFilterViewModel>> GetAllAsync()
+        public async Task<ICollection<CategoryFilterViewModel>> GetAllPublicAsync()
 		{
 			var adminRoleId = await dbContext.Roles
 				.Where(r => r.NormalizedName == "ADMIN")
@@ -43,6 +43,38 @@
 			return categoryViewModels;
 		}
 
+		public async Task<ICollection<int>> GetAllPublicIdsAsync()
+		{
+			var adminRoleId = await dbContext.Roles
+				.Where(r => r.NormalizedName == "ADMIN")
+				.Select(r => r.Id)
+				.ToArrayAsync();
+
+
+			var adminIds = await dbContext.UserRoles
+				.Where(ur => ur.RoleId == adminRoleId[0])
+				.Select(ur => ur.UserId)
+				.ToArrayAsync();
+
+
+			int[] categoryIds = await dbContext.Categories
+				.Where(c => adminIds.Contains(c.CreatorId))
+				.Select(c => c.Id)
+				.ToArrayAsync();
+
+			return categoryIds;
+		}
+
+		public async Task<ICollection<int>> GetAllIdsAsync()
+		{
+			
+			int[] categoryIds = await dbContext.Categories
+				.Select(c => c.Id)
+				.ToArrayAsync();
+
+			return categoryIds;
+		}
+
 		public async Task<ICollection<CategoryFilterViewModel>> GetMineAsync(Guid userId)
 		{
 			ICollection<CategoryFilterViewModel> categories = await dbContext.Categories
@@ -55,6 +87,38 @@
 				.ToArrayAsync();
 
 			return categories;
+		}
+
+		public async Task<bool> IsAllowedIdsAsync(int[] ids, Guid userId)
+		{
+			var adminRoleId = await dbContext.Roles
+				.Where(r => r.NormalizedName == "ADMIN")
+				.Select(r => r.Id)
+				.ToArrayAsync();
+
+
+			var adminIds = await dbContext.UserRoles
+				.Where(ur => ur.RoleId == adminRoleId[0])
+				.Select(ur => ur.UserId)
+				.ToArrayAsync();
+
+			HashSet<Guid> adminIdsHS = adminIds.ToHashSet();
+
+
+			int[] validIds = await dbContext.Categories
+				.Where(c => adminIdsHS.Contains(c.CreatorId) || userId == c.CreatorId)
+				.Select(c => c.Id)
+				.ToArrayAsync();
+			HashSet<int> validIdsHS = validIds.ToHashSet();
+			//todo: which is faster - to convert to hash set to search list?
+			return ids.All(i => validIdsHS.Contains(i));
+		}
+
+		public async Task<bool> IsAllowedPublicIdsAsync(int[] ids)
+		{
+			HashSet<int> validIds = (await GetAllPublicIdsAsync()).ToHashSet();
+
+			return ids.All(i => validIds.Contains(i));
 		}
 	}
 }

@@ -20,7 +20,7 @@
 			Dictionary<string, List<CategoryFilterViewModel>> categories =
 				new Dictionary<string, List<CategoryFilterViewModel>>();
 
-			categories["All"] = (await categoryService.GetAllAsync()).ToList();
+			categories["All"] = (await categoryService.GetAllPublicAsync()).ToList();
 
 			if (User.Identity?.IsAuthenticated ?? false)
 			{

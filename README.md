@@ -17,9 +17,10 @@
     - itemVisibility
     - access
     - name
+    - added on
+    - modified on
     - **category**
     - description
-    - 
     - quantity
     - unit
     - acquired price
@@ -32,7 +33,6 @@
     - main picture
     - owner
     - **offers**
-    - 
     - **place**
 
 - itemsCategories
@@ -160,7 +160,7 @@
 
 ### when Guest
 - can see all public items with all their properties(if visible):
-- cannot buy or bid on any item
+- cannot buy or bid on any item - redirect to login/register
 - can see all categories
 - search
 #### views
@@ -169,10 +169,12 @@
 - categories(drop)
 - search(on the bar)
 ## when User
+
+#### views
 - home (daily rotation)
-- all
-- my items
-- categories
+- all not owner - bid/buy, details; if owner - details, put on market, remove from sell/auction, edit
+- categories(is filter)
+- my items 
 - my categories
 - my bids
 - my sells

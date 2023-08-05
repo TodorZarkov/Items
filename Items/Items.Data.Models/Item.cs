@@ -13,6 +13,7 @@
         {
             Id = Guid.NewGuid();
             AddedOn = DateTime.UtcNow;
+            ModifiedOn = DateTime.UtcNow;
             ItemsCategories = new HashSet<ItemCategory>();
             Pictures = new HashSet<Picture>();
             Offers = new HashSet<Offer>();
@@ -66,6 +67,7 @@
 
         public DateTime AddedOn { get; set; }
 
+        public DateTime ModifiedOn { get; set; }
 
 
         [Precision(ValuePrecision, ValueScale)]

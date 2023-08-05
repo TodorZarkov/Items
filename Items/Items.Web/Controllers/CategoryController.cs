@@ -11,10 +11,12 @@
 	public class CategoryController : BaseController
 	{
 		private readonly IItemService itemService;
+		private readonly ICategoryService categoryService;
 
-		public CategoryController(IItemService itemService)
+		public CategoryController(IItemService itemService, ICategoryService categoryService)
 		{
 			this.itemService = itemService;
+			this.categoryService = categoryService;
 		}
 
 		[HttpGet]
@@ -22,7 +24,10 @@
 		public async Task<IActionResult> Filtered(
 			Dictionary<string, List<CategoryFilterViewModel>> model, string type)
 		{
-			//todo: check the model!!!
+			if (!ModelState.IsValid)
+			{
+				return View(new List<AllItemViewModel>());
+			}
 
 			List<int> categoryIds = new List<int>();
 
@@ -41,6 +46,13 @@
 			{
 				//todo: can userId be null here???
 				Guid userId = Guid.Parse(User.GetId());
+
+				if (!await categoryService
+					.IsAllowedIdsAsync(categoryIds.ToArray(), userId))
+				{
+					return View(new List<AllItemViewModel>());
+				}
+
 				if (type == "Mine")
 				{
 					items = await itemService
@@ -59,6 +71,12 @@
 			}
 			else
 			{
+				if (!await categoryService
+					.IsAllowedPublicIdsAsync(categoryIds.ToArray()))
+				{
+					return View(new List<AllItemViewModel>());
+				}
+
 				items = await itemService
 					.GetByCategoriesOnSaleItemsAsync(categoryIds.ToArray(), null);
 			}

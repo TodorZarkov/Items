@@ -4,7 +4,7 @@
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-	public class UserRoleEntityConfiguration : IEntityTypeConfiguration<IdentityUserRole<Guid>>
+	public class UserRoleEC// : IEntityTypeConfiguration<IdentityUserRole<Guid>>
 	{
 		public void Configure(EntityTypeBuilder<IdentityUserRole<Guid>> builder)
 		{

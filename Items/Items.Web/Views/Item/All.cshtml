@@ -1,6 +1,11 @@
 ﻿@using Items.Web.ViewModels.Item;
 @model IEnumerable<AllItemViewModel>
 
+@{
+	ViewData["Title"] = "All Items";
+	ViewBag.ActiveLink = "AllItem";
+}
+
 @if (Model.Any())
 {
 	<partial name="_AllItemsPartial" />

@@ -69,6 +69,11 @@
         [MaxLength(CommentMaxLength)]
         public string? BuyerComment { get; set; }
 
+
+        [MaxLength(DeliveryAddressMaxLength)]
+        public string DeliveryAddress { get; set; } = null!;
+
+
         public bool BuyerConfirm { get; set; }
     }
 }

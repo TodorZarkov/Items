@@ -44,7 +44,8 @@
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100 ">
 						
-						<p class="p-0 mb-0 me-2">@(sell.Quantity)</p>
+						<p class="p-0 mb-0 me-1">@sell.Quantity</p>
+						<p class="p-0 mb-0 me-2">@sell.Unit</p>
 						<partial name= "_AccessSign" model="@sell.Visibility.Quantity"></partial>
 
 				</div>

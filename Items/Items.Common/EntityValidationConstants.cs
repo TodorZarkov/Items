@@ -100,7 +100,10 @@
 
             public const int QuantityPrecision = 18;
             public const int QuantityScale = 6;
-        }
+
+			public const int DeliveryAddressMinLength = 5;
+			public const int DeliveryAddressMaxLength = 1000;
+		}
         
         
 

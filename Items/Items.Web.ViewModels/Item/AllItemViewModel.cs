@@ -8,8 +8,14 @@
 
 		public string MainPictureUri { get; set; } = null!;
 
+		public string? EndSell { get; set; }
 
-		public string CurrentPrice { get; set; } = null!;
+		public string? HighestBid { get; set; }
+        public int? BarterOffers { get; set; }
+
+        public bool? IsOnMarket { get; set; }
+
+        public string CurrentPrice { get; set; } = null!;
 
 		public string? CurrencySymbol { get; set; }
 

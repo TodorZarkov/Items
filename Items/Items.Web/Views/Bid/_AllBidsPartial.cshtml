@@ -1,0 +1,159 @@
+﻿@{
+	IEnumerable<AllBidViewModel> BidsModel = Model.Bids;
+	IEnumerable<ItemForBarterViewModel> ForBarterModel = Model.ItemsFitForBarter;
+}
+
+<tbody>
+	@foreach (var bid in BidsModel)
+	{
+		<form asp-area="" asp-action="" asp-controller="" method="post">
+		<tr>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<img style="height: 50px; border-radius: 2px;" src="@bid.Item.MainPictureUri">
+				</div>
+			</td>
+
+			<th scope="row" style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@bid.Item.Name</p>
+				</div>
+			</th>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@bid.Item.Country, @bid.Item.Town</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100 ">
+						@if (!(bid.Item.QuantityLeft == null))
+						{
+						<p class="p-0 mb-0 me-2">@(bid.Item.QuantityLeft)</p>
+						}
+						else
+						{
+						<p class="p-0 mb-0 me-2">
+							<partial name="_AccessSign" , model="@AccessModifier.Private" />
+						</p>
+
+						}
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+						@if (!string.IsNullOrEmpty(bid.Item.HighestBid))
+						{
+						<p class="p-0 mb-0 me-2">@bid.Item.HighestBid @bid.Item.CurrencySymbol</p>
+						}
+						else
+						{
+						<p class="p-0 mb-0 me-2">No bids yet</p>
+
+						}
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+						@if (bid.Item.BarterOffers != null)
+						{
+						<p class="p-0 mb-0 me-2">@bid.Item.BarterOffers</p>
+						}
+						else
+						{
+						<p class="p-0 mb-0 me-2">0</p>
+
+						}
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+
+					<p class="p-0 mb-0 me-2">@bid.Item.StartPrice @bid.Item.CurrencySymbol</p>
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+
+					<p class="p-0 mb-0 me-2">@bid.Expires</p>
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+						@if (bid.Item.QuantityLeft == null)
+						{
+						<div class="d-flex flex-nowrap align-items-center">
+							<input class="form-control form-control-sm" type="text" value="1" aria-label="Disabled input example" disabled readonly>
+							<p class="p-0 mb-0 me-0 ms-0 mt-0">@bid.Item.Unit</p>
+						</div>
+
+						}
+						else
+						{
+						<div class="d-flex flex-nowrap align-items-center">
+							<input class="form-control form-control-sm" type="text" value="@bid.Item.QuantityLeft" aria-label="Disabled input example">
+							<p class="p-0 mb-0 me-0 ms-0 mt-0">@bid.Item.Unit</p>
+						</div>
+						}
+
+
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+
+					<div class="d-flex flex-nowrap align-items-center">
+						<input class="form-control form-control-sm" type="text" value="@bid.ValuePerQuantity.ToString("N2")" aria-label="Disabled input example">
+						<p class="p-0 mb-0 me-0 ms-0 mt-0">@bid.Item.CurrencySymbol</p>
+					</div>
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+					<select class="form-select form-select-sm m-0">
+						<option selected value="@bid.BarterItemId">@bid.BarterName</option>
+							@foreach (var available in ForBarterModel)
+							{
+							<option value="@available.Id">@available.Name (You have: @available.QuantityCanBarter @available.Unit left!)</option>
+							}
+					</select>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+					<input class="form-control form-control-sm" type="text" value="@bid.BarterQuantity">
+				</div>
+			</td>
+
+
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+					<button type="submit" class="btn btn-sm btn-warning align-self-center">Update Offer</button>
+				</div>
+			</td>
+
+		</tr>
+		</form>
+		
+	}
+
+
+</tbody>

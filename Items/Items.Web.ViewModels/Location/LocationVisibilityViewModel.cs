@@ -6,18 +6,18 @@
 	{
 		public Guid Id { get; set; }
 
-		public string Name { get; set; } = null!;
+		public AccessModifier Name { get; set; }
 
-		public string Description { get; set; } = null!;
+		public AccessModifier Description { get; set; }
 
-		public string GeoLocation { get; set; } = null!;
+		public AccessModifier GeoLocation { get; set; }
 
-		public string Border { get; set; } = null!;
+		public AccessModifier Border { get; set; }
 
-		public string Country { get; set; } = null!;
+		public AccessModifier Country { get; set; }
 
-		public string Town { get; set; } = null!;
+		public AccessModifier Town { get; set; }
 
-		public string Address { get; set; } = null!;
+		public AccessModifier Address { get; set; }
 	}
 }

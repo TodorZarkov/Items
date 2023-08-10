@@ -63,7 +63,7 @@
 					items = await itemService
 						.GetByCategoriesAllItemsAsync(categoryIds.ToArray(), userId);
 				}
-				else
+				else//type == "Sell" or user tries something
 				{
 					items = await itemService
 						.GetByCategoriesOnSaleItemsAsync(categoryIds.ToArray(), userId);

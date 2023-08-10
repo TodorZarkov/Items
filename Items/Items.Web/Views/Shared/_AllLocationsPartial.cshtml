@@ -1,32 +1,98 @@
 ﻿@model IEnumerable<AllLocationViewModel>
 
 <tbody>
-    @foreach (var location in Model)
-    {
-        <tr>
-            <th scope="row">@location.Name</th>
-            <td class="dropdown">
-                
-                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Read Here
-                    </button>
-                    <div class="dropdown-menu p-4 text-muted" style="max-width: 500px;">
-                        <p>
-                            @location.Description
-                        </p>
-                    </div>
-               
-            </td>
-            <td>@location.Country</td>
-            <td>@location.Town</td>
-            <td>@location.Address</td>
-            <td>@location.GeoLocation</td>
-            <td>@location.Border</td>
-            <td>@location.Places</td>
-            <td>@location.Items</td>
-            
-        </tr>
-    }
-    
-    
+	@foreach (var location in Model)
+	{
+		<tr>
+			<th scope="row">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@location.Name</p>
+					<partial name="_AccessSign" model="@location.Visibility.Name" />
+				</div>
+			</th>
+			<td class="dropdown">
+
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fas fa-align-left"></i>
+				</button>
+				<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;">
+					<p>
+						@location.Description
+					</p>
+				</div>
+				<partial name="_AccessSign" model="@location.Visibility.Description" />
+
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@location.Country</p>
+					<partial name="_AccessSign" model="@location.Visibility.Country" />
+				</div>
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@location.Town</p>
+					<partial name="_AccessSign" model="@location.Visibility.Town" />
+				</div>
+			</td>
+			<td class="dropdown">
+
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fas fa-align-left"></i>
+				</button>
+				<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;" aria-labelledby="dropdownMenuClickableInside">
+					<p>
+						@location.Address
+					</p>
+				</div>
+
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@location.GeoLocation</p>
+					<partial name="_AccessSign" model="@location.Visibility.GeoLocation" />
+				</div>
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@location.Border</p>
+					<partial name="_AccessSign" model="@location.Visibility.Border" />
+				</div>
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					@if (location.Places == 0)
+					{
+						<p class="p-0 mb-0 me-2">No Places</p>
+					}
+					else
+					{
+						<a class="link-dark" href="#">@location.Places</a>
+					}
+				</div>
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					@if (location.Items == 0)
+					{
+						<p class="p-0 mb-0 me-2">No Items</p>
+					}
+					else
+					{
+						<a class="link-dark" href="#">@location.Items</a>
+					}
+				</div>
+			</td>
+
+			<td>
+				<div class="d-flex flex-nowrap">
+					<button class="btn btn-sm btn-primary me-1">Edit</button>
+					<button class="btn btn-sm btn-danger">Delete</button>
+				</div>
+			</td>
+
+		</tr>
+	}
+
+
 </tbody>

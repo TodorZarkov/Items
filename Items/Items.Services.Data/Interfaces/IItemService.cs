@@ -23,5 +23,8 @@
 
 
 		Task<IEnumerable<MyItemViewModel>> Mine(Guid userId);
+
+
+		Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarter(Guid userId);
 	}
 }

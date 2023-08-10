@@ -38,14 +38,18 @@
         public Item Item { get; set; } = null!;
 
 
-		[Precision(QuantityPrecision, QuantityScale)]
-		public decimal Quantity { get; set; }
+        [Precision(QuantityPrecision, QuantityScale)]
+        public decimal Quantity { get; set; }
 
 
+		
 
 
+		[Required]
+        public DateTime Expires { get; set; }
 
-		[Precision(ValuePrecision, ValueScale)]
+
+        [Precision(ValuePrecision, ValueScale)]
         public decimal Value { get; set; }
 
 

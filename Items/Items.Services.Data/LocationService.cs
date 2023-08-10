@@ -18,13 +18,14 @@
         {
             var locations = await dbContext.Locations
                 .Where(l => l.UserId == userId)
+                .OrderBy(l => l.Name)
                 .Select(l => new AllLocationViewModel
                 {
                     Id = l.Id,
                     Name = l.Name,
-                    Description = l.Description,
-                    GeoLocation = l.GeoLocation != null ? l.GeoLocation.ToString() : null,
-                    Border = l.Border != null ? l.Border.ToString() : null,
+                    Description = l.Description != null ? l.Description : "Not Added",
+                    GeoLocation = l.GeoLocation != null ? l.GeoLocation.ToString() : "Not Added",
+                    Border = l.Border != null ? l.Border.ToString() : "Not Added",
                     Country = l.Country,
                     Town = l.Town,
                     Address = l.Address,
@@ -32,13 +33,13 @@
                     Items = l.Items.Count,
                     Visibility = new LocationVisibilityViewModel
                     {
-                        Address = l.LocationVisibility.Address.ToString(),
-                        Border = l.LocationVisibility.Border.ToString(),
-                        Country = l.LocationVisibility.Country.ToString(),
-                        Description = l.LocationVisibility.Description.ToString(),
-                        GeoLocation = l.LocationVisibility.GeoLocation.ToString(),
-                        Name = l.LocationVisibility.Name.ToString(),
-                        Town = l.LocationVisibility.Town.ToString(),
+                        Address = l.LocationVisibility.Address,
+                        Border = l.LocationVisibility.Border,
+                        Country = l.LocationVisibility.Country,
+                        Description = l.LocationVisibility.Description,
+                        GeoLocation = l.LocationVisibility.GeoLocation,
+                        Name = l.LocationVisibility.Name,
+                        Town = l.LocationVisibility.Town,
                         Id = l.LocationVisibility.Id
                     }
                 })

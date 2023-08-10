@@ -1,0 +1,14 @@
+﻿@model AccessModifier
+
+@if (Model == AccessModifier.Public)
+{
+	<i class="fas fa-lock-open"></i>
+}
+else if (Model == AccessModifier.Private)
+{
+	<i class="fas fa-lock"></i>
+}
+else
+{
+	<i class="fas fa-unlock-alt"></i>
+}

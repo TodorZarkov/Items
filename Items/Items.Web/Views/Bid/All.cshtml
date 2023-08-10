@@ -1,0 +1,69 @@
+﻿@model DataBidViewModel
+
+@{
+	ViewData["Title"] = "All My Bids";
+	ViewBag.ActiveLink = "AllBid";
+}
+
+<div class="btn-toolbar mb-1" role="toolbar" aria-label="Toolbar with button groups">
+
+	<div class="dropdown me-2">
+		<button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+			Order By
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+			<li><a class="dropdown-item" href="#">Action</a></li>
+			<li><a class="dropdown-item" href="#">Another action</a></li>
+			<li><a class="dropdown-item" href="#">Something else here</a></li>
+		</ul>
+	</div>
+	<div class="dropdown me-5 ">
+		<button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+			Group By
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+			<li><a class="dropdown-item" href="#">Action</a></li>
+			<li><a class="dropdown-item" href="#">Another action</a></li>
+			<li><a class="dropdown-item" href="#">Something else here</a></li>
+		</ul>
+	</div>
+
+
+</div>
+
+
+@if (Model.Bids.Any())
+{
+
+	<table class="table table-warning table-striped table-hover table-sm">
+		<thead>
+			<tr>
+				<th scope="col">Picture</th>
+				<th scope="col">Name</th>
+				<th scope="col">Location</th>
+				<th scope="col">QTY Left</th>
+				<th scope="col">Highest Bid</th>
+				<th scope="col">Barter Offers</th>
+				<th scope="col">Start Price</th>
+				<th scope="col">Auction End</th>
+				<th scope="col">QTY</th>
+				<th scope="col">Bid (per unit)</th>
+				<th scope="col">Barter Item</th>
+				<th scope="col">QTY</th>
+				<th scope="col" class="ms-auto">Manage</th>
+
+			</tr>
+		</thead>
+
+		<partial name="_AllBidsPartial" />
+
+	</table>
+
+}
+else
+{
+	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
+		<h3>You Haven't Bet Yet.</h3>
+	</div>
+}
+

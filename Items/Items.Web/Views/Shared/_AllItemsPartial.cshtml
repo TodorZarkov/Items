@@ -1,5 +1,4 @@
 ﻿
-
 <div class="d-flex flex-wrap gap-3 mt-3">
 
 	@foreach (var item in Model)
@@ -15,12 +14,17 @@
 					@if (item.IsAuction ?? false)
 					{
 						<p class="card-text">On Auction!</p>
+						<p>Starting Price: @item.CurrentPrice @item.CurrencySymbol</p>
 						<h6 class="card-text">
-							Starting Price: @item.CurrentPrice @item.CurrencySymbol
+							Highest Bid: @(item.HighestBid != null ? $"{item.HighestBid} {item.CurrencySymbol}" : "No Bids")
 						</h6>
+						<h6 class="card-text">
+							Barter Offers: @item.BarterOffers
+						</h6>
+						<p>Auction End: @item.EndSell</p>
 						<a href="#" class="btn btn-sm btn-danger">Stop Auction</a>
 					}
-					else if (!string.IsNullOrEmpty(item.CurrencySymbol))
+					else if (item.IsOnMarket ?? false)
 					{
 						<p class="card-text">On Sale!</p>
 						<h6 class="card-text">
@@ -43,9 +47,14 @@
 					@if (item.IsAuction ?? false)
 					{
 						<p class="card-text">On Auction!</p>
+						<p>Starting Price: @item.CurrentPrice @item.CurrencySymbol</p>
 						<h6 class="card-text">
-							Starting Price: @item.CurrentPrice @item.CurrencySymbol
+							Highest Bid: @(item.HighestBid != null ? $"{item.HighestBid} {item.CurrencySymbol}" : "No Bids")
 						</h6>
+						<h6 class="card-text">
+							Barter Offers: @item.BarterOffers
+						</h6>
+						<p>Auction End: @item.EndSell</p>
 						<a href="#" class="btn btn-sm btn-warning">Bid</a>
 					}
 					else

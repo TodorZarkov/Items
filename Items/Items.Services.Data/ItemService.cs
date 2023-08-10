@@ -1,14 +1,15 @@
 ﻿namespace Items.Services.Data
 {
+	using System.Collections.Generic;
+
+	using Microsoft.EntityFrameworkCore;
+
+	using Common.Enums;
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Home;
-	using System.Collections.Generic;
-	using Common.Enums;
-	using Microsoft.EntityFrameworkCore;
 	using Items.Web.ViewModels.Item;
-	using Items.Data.Models;
-
+	using static Common.FormatConstants.DateAndTime;
 	public class ItemService : IItemService
 	{
 		private readonly ItemsDbContext dbContext;
@@ -22,8 +23,8 @@
         public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IEnumerable<IndexViewModel> items = await dbContext.Items
-				.Where(i => i.Access == AccessModifier.Public &&
-							(i.EndSell == null || i.EndSell > DateTime.UtcNow))
+				.Where(i => i.Access == AccessModifier.Public &&// todo: remove Access!!!
+							i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.StartSell)
 				.Take(numberOfItems)
 				.Select(i => new IndexViewModel
@@ -43,6 +44,7 @@
 						.Where(ic => ic.ItemId == i.Id)
 						.Select(ic => ic.Category.Name)
 						.ToArray()
+
 				})
 				.ToArrayAsync();
 
@@ -53,7 +55,8 @@
 		public async Task<IEnumerable<AllItemViewModel>> AllPublic()
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.Where(i => i.Access == AccessModifier.Public)
+				.Where(i => i.Access == AccessModifier.Public //todo: remove Access
+						&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
 				{
@@ -78,7 +81,14 @@
 					CategoryIds = i.ItemsCategories
 						.Where(ic => ic.ItemId == i.Id)
 						.Select(ic => ic.Category.Id)
-						.ToArray()
+						.ToArray(),
+
+					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
+
+					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
+
+					IsOnMarket = true,
+					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
 				})
 				.ToArrayAsync();
 
@@ -90,7 +100,8 @@
 			int[] categories, Guid? userId = null)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.Where(i => i.Access == AccessModifier.Public)
+				.Where(i => i.Access == AccessModifier.Public //todo: remove Access from entity
+						&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
@@ -118,7 +129,15 @@
 					CategoryIds = i.ItemsCategories
 						.Where(ic => ic.ItemId == i.Id)
 						.Select(ic => ic.Category.Id)
-						.ToArray()
+						.ToArray(),
+
+					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
+
+					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
+
+					IsOnMarket = true,
+					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
+
 				})
 				.ToArrayAsync();
 
@@ -163,7 +182,15 @@
 					CategoryIds = i.ItemsCategories
 						.Where(ic => ic.ItemId == i.Id)
 						.Select(ic => ic.Category.Id)
-						.ToArray()
+						.ToArray(),
+
+					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
+
+					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
+
+					IsOnMarket = i.EndSell >= DateTime.UtcNow,
+					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
+
 				})
 				.ToArrayAsync();
 
@@ -181,7 +208,9 @@
 			int[] categories, Guid userId)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.Where(i => i.OwnerId == userId || i.Access == AccessModifier.Public)
+				.Where(i => i.OwnerId == userId 
+						|| i.Access == AccessModifier.Public //todo: remove Access from entity
+								&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.ModifiedOn) 
 				.Select(i => new AllItemViewModel
@@ -209,7 +238,15 @@
 					CategoryIds = i.ItemsCategories
 						.Where(ic => ic.ItemId == i.Id)
 						.Select(ic => ic.Category.Id)
-						.ToArray()
+						.ToArray(),
+
+					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
+
+					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
+
+					IsOnMarket = i.EndSell >= DateTime.UtcNow,
+					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
+
 				})
 				.ToArrayAsync();
 
@@ -223,7 +260,9 @@
 		public async Task<IEnumerable<AllItemViewModel>> All(Guid userId)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.Where(i => i.OwnerId == userId || i.Access == AccessModifier.Public)
+				.Where(i => i.OwnerId == userId 
+						|| i.Access == AccessModifier.Public //todo: remove Access
+								&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.ModifiedOn) 
 				.Select(i => new AllItemViewModel
 				{
@@ -250,7 +289,14 @@
 					CategoryIds = i.ItemsCategories
 						.Where(ic => ic.ItemId == i.Id)
 						.Select(ic => ic.Category.Id)
-						.ToArray()
+						.ToArray(),
+
+					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
+
+					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
+
+					IsOnMarket = i.EndSell >= DateTime.UtcNow,
+					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
 				})
 				.ToArrayAsync();
 
@@ -273,8 +319,9 @@
 					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
 
 					IsAuction = i.IsAuction,
-					IsOnMarket = i.Access == AccessModifier.Public,
-					
+					IsOnMarket = i.EndSell >= DateTime.UtcNow,
+
+
 					Categories = i.ItemsCategories
 						.Where(ic => ic.ItemId == i.Id)
 						.Select(ic => ic.Category.Name)
@@ -290,6 +337,29 @@
 
 
 			return items;
+		}
+
+		public async Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarter(Guid userId)
+		{
+			IEnumerable<ItemForBarterViewModel> allItemsForBarter =
+				await dbContext.Items
+				.Where(i => i.OwnerId == userId)
+				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)) // todo: observe the equality when dealing with decimal!!!!!
+				.Select(i => new ItemForBarterViewModel
+				{
+					Id = i.Id,
+					MainPictureUri = i.MainPictureUri,
+					Name = i.Name,
+					Unit = i.Unit.Symbol,
+					QuantityCanBarter = 
+										(i.Quantity - 
+										(i.AsBarterForOffers.Sum(bo => bo.BarterQuantity).HasValue ? 
+										(decimal)(i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)!) : decimal.Zero))
+										.ToString("N2"),
+				})
+				.ToArrayAsync();
+
+			return allItemsForBarter;
 		}
 	}
 }

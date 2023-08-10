@@ -177,6 +177,7 @@
 - my items - order/group by, add, quick add, ; edit, details, change place, change location
 - my categories
 - my bids
+    - bid - update, itemDetails, refresh
 - my sells
 - deals
 - locations

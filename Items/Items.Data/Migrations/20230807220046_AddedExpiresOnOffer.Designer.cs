@@ -4,6 +4,7 @@ using Items.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
@@ -12,9 +13,10 @@ using NetTopologySuite.Geometries;
 namespace Items.Data.Migrations
 {
     [DbContext(typeof(ItemsDbContext))]
-    partial class ItemsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230807220046_AddedExpiresOnOffer")]
+    partial class AddedExpiresOnOffer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -379,7 +381,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 60m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(6914),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(3897),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "The Ford Mustang Mach 1 is a performance-oriented option package[1] of the Ford Mustang muscle car, originally introduced in August 1968 for the 1969 model year. It was available until 1978, returned briefly in 2003, 2004, and most recently in 2021.\r\n\r\nAs part of a Ford heritage program, the Mach 1 package returned in 2003 as a high-performance version of the New Edge platform. Visual connections to the 1969 model were integrated into the design to pay homage to the original. This generation of the Mach 1 was discontinued after the 2004 model year, with the introduction of the fifth generation Mustang.\r\n\r\nFord first used the name \"Mach 1\" in its 1969 display of a concept called the \"Levacar Mach I\" at the Ford Rotunda. This concept vehicle used a cushion of air as propulsion on a circular dais. ",
@@ -388,7 +390,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("8d725141-2b5a-468f-9e1e-61ab0c7f8f5e"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://i5.walmartimages.com/asr/19fe13d7-ea2e-47f7-8547-202ce8c88717_1.bc800cefd11bb60ebc07ebdd7fac8ff6.jpeg",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(6917),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(3900),
                             Name = "Ford Mustang Mach1 1973",
                             OwnerId = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
                             PlaceId = 1,
@@ -402,7 +404,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 10m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7054),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4121),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "Very cool small SUV",
@@ -410,7 +412,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("a78c2eda-79cb-4acc-a7e4-92e0b45e20eb"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://image.pushauction.com/0/0/77191e32-26bc-45d1-b916-1425f6513281/4533eb18-a6eb-4783-b444-aad16f842869.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7055),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4122),
                             Name = "Toyota Rav 4",
                             OwnerId = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
                             PlaceId = 1,
@@ -424,7 +426,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 11m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7079),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4144),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "Old Cardboard Vehicle from GDR",
@@ -432,7 +434,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("0fb06c25-8e6f-4fd2-a1d9-3cebb4621d2e"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://static2.redcart.pl/templates/images/thumb/10281/800/9999/pl/0/templates/images/products/10281/067a782229f0ab90838b869e943673ca.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7079),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4145),
                             Name = "Trabant",
                             OwnerId = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
                             PlaceId = 1,
@@ -446,13 +448,13 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2020, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 22m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7097),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4161),
                             CurrencyId = 1,
                             Description = "The Porsche 911 (pronounced Nine Eleven or in German: Neunelf) is a two-door 2+2 high performance rear-engined sports car introduced in September 1964 by Porsche AG of Stuttgart, Germany. It has a rear-mounted flat-six engine and originally a torsion bar suspension. The car has been continuously enhanced through the years but the basic concept has remained unchanged.[1] The engines were air-cooled until the introduction of the 996 series in 1998.[",
                             ItemVisibilityId = new Guid("a33dd8ed-4619-4d18-a25c-2bb25b7bb456"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://i5.walmartimages.com/asr/0b26c2b4-5459-424c-ae09-364824104c90_1.642441b6196644f95b66202bb6185285.jpeg?odnWidth=1000&odnHeight=1000&odnBg=ffffff",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7097),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4161),
                             Name = "1997 Porsche 911 Carrera, Red",
                             OwnerId = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
                             PlaceId = 1,
@@ -465,13 +467,13 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2020, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 23m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7185),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4173),
                             CurrencyId = 1,
                             Description = "Hollywood Rides 1:24 Scale 2006",
                             ItemVisibilityId = new Guid("d009129e-5655-4cd2-ba67-114e2e792b8c"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://i5.walmartimages.com/asr/ea368e4c-f0e3-401b-8cff-2344a05955ed_2.de437c99da79acc1cc2bec706fea7ce4.jpeg",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7186),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4173),
                             Name = "Chevrolet Camaro",
                             OwnerId = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
                             PlaceId = 2,
@@ -484,7 +486,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 110m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7201),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4187),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "Brown - Welly 24008 - 1/24 scale",
@@ -493,7 +495,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("c0bbcabf-5c24-4ca6-86bc-eca11ae46eb8"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureUri = "https://i5.walmartimages.com/asr/cb1717c7-d4b2-483b-91a9-770f3db40076_1.1f5d5f997641b1adb8323d08d95e6bd6.jpeg",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7201),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4187),
                             Name = "Land Rover Discovery",
                             OwnerId = new Guid("8b5b3b04-bf70-4018-ffbf-08db913996c1"),
                             PlaceId = 3,
@@ -507,7 +509,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 8m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7220),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4217),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Description = "Puzzle from cars movie. 500pcs",
@@ -515,7 +517,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("61c89a18-8bda-4d12-9a70-cdb17aedd752"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureUri = "http://www.babylonhobbies.com/ebay/pictures/EDU_14862.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7221),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4217),
                             Name = "Puzzle Cars",
                             OwnerId = new Guid("8b5b3b04-bf70-4018-ffbf-08db913996c1"),
                             PlaceId = 4,
@@ -529,13 +531,13 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 9m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7237),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4234),
                             CurrencyId = 1,
                             Description = "Hape knob puzzle vehicles",
                             ItemVisibilityId = new Guid("cbd7bd12-aa21-4e33-95cf-fd9c342db010"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureUri = "https://www.kids-room.com/WebRoot/KidsroomDE/Shops/Kidsroom/55B8/CACC/36F4/5060/F31B/4DEB/AE1C/138D/BILD3_E6319/IC_IMAGE/en-hape-knob-puzzle-vehicles.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7238),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4234),
                             Name = "puzzle vehicles",
                             OwnerId = new Guid("8b5b3b04-bf70-4018-ffbf-08db913996c1"),
                             PlaceId = 4,
@@ -548,12 +550,12 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2022, 2, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 50m,
-                            AddedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7247),
+                            AddedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4244),
                             CurrencyId = 1,
                             ItemVisibilityId = new Guid("49abfa42-69f7-4240-a2ef-4e1b3ef7c16c"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureUri = "https://jigsawpuzzles.online/king-include/uploads1/auto-cadillac-oldtimer-classic-vehicle-chrome-607938272.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 8, 20, 4, 14, 281, DateTimeKind.Utc).AddTicks(7248),
+                            ModifiedOn = new DateTime(2023, 8, 7, 22, 0, 45, 346, DateTimeKind.Utc).AddTicks(4244),
                             Name = "Puzzle Cadillac",
                             OwnerId = new Guid("8b5b3b04-bf70-4018-ffbf-08db913996c1"),
                             PlaceId = 4,
@@ -1035,18 +1037,6 @@ namespace Items.Data.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Offers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("71f73811-33dc-45a8-a3fe-a7d5a2363833"),
-                            BuyerId = new Guid("8b5b3b04-bf70-4018-ffbf-08db913996c1"),
-                            CurrencyId = 1,
-                            Expires = new DateTime(2024, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ItemId = new Guid("70ab6375-3da7-41cb-b80c-dcee2ba4fbbb"),
-                            Quantity = 1m,
-                            Value = 60m
-                        });
                 });
 
             modelBuilder.Entity("Items.Data.Models.Picture", b =>

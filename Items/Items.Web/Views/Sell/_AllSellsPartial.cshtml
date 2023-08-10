@@ -1,0 +1,104 @@
+﻿
+<tbody>
+
+	@foreach (AllSellViewModel sell in Model)
+	{
+		<tr style="@(sell.IsAuction?"table-danger":string.Empty)">
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<img style="height: 50px; border-radius: 2px;" src="@sell.MainPictureUri">
+				</div>
+			</td>
+
+			<th scope="row" style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@sell.Name</p>
+				</div>
+			</th>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 "><strong>@(sell.IsAuction ? "AUC." : "SELL")</strong></p>
+				</div>
+			</td>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 ">@(string.Join(", ",sell.Categories))</p>
+				</div>
+			</td>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@sell.Location</p>
+				</div>
+			</td>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@sell.Place</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100 ">
+						
+						<p class="p-0 mb-0 me-2">@(sell.Quantity)</p>
+						<partial name= "_AccessSign" model="@sell.Visibility.Quantity"></partial>
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 ">@sell.HighestBid</p>
+				</div>
+			</td>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 ">@sell.OffersCount</p>
+				</div>
+			</td>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 ">@sell.BartersCount</p>
+				</div>
+			</td>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 ">@sell.CurrentPrice</p>
+				</div>
+			</td>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 ">@sell.StartSell</p>
+				</div>
+			</td>
+			
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 ">@sell.EndSell</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+					<button type="submit" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+						<p class="p-0 mb-0 me-2 ">Item</p>
+						<p class="p-0 mb-0 me-2 "> Details</p>
+					</button>
+					<button type="submit" class="btn btn-sm btn-primary align-self-center ms-2">Modify</button>
+				</div>
+			</td>
+
+		</tr>
+	}
+
+
+</tbody>
+

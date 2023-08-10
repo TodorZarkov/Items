@@ -10,6 +10,8 @@
 	using Items.Web.ViewModels.Home;
 	using Items.Web.ViewModels.Item;
 	using static Common.FormatConstants.DateAndTime;
+	using Items.Web.ViewModels.Sell;
+
 	public class ItemService : IItemService
 	{
 		private readonly ItemsDbContext dbContext;
@@ -360,6 +362,46 @@
 				.ToArrayAsync();
 
 			return allItemsForBarter;
+		}
+
+		public async Task<IEnumerable<AllSellViewModel>> MyAllOnMarket(Guid userId)
+		{
+			AllSellViewModel[] itemsOnMarket = await dbContext.Items
+				.AsNoTracking()
+				.Where(i => i.OwnerId == userId)
+				.Where(i => i.EndSell.HasValue && i.EndSell > DateTime.UtcNow)
+				.OrderByDescending(i => i.EndSell)
+				.Select(i => new AllSellViewModel
+				{
+					ItemId = i.Id,
+					Name = i.Name,
+					MainPictureUri = i.MainPictureUri,
+					Location = i.Location.Name,
+					Place = i.Place.Name,
+					Quantity = i.Quantity.ToString("N2"),
+					Unit = i.Unit.Symbol,
+					CurrentPrice = ((decimal)i.CurrentPrice!).ToString("N2"),// It has to have it at this point. It's ether start or sell price!
+					StartSell = ((DateTime)i.StartSell!).ToString(BiddingLongUtcDateTime),
+					EndSell = ((DateTime)i.EndSell!).ToString(BiddingLongUtcDateTime),
+					Categories = i.ItemsCategories
+									.Select(ic => ic.Category.Name)
+									.ToArray(),
+					BartersCount = i.IsAuction.HasValue && (bool)i.IsAuction ? i.Offers.Count(o => o.BarterItemId.HasValue) : null,
+					HighestBid = i.IsAuction.HasValue && (bool)i.IsAuction ? i.Offers.Max(o => o.Value).ToString("N2") : null,
+					OffersCount = i.IsAuction.HasValue && (bool)i.IsAuction ? i.Offers.Count() : null,
+					IsAuction = i.IsAuction.HasValue && (bool)i.IsAuction,
+					IsSell = !(i.IsAuction.HasValue && (bool)i.IsAuction),
+
+					Visibility = new ItemVisibilityViewModel
+					{
+						Location = i.ItemVisibility.Location,
+						Offers = i.ItemVisibility.Offers,
+						Quantity = i.ItemVisibility.Quantity
+					}
+				})
+				.ToArrayAsync();
+
+			return itemsOnMarket;
 		}
 	}
 }

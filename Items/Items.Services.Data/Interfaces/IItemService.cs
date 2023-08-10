@@ -2,6 +2,7 @@
 {
 	using Items.Web.ViewModels.Home;
 	using Items.Web.ViewModels.Item;
+	using Items.Web.ViewModels.Sell;
 
 	public interface IItemService
 	{
@@ -26,5 +27,7 @@
 
 
 		Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarter(Guid userId);
+
+		Task<IEnumerable<AllSellViewModel>> MyAllOnMarket(Guid userId);
 	}
 }

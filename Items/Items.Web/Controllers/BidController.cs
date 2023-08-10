@@ -41,7 +41,7 @@
 		public async Task<IActionResult> All(AllBidViewModel model)
 		{
 
-			return RedirectToAction("All", "Bids");
+			return RedirectToAction("All", "Bid");
 		}
 	}
 }

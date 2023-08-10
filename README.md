@@ -178,7 +178,7 @@
 - my categories
 - my bids
     - bid - update, itemDetails, refresh
-- my sells
+- my sells - all my items on sell or auction
 - deals
 - locations
 - places

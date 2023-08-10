@@ -4,11 +4,11 @@
 	using Items.Web.Extensions;
 	using Microsoft.AspNetCore.Mvc;
 
-	public class Location : BaseController
+	public class LocationController : BaseController
 	{
 		private readonly ILocationService locationService;
 
-		public Location(ILocationService locationService)
+		public LocationController(ILocationService locationService)
 		{
 			this.locationService = locationService;
 		}

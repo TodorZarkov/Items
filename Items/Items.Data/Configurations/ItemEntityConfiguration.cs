@@ -94,7 +94,9 @@
                 IsAuction = true,
 
 				MainPictureUri = "https://i5.walmartimages.com/asr/19fe13d7-ea2e-47f7-8547-202ce8c88717_1.bc800cefd11bb60ebc07ebdd7fac8ff6.jpeg",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
             items.Add(item);
             
             item = new Item
@@ -125,7 +127,9 @@
                 CurrentPrice = 55m,
 
                 MainPictureUri = "https://image.pushauction.com/0/0/77191e32-26bc-45d1-b916-1425f6513281/4533eb18-a6eb-4783-b444-aad16f842869.jpg",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
             items.Add(item);
 
 			item = new Item
@@ -156,7 +160,9 @@
                 CurrentPrice = 55m,
 
                 MainPictureUri = "https://static2.redcart.pl/templates/images/thumb/10281/800/9999/pl/0/templates/images/products/10281/067a782229f0ab90838b869e943673ca.jpg",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
 			items.Add(item);
 
 			item = new Item
@@ -181,7 +187,9 @@
                 PlaceId = 1,
                 CurrencyId = 1,
                 MainPictureUri = "https://i5.walmartimages.com/asr/0b26c2b4-5459-424c-ae09-364824104c90_1.642441b6196644f95b66202bb6185285.jpeg?odnWidth=1000&odnHeight=1000&odnBg=ffffff",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
             items.Add(item);
             
 			item = new Item
@@ -206,7 +214,9 @@
                 PlaceId = 2,//pesho's
                 CurrencyId = 1,
                 MainPictureUri = "https://i5.walmartimages.com/asr/ea368e4c-f0e3-401b-8cff-2344a05955ed_2.de437c99da79acc1cc2bec706fea7ce4.jpeg",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
             items.Add(item);
             
 			item = new Item
@@ -235,7 +245,9 @@
                 //ItemCategory - toys, cars
                 CurrencyId = 1,
                 MainPictureUri = "https://i5.walmartimages.com/asr/cb1717c7-d4b2-483b-91a9-770f3db40076_1.1f5d5f997641b1adb8323d08d95e6bd6.jpeg",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
             items.Add(item);
             
 			item = new Item
@@ -263,7 +275,9 @@
                 //ItemCategory - toys, puzzles, cars
                 CurrencyId = 1,
                 MainPictureUri = "http://www.babylonhobbies.com/ebay/pictures/EDU_14862.jpg",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
             items.Add(item);
             
 			item = new Item
@@ -286,7 +300,9 @@
                 //ItemCategory - toys, puzzles, cars
                 CurrencyId = 1,
                 MainPictureUri = "https://www.kids-room.com/WebRoot/KidsroomDE/Shops/Kidsroom/55B8/CACC/36F4/5060/F31B/4DEB/AE1C/138D/BILD3_E6319/IC_IMAGE/en-hape-knob-puzzle-vehicles.jpg",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
             items.Add(item);
             
 			item = new Item
@@ -310,7 +326,9 @@
                 //ItemCategory - toys, puzzles, cars
                 CurrencyId = 1,
                 MainPictureUri = "https://jigsawpuzzles.online/king-include/uploads1/auto-cadillac-oldtimer-classic-vehicle-chrome-607938272.jpg",
-			};
+			    OnRotation = true,
+                OnRotationNow = false
+            };
             items.Add(item);
 
 

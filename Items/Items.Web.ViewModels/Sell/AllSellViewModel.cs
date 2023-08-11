@@ -31,8 +31,8 @@
         public int? BartersCount { get; set; }
 
 
-        public string StartSell { get; set; } = null!;
-		public string EndSell { get; set; } = null!;
+		public string StartSell { get; set; } = null!;
+		public DateTime EndSell { get; set; }
 
 
 		public ItemVisibilityViewModel Visibility { get; set; } = null!;

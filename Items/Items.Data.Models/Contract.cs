@@ -47,6 +47,14 @@
         public Currency Currency { get; set; } = null!;
 
 
+        [Required]
+        [ForeignKey(nameof(Item))]
+        public Guid ItemId { get; set; }
+
+        [Required]
+        public Item Item { get; set; }
+
+
         [Precision(QuantityPrecision, QuantityScale)]
         public decimal Quantity { get; set; }
 

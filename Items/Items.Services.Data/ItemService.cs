@@ -369,7 +369,7 @@
 			AllSellViewModel[] itemsOnMarket = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => i.OwnerId == userId)
-				.Where(i => i.EndSell.HasValue && i.EndSell > DateTime.UtcNow)
+				.Where(i => i.EndSell.HasValue) //&& i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.EndSell)
 				.Select(i => new AllSellViewModel
 				{
@@ -382,7 +382,7 @@
 					Unit = i.Unit.Symbol,
 					CurrentPrice = ((decimal)i.CurrentPrice!).ToString("N2"),// It has to have it at this point. It's ether start or sell price!
 					StartSell = ((DateTime)i.StartSell!).ToString(BiddingLongUtcDateTime),
-					EndSell = ((DateTime)i.EndSell!).ToString(BiddingLongUtcDateTime),
+					EndSell = ((DateTime)i.EndSell!),
 					Categories = i.ItemsCategories
 									.Select(ic => ic.Category.Name)
 									.ToArray(),

@@ -56,6 +56,11 @@
                 .WithOne(e => e.Item)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder
+                .HasMany(e => e.Contracts)
+                .WithOne(e => e.Item)
+                .HasForeignKey(e => e.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder
                 .HasData(GenerateItems());

@@ -1,4 +1,5 @@
 ﻿
+
 <tbody>
 
 	@foreach (AllSellViewModel sell in Model)
@@ -83,17 +84,39 @@
 			
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
-					<p class="p-0 mb-0 me-2 ">@sell.EndSell</p>
+					<p class="p-0 mb-0 me-2 ">@sell.EndSell.ToString(BiddingLongUtcDateTime)</p>
 				</div>
 			</td>
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100">
-					<button type="submit" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
-						<p class="p-0 mb-0 me-2 ">Item</p>
-						<p class="p-0 mb-0 me-2 "> Details</p>
-					</button>
-					<button type="submit" class="btn btn-sm btn-primary align-self-center ms-2">Modify</button>
+					@if (sell.IsAuction && sell.EndSell <= DateTime.UtcNow)
+					{
+						<button type="submit" class="btn btn-sm btn-warning align-self-center d-flex flex-nowrap align-items-center">
+							<p class="p-0 mb-0 me-2 ">Finish</p>
+							<p class="p-0 mb-0 me-2 ">Auction</p>
+						</button>
+
+					}
+					else if (!sell.IsAuction && sell.EndSell <= DateTime.UtcNow)
+					{
+						<button type="submit" class="btn btn-sm btn-danger align-self-center d-flex flex-nowrap align-items-center">
+							<p class="p-0 mb-0 me-2 ">Remove</p>
+							<p class="p-0 mb-0 me-2 ">Sell</p>
+						</button>
+						<button type="submit" class="btn btn-sm btn-primary align-self-center d-flex flex-nowrap align-items-center">
+							<p class="p-0 mb-0 me-2 ">Further</p>
+							<p class="p-0 mb-0 me-2 ">Sell</p>
+						</button>
+					}
+					else
+					{
+						<button type="submit" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+							<p class="p-0 mb-0 me-2 ">Details</p>
+						</button>
+						<button type="submit" class="btn btn-sm btn-primary align-self-center ms-2">Modify</button>
+					}
+					
 				</div>
 			</td>
 

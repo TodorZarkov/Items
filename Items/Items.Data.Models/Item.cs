@@ -19,6 +19,7 @@
             Offers = new HashSet<Offer>();
             AsBarterForOffers = new HashSet<Offer>();
 			Access = AccessModifier.Private;
+            Contracts = new HashSet<Contract>();
 		}
 
         [Key]
@@ -135,5 +136,9 @@
 
 
         public ICollection<Offer> AsBarterForOffers { get; set; }
-    }
+
+
+
+		public ICollection<Contract> Contracts { get; set; }
+	}
 }

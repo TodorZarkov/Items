@@ -14,29 +14,27 @@
 		public Guid SellerId { get; set; }
 
 
-		
+
 		//public ApplicationUser Buyer { get; set; } = null!;
 
-	
+
 		//public ApplicationUser Seller { get; set; } = null!;
 
 
 
-		
-		public decimal Price { get; set; }
+
+		public string Price { get; set; } = null!;
 
 
-		public int CurrencyId { get; set; }
-
-		//public Currency Currency { get; set; } = null!;
+		public string Currency { get; set; } = null!;
 
 
-		public decimal Quantity { get; set; }
+		public string Quantity { get; set; } = null!;
 
 
 		public string SendDue { get; set; } = null!;
 
-		public string DeliverDue { get; set; } = null!;
+		public DateTime DeliverDue { get; set; }
 
 		public string ContractDate { get; set; } = null!;
 

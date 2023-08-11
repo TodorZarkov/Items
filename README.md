@@ -159,7 +159,7 @@
 ### managed by Admin
 - categories - add, modify
 - currencies - add, modify
-- unit - add, modify
+- units - add, modify
 
 
 ### when Guest

@@ -70,8 +70,13 @@
             public const int QuantityPrecision = 18;
             public const int QuantityScale = 6;
 
+            public const double QuantityMinValue = 0.000001;
+            public const double QuantityMaxValue = 999999999999.999999;
+
             public const int ValuePrecision = 18;
             public const int ValueScale = 6;
+			public const double ValueMinValue = 0.01;
+			public const double ValueMaxValue = 9999999999999999.99;
 
 			public const int UriMinLength = 1;
 			public const int UriMaxLength = 2048;

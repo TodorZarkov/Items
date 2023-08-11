@@ -11,12 +11,15 @@
             Categories = new HashSet<Category>();
 
             Locations = new HashSet<Location>();
-
+             
             Offers = new HashSet<Offer>();
 
             ContractsAsBuyer = new HashSet<Contract>();
             ContractsAsSeller = new HashSet<Contract>();
         }
+
+        public DateTime RotationItemsDate { get; set; }
+
         public ICollection<Item> Items { get; set; }
 
         public ICollection<Category> Categories { get; set; }

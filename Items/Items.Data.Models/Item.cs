@@ -140,5 +140,10 @@
 
 
 		public ICollection<Contract> Contracts { get; set; }
-	}
+
+
+
+        public bool OnRotation { get; set; }
+        public bool OnRotationNow { get; set; }
+    }
 }

@@ -381,6 +381,7 @@
 					Quantity = i.Quantity.ToString("N2"),
 					Unit = i.Unit.Symbol,
 					CurrentPrice = ((decimal)i.CurrentPrice!).ToString("N2"),// It has to have it at this point. It's ether start or sell price!
+					Currency = i.Currency!.Symbol,
 					StartSell = ((DateTime)i.StartSell!).ToString(BiddingLongUtcDateTime),
 					EndSell = ((DateTime)i.EndSell!),
 					Categories = i.ItemsCategories

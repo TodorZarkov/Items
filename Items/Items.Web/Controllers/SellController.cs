@@ -5,7 +5,7 @@
 	using Items.Web.ViewModels.Sell;
 	using Microsoft.AspNetCore.Mvc;
 
-	public class SellController : Controller
+	public class SellController : BaseController
 	{
 		private readonly IItemService itemService;
 

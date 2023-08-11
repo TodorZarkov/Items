@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{AB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Items.Services.Data", "Items.Services.Data\Items.Services.Data.csproj", "{CE7D87A1-1F6A-495B-875A-ED7134ECA515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validators", "Validators\Validators.csproj", "{BC707B42-A3E6-442E-9550-8E554FDFF4F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Items.Web.Validators", "Validators\Items.Web.Validators.csproj", "{BC707B42-A3E6-442E-9550-8E554FDFF4F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

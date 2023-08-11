@@ -4,57 +4,56 @@
 	ViewData["Title"] = "Locations";
 	ViewBag.ActiveLink = "AllLocation";
 }
-
-<div class="btn-toolbar mb-1" role="toolbar" aria-label="Toolbar with button groups">
-
-	<div class="dropdown me-2">
-		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-			Order By
-		</button>
-		<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-			<li><a class="dropdown-item" href="#">Action</a></li>
-			<li><a class="dropdown-item" href="#">Another action</a></li>
-			<li><a class="dropdown-item" href="#">Something else here</a></li>
-		</ul>
-	</div>
-	<div class="dropdown me-5 ">
-		<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-			Group By
-		</button>
-		<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-			<li><a class="dropdown-item" href="#">Action</a></li>
-			<li><a class="dropdown-item" href="#">Another action</a></li>
-			<li><a class="dropdown-item" href="#">Something else here</a></li>
-		</ul>
-	</div>
-
-
-	<button type="button" class="btn btn-primary me-2">Add</button>
-
-</div>
-
-
 @if (Model.Any())
 {
 
+	<div class="btn-toolbar mb-1" role="toolbar" aria-label="Toolbar with button groups">
+
+		<div class="dropdown me-2">
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+				Order By
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+				<li><a class="dropdown-item" href="#">Action</a></li>
+				<li><a class="dropdown-item" href="#">Another action</a></li>
+				<li><a class="dropdown-item" href="#">Something else here</a></li>
+			</ul>
+		</div>
+		<div class="dropdown me-5 ">
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+				Group By
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+				<li><a class="dropdown-item" href="#">Action</a></li>
+				<li><a class="dropdown-item" href="#">Another action</a></li>
+				<li><a class="dropdown-item" href="#">Something else here</a></li>
+			</ul>
+		</div>
+
+
+		<button type="button" class="btn btn-primary me-2">Add</button>
+
+	</div>
+
+
 	<table class="table table-secondary table-striped table-hover align-middle">
-        <thead>
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Country</th>
-                <th scope="col">Town</th>
-                <th scope="col">Address</th>
-                <th scope="col">GeoLocation</th>
-                <th scope="col">Border</th>
-                <th scope="col">Places</th>
-                <th scope="col">Items</th>
-                <th scope ="col">Manage</th>
-            </tr>
-        </thead>
-	<partial name="_AllLocationsPartial" />
-        
-    </table>
+		<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Description</th>
+				<th scope="col">Country</th>
+				<th scope="col">Town</th>
+				<th scope="col">Address</th>
+				<th scope="col">GeoLocation</th>
+				<th scope="col">Border</th>
+				<th scope="col">Places</th>
+				<th scope="col">Items</th>
+				<th scope="col">Manage</th>
+			</tr>
+		</thead>
+		<partial name="_AllLocationsPartial" />
+
+	</table>
 
 }
 else

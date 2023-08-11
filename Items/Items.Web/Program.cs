@@ -64,6 +64,7 @@ namespace Items.Web
 			builder.Services.AddScoped<ILocationService, LocationService>();
 			builder.Services.AddScoped<IPlaceService, PlaceService>();
 			builder.Services.AddScoped<IOfferService, OfferService>();
+			builder.Services.AddScoped<IContractService, ContractService>();
 
 			var app = builder.Build();
 

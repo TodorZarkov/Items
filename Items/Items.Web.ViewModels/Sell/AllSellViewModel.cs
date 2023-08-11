@@ -26,6 +26,7 @@
 
 
         public string CurrentPrice { get; set; } = null!;
+		public string Currency { get; set; } = null!;
         public string? HighestBid { get; set; } = null!;
 		public int? OffersCount { get; set; }
         public int? BartersCount { get; set; }

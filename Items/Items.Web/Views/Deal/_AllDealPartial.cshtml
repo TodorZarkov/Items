@@ -1,0 +1,116 @@
+﻿
+
+<tbody>
+
+	@foreach (AllDealViewModel deal in Model)
+	{
+		<tr >
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<img style="height: 50px; border-radius: 2px;" src="@deal.ItemPicture">
+				</div>
+			</td>
+
+			<th scope="row" style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@deal.ItemName</p>
+				</div>
+			</th>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2 "><strong>@deal.ContractStatus</strong></p>
+				</div>
+			</td>
+
+			<td class="dropdown">
+
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fas fa-align-left"></i>
+				</button>
+				<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;">
+					<p>
+						@deal.BuyerComment
+					</p>
+				</div>
+
+			</td>
+			
+			<td class="dropdown">
+
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fas fa-align-left"></i>
+				</button>
+				<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;">
+					<p>
+						@deal.SellerComment
+					</p>
+				</div>
+
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-1">@deal.Quantity</p>
+					<p class="p-0 mb-0 me-0">@deal.Unit</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-1 ">@deal.Price</p>
+					<p class="p-0 mb-0 me-0 ">@deal.Currency</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@deal.ContractDate</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@deal.SendDue</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100 ">
+
+					<p class="p-0 mb-0 me-1">@deal.DeliverDue</p>
+
+				</div>
+			</td>
+
+			<td class="dropdown">
+
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fas fa-align-left"></i>
+				</button>
+				<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;">
+					<p>
+						@deal.DeliveryAddress
+					</p>
+				</div>
+
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+					
+						<button type="submit" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+							<p class="p-0 mb-0 me-2 ">Details</p>
+						</button>
+
+				</div>
+			</td>
+
+		</tr>
+	}
+
+
+</tbody>
+
+

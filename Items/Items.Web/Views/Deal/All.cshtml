@@ -1,8 +1,8 @@
-﻿@model IEnumerable<AllSellViewModel>
+﻿@model IEnumerable<AllDealViewModel>
 
 @{
-	ViewData["Title"] = "My Sellings";
-	ViewBag.ActiveLink = "AllSell";
+	ViewData["Title"] = "My Deals";
+	ViewBag.ActiveLink = "AllDeal";
 }
 @if (Model.Any())
 {
@@ -39,22 +39,20 @@
 			<tr>
 				<th scope="col">Picture</th>
 				<th scope="col">Name</th>
-				<th scope="col">Type</th>
-				<th scope="col">Category</th>
-				<th scope="col">Location</th>
-				<th scope="col">Place</th>
+				<th scope="col">Status</th>
+				<th scope="col">Buyer <i class="far fa-comment"></i></th>
+				<th scope="col">Seller <i class="far fa-comment"></i></th>
 				<th scope="col">QTY</th>
-				<th scope="col">Highest Bid</th>
-				<th scope="col">#Ofers</th>
-				<th scope="col">#Bids</th>
 				<th scope="col">Price</th>
-				<th scope="col">Start</th>
-				<th scope="col">End</th>
+				<th scope="col">Contract Date</th>
+				<th scope="col">Send Date</th>
+				<th scope="col">Delivery Date</th>
+				<th scope="col">Delivery Address</th>
 				<th scope="col" class="ms-auto">Manage</th>
 			</tr>
 		</thead>
 
-		<partial name="_AllSellsPartial" />
+		<partial name="_AllDealPartial" />
 
 	</table>
 
@@ -62,7 +60,7 @@
 else
 {
 	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
-		<h3>You Haven't Put Anything on the Market Yet.</h3>
+		<h3>You Haven't Sell Or Bought Anything!</h3>
 	</div>
 }
 

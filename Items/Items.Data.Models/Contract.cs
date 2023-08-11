@@ -82,6 +82,6 @@
         public string DeliveryAddress { get; set; } = null!;
 
 
-        public bool BuyerConfirm { get; set; }
+        public bool? BuyerConfirm { get; set; }
     }
 }

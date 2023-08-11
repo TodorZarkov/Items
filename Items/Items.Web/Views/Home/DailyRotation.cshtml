@@ -1,4 +1,85 @@
-﻿
+﻿@model IEnumerable<OnRotationViewModel>
+
 @{
 	ViewData["Title"] = "Daily Rotation";
+	List<OnRotationViewModel> Items = Model.ToList();
+}
+
+
+
+@if (Items.Any())
+{
+	<h2 class="text-center">Sample From Your Daily Rotations</h2>
+
+	<div id="carouselCaptions" class="carousel carousel-dark slide" data-bs-ride="carousel">
+		<div class="carousel-indicators">
+			@for (int i = 0; i < Items.Count(); i++)
+			{
+				<button type="button"
+						data-bs-target="#carouselCaptions"
+						data-bs-slide-to="@i"
+						aria-label="Slide @(i+1)"
+				@(i == 0 ? "class=active" : string.Empty)
+				@(i == 0 ? "aria-current=true" : string.Empty)></button>
+			}
+
+		</div>
+
+		<div class="carousel-inner">
+			@for (int i = 0; i < Items.Count(); i++)
+			{
+				<div class="carousel-item @(i==0?"active":string.Empty)">
+					<div class="d-flex">
+						<img src="@Items[i].MainPictureUri"
+							 alt="..."
+							 style="height: 500px;">
+						<div style="width: 300px;"
+							 class="me-auto ms-auto d-flex flex-wrap align-items-center align-content-center">
+
+							<h5 class="w-100">
+								@Items[i].Name
+							</h5>
+
+							
+							<h6 class="w-100">
+								Added On: @Items[i].AddedOn
+							</h6>
+
+							
+							<h6 class="w-100">
+								Quantity: @Items[i].Quantity @Items[i].Unit
+							</h6>
+
+							<p class="w-100">Categories: @string.Join(", ",Items[i].Categories)</p>
+
+							<h6 class="w-100">
+								Place: @Items[i].Place
+							</h6>
+
+							<h6 class="w-100">
+								Location: @Items[i].Location
+							</h6>
+
+						</div>
+
+					</div>
+				</div>
+			}
+
+		</div>
+		<button class="carousel-control-prev" type="button" data-bs-target="#carouselCaptions" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#carouselCaptions" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button>
+	</div>
+}
+else
+{
+	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
+		<h3>No Items Set To Rotate.</h3>
+	</div>
 }

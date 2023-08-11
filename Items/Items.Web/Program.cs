@@ -8,8 +8,10 @@ namespace Items.Web
     using Microsoft.Extensions.Configuration;
     using Items.Services.Data.Interfaces;
     using Items.Services.Data;
+	using Items.Common.Interfaces;
+	using Items.Common;
 
-    public class Program
+	public class Program
 	{
 		public static void Main(string[] args)
 		{
@@ -65,6 +67,8 @@ namespace Items.Web
 			builder.Services.AddScoped<IPlaceService, PlaceService>();
 			builder.Services.AddScoped<IOfferService, OfferService>();
 			builder.Services.AddScoped<IContractService, ContractService>();
+			builder.Services.AddScoped<IUserService, UserService>();
+			builder.Services.AddScoped<IHelper, Helper>();
 
 			var app = builder.Build();
 

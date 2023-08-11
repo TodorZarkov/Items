@@ -1,6 +1,7 @@
 ﻿namespace Items.Web.Controllers
 {
 	using Items.Services.Data.Interfaces;
+	using Items.Web.Extensions;
 	using Items.Web.ViewModels.Home;
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
@@ -9,15 +10,17 @@
     public class HomeController : BaseController
     {
         private readonly IItemService itemService;
-        private const int numberOfItems = 5;
+        private readonly IUserService userService;
+        private const int numberOfItemsIndex = 5;
+        private const int numberOfItemsToRotate = 4;
 
+		public HomeController(IItemService itemService, IUserService userService)
+		{
+			this.itemService = itemService;
+			this.userService = userService;
+		}
 
-        public HomeController(IItemService itemService)
-        {
-            this.itemService = itemService;
-        }
-
-        [AllowAnonymous]
+		[AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             if (User.Identity?.IsAuthenticated ?? false)
@@ -26,15 +29,25 @@
             }
 
             IEnumerable<IndexViewModel> viewModel = 
-                await itemService.LastPublicItemsAsync(numberOfItems);
+                await itemService.LastPublicItemsAsync(numberOfItemsIndex);
 
             return View(viewModel);
         }
 
         public async Task<IActionResult> DailyRotation()
         {
+            Guid userId = Guid.Parse(User.GetId());
+            DateTime rotationDate = await userService.GetRotationItemsDateAsync(userId);
 
-            return View();
+            if (rotationDate.Date != DateTime.UtcNow.Date)
+            {
+				await userService.SetRotationItemsDateAsync(userId, DateTime.UtcNow);
+				await itemService.SetDailyRotationsAsync(userId, numberOfItemsToRotate);
+			}
+
+			IEnumerable<OnRotationViewModel> itemsToRotate = await itemService.GetDailyRotationsAsync(userId);
+
+			return View(itemsToRotate);
         }
 
 

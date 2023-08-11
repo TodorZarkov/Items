@@ -11,18 +11,20 @@
 	using Items.Web.ViewModels.Item;
 	using static Common.FormatConstants.DateAndTime;
 	using Items.Web.ViewModels.Sell;
+	using Items.Common.Interfaces;
 
 	public class ItemService : IItemService
 	{
 		private readonly ItemsDbContext dbContext;
+		private readonly IHelper helper;
 
-        public ItemService(ItemsDbContext dbContext)
-        {
-			this.dbContext = dbContext;   
-        }
+		public ItemService(ItemsDbContext dbContext, IHelper helper)
+		{
+			this.dbContext = dbContext;
+			this.helper = helper;
+		}
 
-
-        public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
+		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IEnumerable<IndexViewModel> items = await dbContext.Items
 				.Where(i => i.Access == AccessModifier.Public &&// todo: remove Access!!!
@@ -203,7 +205,6 @@
 				.ToArray(); ;
 
 		}
-
 
 
 		public async Task<IEnumerable<AllItemViewModel>> GetByCategoriesAllItemsAsync(
@@ -403,6 +404,58 @@
 				.ToArrayAsync();
 
 			return itemsOnMarket;
+		}
+
+		public async Task<IEnumerable<OnRotationViewModel>> GetDailyRotationsAsync(Guid userId)
+		{
+
+			IEnumerable<OnRotationViewModel> currentItemRotation = await dbContext.Items
+				.AsNoTracking()
+				.Where(i => i.OwnerId == userId)
+				.Where(i => i.OnRotation && i.OnRotationNow)
+				.Where(i => !i.EndSell.HasValue)
+				.Select(i => new OnRotationViewModel
+				{
+					Id = i.Id,
+					MainPictureUri = i.MainPictureUri,
+					Name = i.Name,
+					Quantity = i.Quantity.ToString("N2"),
+					Unit = i.Unit.Symbol,
+					Categories = i.ItemsCategories.Select(ic => ic.Category.Name).ToArray(),
+					AddedOn = i.AddedOn.ToString(RotatedItemsDateTime),
+					Place = i.Place.Name,
+					Location = i.Location.Name
+				})
+				.ToArrayAsync();
+
+			return currentItemRotation;
+		}
+
+		public async Task SetDailyRotationsAsync(Guid userId, int numberOfItems)
+		{
+
+			var allItemRotation = dbContext.Items
+				.Where(i => i.OwnerId == userId)
+				.Where(i => i.OnRotation)
+				.Where(i => !i.EndSell.HasValue);
+
+
+			HashSet<int> rands = helper.GetRandNUniqueOfM(numberOfItems, allItemRotation.Count());
+			int index = 0;
+			foreach (var item in allItemRotation)
+			{
+				if (rands.Contains(index))
+				{
+					item.OnRotationNow = true;
+				}
+				else
+				{
+					item.OnRotationNow = false;
+				}
+				index++;
+			}
+
+			await dbContext.SaveChangesAsync();
 		}
 	}
 }

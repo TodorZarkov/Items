@@ -29,5 +29,9 @@
 		Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarter(Guid userId);
 
 		Task<IEnumerable<AllSellViewModel>> MyAllOnMarket(Guid userId);
+
+		Task<IEnumerable<OnRotationViewModel>> GetDailyRotationsAsync(Guid userId);
+
+		Task SetDailyRotationsAsync(Guid userId, int numberOfItems);
 	}
 }

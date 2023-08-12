@@ -3,8 +3,10 @@
 	using Items.Services.Data.Interfaces;
 	using Items.Web.Extensions;
 	using Items.Web.ViewModels.Home;
+
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
+
     using System.Diagnostics;
 
     public class HomeController : BaseController

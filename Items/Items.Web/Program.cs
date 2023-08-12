@@ -2,14 +2,16 @@ namespace Items.Web
 {
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
 
     using Items.Data;
     using Items.Data.Models;
-    using Microsoft.Extensions.Configuration;
     using Items.Services.Data.Interfaces;
     using Items.Services.Data;
 	using Items.Common.Interfaces;
 	using Items.Common;
+	using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+	using Items.Web.ModelBinder;
 
 	public class Program
 	{
@@ -59,7 +61,10 @@ namespace Items.Web
 			})
 				.AddEntityFrameworkStores<ItemsDbContext>();
 
-			builder.Services.AddControllersWithViews();
+			builder.Services.AddControllersWithViews(opt =>
+				{
+					opt.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+				});
 
 			builder.Services.AddScoped<IItemService, ItemService>();
 			builder.Services.AddScoped<ICategoryService, CategoryService>();

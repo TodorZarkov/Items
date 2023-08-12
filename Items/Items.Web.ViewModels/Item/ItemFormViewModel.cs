@@ -23,7 +23,7 @@
 		public string Name { get; set; } = null!;
 
 
-		[Required]//todo: custom bind decimal? and double
+		[Required]
 		[Range(QuantityMinValue, QuantityMaxValue)]
 		public decimal Quantity { get; set; }
 
@@ -38,7 +38,7 @@
 		public string? Description { get; set; }
 
 
-		//todo: custom bind decimal? and double
+		
 		[Range(ValueMinValue, ValueMaxValue)]
 		public decimal? AcquiredPrice { get; set; }
 
@@ -76,7 +76,7 @@
 
 
 
-		//todo: custom bind decimal? and double
+		
 		[Range(ValueMinValue, ValueMaxValue)]
 		public decimal? CurrentPrice { get; set; }
 

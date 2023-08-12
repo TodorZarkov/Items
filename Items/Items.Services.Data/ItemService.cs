@@ -24,6 +24,7 @@
 			this.helper = helper;
 		}
 
+
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IEnumerable<IndexViewModel> items = await dbContext.Items
@@ -54,7 +55,6 @@
 
 			return items;
 		}
-
 
 		public async Task<IEnumerable<AllItemViewModel>> AllPublic()
 		{
@@ -98,7 +98,6 @@
 
 			return items;
 		}
-
 
 		public async Task<IEnumerable<AllItemViewModel>> GetByCategoriesOnSaleItemsAsync(
 			int[] categories, Guid? userId = null)
@@ -153,7 +152,6 @@
 				.ToArray();
 		}
 
-
 		public async Task<IEnumerable<AllItemViewModel>> GetByCategoriesMineItemsAsync(
 			int[] categories, Guid userId)
 		{
@@ -205,7 +203,6 @@
 				.ToArray(); ;
 
 		}
-
 
 		public async Task<IEnumerable<AllItemViewModel>> GetByCategoriesAllItemsAsync(
 			int[] categories, Guid userId)
@@ -408,12 +405,12 @@
 
 		public async Task<IEnumerable<OnRotationViewModel>> GetDailyRotationsAsync(Guid userId)
 		{
-
 			IEnumerable<OnRotationViewModel> currentItemRotation = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.OnRotation && i.OnRotationNow)
 				.Where(i => !i.EndSell.HasValue)
+				.Where(i => i.Quantity > 0)
 				.Select(i => new OnRotationViewModel
 				{
 					Id = i.Id,
@@ -433,11 +430,11 @@
 
 		public async Task SetDailyRotationsAsync(Guid userId, int numberOfItems)
 		{
-
 			var allItemRotation = dbContext.Items
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.OnRotation)
-				.Where(i => !i.EndSell.HasValue);
+				.Where(i => !i.EndSell.HasValue)
+				.Where(i => i.Quantity > 0);
 
 
 			HashSet<int> rands = helper.GetRandNUniqueOfM(numberOfItems, allItemRotation.Count());

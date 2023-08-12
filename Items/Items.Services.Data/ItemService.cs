@@ -459,7 +459,7 @@
 
 
 
-		public async Task CreateItemAsync(ItemFormViewModel model, Guid userId)
+		public async Task CreateItemAsync(ItemFormModel model, Guid userId)
 		{
 			Item item = new Item
 			{
@@ -479,7 +479,7 @@
 
 				UnitId = model.UnitId,
 				PlaceId = model.PlaceId,
-				LocationId = model.LocationId,
+				LocationId = new Guid(),
 				CurrencyId = model.CurrencyId,
 				ItemVisibility = new ItemVisibility
 				{
@@ -495,6 +495,9 @@
 					Owner = model.ItemVisibility.Owner
 				}
 			};
+
+			Place? theChosenPlace = await dbContext.Places.FindAsync(model.PlaceId);
+			item.LocationId = theChosenPlace!.LocationId;//not null here due to controller check
 
 			foreach (CategoryFilterViewModel availableCategory in model.AvailableCategories)
 			{

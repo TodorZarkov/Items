@@ -66,6 +66,7 @@
 				{
 					PlaceId = p.Id,
 					PlaceName = p.Name,
+					LocationName = p.Location.Name
 				})
 				.ToArrayAsync();
 

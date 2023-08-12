@@ -35,10 +35,10 @@
 		public IEnumerable<ForSelectPlaceViewModel> AvailablePlaces { get; set; } = null!;//todo: filter available places over client(ajax) or go supDropdown
 
 
-		[Required]
-		//todo: asynchronous validation with db as model binding
-		public Guid LocationId { get; set; }
-		public IEnumerable<ForSelectLocationViewModel> AvailableLocations { get; set; } = null!;
+		//[Required]
+		////todo: asynchronous validation with db as model binding
+		//public Guid LocationId { get; set; }
+		//public IEnumerable<ForSelectLocationViewModel> AvailableLocations { get; set; } = null!;
 
 
 		//todo: asynchronous validation with db

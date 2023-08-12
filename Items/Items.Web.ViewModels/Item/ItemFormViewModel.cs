@@ -5,6 +5,8 @@
 
 	using System.ComponentModel.DataAnnotations.Schema;
 	using System.ComponentModel.DataAnnotations;
+	using Microsoft.AspNetCore.Mvc;
+	using Items.Web.ModelBinder;
 
 	public class ItemFormViewModel
 	{
@@ -29,8 +31,9 @@
 
 
 
-		[Required] //todo: asynchronous validation with db
-		public string Unit { get; set; } = null!;
+		[Required] 
+		[ModelBinder(binderType: typeof(UnitIdModelBinder))]
+		public int UnitId { get; set; }
 
 
 

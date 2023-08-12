@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Items.Data.Models\Items.Data.Models.csproj" />
+    <ProjectReference Include="..\Items.Data\Items.Data.csproj" />
+  </ItemGroup>
+
 </Project>

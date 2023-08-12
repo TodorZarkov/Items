@@ -7,7 +7,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public class LocationService : ILocationService
+	public class LocationService : ILocationService
     {
         private readonly ItemsDbContext dbContext;
         public LocationService(ItemsDbContext dbContext)
@@ -47,5 +47,29 @@
 
             return locations;
         }
-    }
+
+		public async Task<IEnumerable<ForSelectLocationViewModel>> AllForSelectAsync(Guid userId)
+		{
+			IEnumerable<ForSelectLocationViewModel> locations = await dbContext.Locations
+				.Where(l => l.UserId == userId)
+				.OrderBy(l => l.Name)
+				.Select(l => new ForSelectLocationViewModel
+				{
+					LocationId = l.Id,
+					LocationName = l.Name,
+				})
+				.ToArrayAsync();
+
+			return locations;
+		}
+
+		public async Task<bool> IsAllowedIdAsync(Guid locationId, Guid userId)
+		{
+            bool result = await dbContext.Locations
+                .Where(l => l.UserId == userId)
+                .AnyAsync(l => l.Id == locationId);
+
+            return result;
+		}
+	}
 }

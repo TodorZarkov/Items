@@ -5,5 +5,9 @@
 	public interface ILocationService
 	{
 		Task<IEnumerable<AllLocationViewModel>> AllAsync(Guid userId);
+
+		Task<IEnumerable<ForSelectLocationViewModel>> AllForSelectAsync(Guid userId);
+
+		Task<bool> IsAllowedIdAsync(Guid locationId, Guid userId);
 	}
 }

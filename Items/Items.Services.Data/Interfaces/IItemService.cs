@@ -33,5 +33,9 @@
 		Task<IEnumerable<OnRotationViewModel>> GetDailyRotationsAsync(Guid userId);
 
 		Task SetDailyRotationsAsync(Guid userId, int numberOfItems);
+
+
+
+		Task CreateItemAsync(ItemFormModel itemFormViewModel, Guid userId);
 	}
 }

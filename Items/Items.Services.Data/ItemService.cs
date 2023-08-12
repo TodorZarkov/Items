@@ -12,6 +12,8 @@
 	using static Common.FormatConstants.DateAndTime;
 	using Items.Web.ViewModels.Sell;
 	using Items.Common.Interfaces;
+	using Items.Data.Models;
+	using Items.Web.ViewModels.Category;
 
 	public class ItemService : IItemService
 	{
@@ -38,10 +40,10 @@
 					Name = i.Name,
 					MainPictureUri = i.MainPictureUri,
 
-					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2") ,
-					CurrencySymbol = 
-						!i.CurrentPrice.HasValue || 
-						i.Currency == null 
+					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2"),
+					CurrencySymbol =
+						!i.CurrentPrice.HasValue ||
+						i.Currency == null
 						? "" : i.Currency.Symbol,
 					IsAuction = i.IsAuction,
 
@@ -158,7 +160,7 @@
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
-				.OrderByDescending(i => i.ModifiedOn) 
+				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
 				{
 					Id = i.Id,
@@ -208,11 +210,11 @@
 			int[] categories, Guid userId)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.Where(i => i.OwnerId == userId 
+				.Where(i => i.OwnerId == userId
 						|| i.Access == AccessModifier.Public //todo: remove Access from entity
 								&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
-				.OrderByDescending(i => i.ModifiedOn) 
+				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
 				{
 					Id = i.Id,
@@ -260,10 +262,10 @@
 		public async Task<IEnumerable<AllItemViewModel>> All(Guid userId)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.Where(i => i.OwnerId == userId 
+				.Where(i => i.OwnerId == userId
 						|| i.Access == AccessModifier.Public //todo: remove Access
 								&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
-				.OrderByDescending(i => i.ModifiedOn) 
+				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
 				{
 					Id = i.Id,
@@ -314,7 +316,7 @@
 					Id = i.Id,
 					Name = i.Name,
 					MainPictureUri = i.MainPictureUri,
-					
+
 					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,
 					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
 
@@ -351,9 +353,9 @@
 					MainPictureUri = i.MainPictureUri,
 					Name = i.Name,
 					Unit = i.Unit.Symbol,
-					QuantityCanBarter = 
-										(i.Quantity - 
-										(i.AsBarterForOffers.Sum(bo => bo.BarterQuantity).HasValue ? 
+					QuantityCanBarter =
+										(i.Quantity -
+										(i.AsBarterForOffers.Sum(bo => bo.BarterQuantity).HasValue ?
 										(decimal)(i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)!) : decimal.Zero))
 										.ToString("N2"),
 				})
@@ -453,6 +455,59 @@
 			}
 
 			await dbContext.SaveChangesAsync();
+		}
+
+
+
+		public async Task CreateItemAsync(ItemFormViewModel model, Guid userId)
+		{
+			Item item = new Item
+			{
+				Name = model.Name,
+				Quantity = model.Quantity,
+				Description = model.Description,
+				AcquiredPrice = model.AcquiredPrice,
+				AcquiredDate = model.AcquiredDate,
+				CurrentPrice = model.CurrentPrice,
+				IsAuction = model.IsAuction,
+				OnRotation = model.OnRotation,
+				OwnerId = userId,
+
+				MainPictureUri = model.MainPictureUri,
+				StartSell = model.StartSell,
+				EndSell = model.EndSell,
+
+				UnitId = model.UnitId,
+				PlaceId = model.PlaceId,
+				LocationId = model.LocationId,
+				CurrencyId = model.CurrencyId,
+				ItemVisibility = new ItemVisibility
+				{
+					AcquiredDate = model.ItemVisibility.AcquiredDate,
+					AcquireDocument = model.ItemVisibility.AcquireDocument,
+					AcquiredPrice = model.ItemVisibility.AcquiredPrice,
+					AddedOn = model.ItemVisibility.AddedOn,
+					CurrentPrice = model.ItemVisibility.CurrentPrice,
+					Description = model.ItemVisibility.Description,
+					Location = model.ItemVisibility.Location,
+					Offers = model.ItemVisibility.Offers,
+					Quantity = model.ItemVisibility.Quantity,
+					Owner = model.ItemVisibility.Owner
+				}
+			};
+
+			foreach (CategoryFilterViewModel availableCategory in model.AvailableCategories)
+			{
+				if (availableCategory.Selected)
+				{
+					ItemCategory itemCategory = new ItemCategory
+					{
+						CategoryId = availableCategory.Id
+					};
+					item.ItemsCategories.Add(itemCategory);
+				}
+
+			}
 		}
 	}
 }

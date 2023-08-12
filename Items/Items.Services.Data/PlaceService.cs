@@ -35,5 +35,50 @@
 
 			return places;
 		}
+
+		public async Task<IEnumerable<ForSelectPlaceViewModel>> AllForSelectAsync(Guid userId, Guid locationId)
+		{
+			IEnumerable<ForSelectPlaceViewModel> places = await dbContext.Places
+				.Where(p => p.Location.UserId == userId && p.LocationId == locationId)
+				.OrderBy(p => p.Name)
+				.Select(p => new ForSelectPlaceViewModel
+				{
+					PlaceId = p.Id,
+					PlaceName = p.Name,
+				})
+				.ToArrayAsync();
+
+			return places;
+		}
+
+		/// <summary>
+		/// TO BE USED IN CASE OF ON AJAX ON CLIENT FOR LOCATION CHOISE!!!
+		/// IT RETURNS ALL PLACES FOR ALL LOCATIONS!!!
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public async Task<IEnumerable<ForSelectPlaceViewModel>> AllForSelectAsync(Guid userId)
+		{
+			IEnumerable<ForSelectPlaceViewModel> places = await dbContext.Places
+				.Where(p => p.Location.UserId == userId)
+				.OrderBy(p => p.Name)
+				.Select(p => new ForSelectPlaceViewModel
+				{
+					PlaceId = p.Id,
+					PlaceName = p.Name,
+				})
+				.ToArrayAsync();
+
+			return places;
+		}
+
+		public async Task<bool> IsAllowedIdAsync(int placeId, Guid locationId, Guid userId)
+		{
+			bool result = await dbContext.Places
+				.Where(p => p.Location.UserId == userId && p.LocationId == locationId)
+				.AnyAsync(p => p.Id == placeId);
+
+			return result;
+		}
 	}
 }

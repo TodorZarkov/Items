@@ -15,6 +15,8 @@
 			this.itemService = itemService;
 		}
 
+
+		[HttpGet]
 		[AllowAnonymous]
 		public async Task<IActionResult> All()
 		{
@@ -32,12 +34,20 @@
 			return View(model);
 		}
 
+		[HttpGet]
 		public async Task<IActionResult> Mine()
 		{
 			Guid userId = Guid.Parse(User.GetId());
 			IEnumerable<MyItemViewModel> model = await itemService.Mine(userId);
 
 			return View(model);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Add()
+		{
+
+			return View();
 		}
 	}
 }

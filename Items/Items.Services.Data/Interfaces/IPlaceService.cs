@@ -5,5 +5,9 @@
 	public interface IPlaceService
 	{
 		Task<IEnumerable<AllPlaceViewModel>> AllAsync(Guid userId);
+
+		Task<IEnumerable<ForSelectPlaceViewModel>> AllForSelectAsync(Guid userId);
+
+		Task<bool> IsAllowedIdAsync(int placeId, Guid locationId, Guid userId);
 	}
 }

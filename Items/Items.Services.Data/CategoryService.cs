@@ -43,6 +43,47 @@
 			return categoryViewModels;
 		}
 
+		public async Task<ICollection<CategoryFilterViewModel>> GetMineAsync(Guid userId)
+		{
+			ICollection<CategoryFilterViewModel> categories = await dbContext.Categories
+				.Where(c => c.CreatorId == userId)
+				.Select(c => new CategoryFilterViewModel
+				{
+					Id = c.Id,
+					Name = c.Name
+				})
+				.ToArrayAsync();
+
+			return categories;
+		}
+
+		public async Task<IEnumerable<CategoryFilterViewModel>> AllForSelectAsync(Guid userId)
+		{
+			var adminRoleId = await dbContext.Roles
+				.Where(r => r.NormalizedName == "ADMIN")
+				.Select(r => r.Id)
+				.ToArrayAsync();
+
+
+			var adminIds = await dbContext.UserRoles
+				.Where(ur => ur.RoleId == adminRoleId[0])
+				.Select(ur => ur.UserId)
+				.ToArrayAsync();
+
+
+			ICollection<CategoryFilterViewModel> categoryViewModels = await dbContext.Categories
+				.Where(c => adminIds.Contains(c.CreatorId) || c.CreatorId == userId)
+				.Select(c => new CategoryFilterViewModel
+				{
+					Id = c.Id,
+					Name = c.Name
+				})
+				.ToArrayAsync();
+
+			return categoryViewModels;
+		}
+
+
 		public async Task<ICollection<int>> GetAllPublicIdsAsync()
 		{
 			var adminRoleId = await dbContext.Roles
@@ -75,19 +116,6 @@
 			return categoryIds;
 		}
 
-		public async Task<ICollection<CategoryFilterViewModel>> GetMineAsync(Guid userId)
-		{
-			ICollection<CategoryFilterViewModel> categories = await dbContext.Categories
-				.Where(c => c.CreatorId == userId)
-				.Select(c => new CategoryFilterViewModel
-				{
-					Id = c.Id,
-					Name = c.Name
-				})
-				.ToArrayAsync();
-
-			return categories;
-		}
 
 		public async Task<bool> IsAllowedIdsAsync(int[] ids, Guid userId)
 		{
@@ -120,5 +148,7 @@
 
 			return ids.All(i => validIds.Contains(i));
 		}
+
+		
 	}
 }

@@ -73,6 +73,9 @@ namespace Items.Web
 			builder.Services.AddScoped<IOfferService, OfferService>();
 			builder.Services.AddScoped<IContractService, ContractService>();
 			builder.Services.AddScoped<IUserService, UserService>();
+			builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+			builder.Services.AddScoped<IUnitService, UnitService>();
+
 			builder.Services.AddScoped<IHelper, Helper>();
 
 			var app = builder.Build();

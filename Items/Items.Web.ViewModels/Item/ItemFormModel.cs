@@ -20,7 +20,7 @@
 
 
 		[Required]
-		public ItemFormVisibilityViewModel ItemVisibility { get; set; } = null!;
+		public ItemFormVisibilityModel ItemVisibility { get; set; } = null!;
 
 
 		[Required]
@@ -30,13 +30,13 @@
 
 
 		[Required]
-		//todo: asynchronous validation with db as model binding
+		//todo: asynchronous validation with db with model binding
 		public int PlaceId { get; set; }
 		public IEnumerable<ForSelectPlaceViewModel> AvailablePlaces { get; set; } = null!;//todo: filter available places over client(ajax) or go supDropdown
 
 
 		//[Required]
-		////todo: asynchronous validation with db as model binding
+		////todo: asynchronous validation with db with model binding
 		//public Guid LocationId { get; set; }
 		//public IEnumerable<ForSelectLocationViewModel> AvailableLocations { get; set; } = null!;
 
@@ -49,10 +49,8 @@
 
 		[Required]
 		//todo: asynchronous validation with db With model binder
-		public IEnumerable<CategoryFilterViewModel> AvailableCategories { get; set; } = null!;
-
-
-
+		public int[] CategoryIds { get; set; } = null!;
+        public IEnumerable<CategoryFilterViewModel> AvailableCategories { get; set; } = null!;
 
 
 
@@ -83,14 +81,6 @@
 
 
 
-		//public Document? AcquireDocument { get; set; }
-
-
-
-		//public ICollection<Picture> Pictures { get; set; }
-
-
-
 		//todo: manage client picture files
 		[Required]
 		[StringLength(UriMaxLength, MinimumLength = UriMinLength)]
@@ -114,11 +104,16 @@
 
 
 		//todo: gets Required after StartSell is present
-		public bool? IsAuction { get; set; }
-
+		public bool IsAuction { get; set; }
 
 
         public bool OnRotation { get; set; }
 
-    }
+
+
+		//public Document? AcquireDocument { get; set; }
+		 
+		//public ICollection<Picture> Pictures { get; set; }
+
+	}
 }

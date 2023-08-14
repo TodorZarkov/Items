@@ -30,8 +30,7 @@
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IEnumerable<IndexViewModel> items = await dbContext.Items
-				.Where(i => i.Access == AccessModifier.Public &&// todo: remove Access!!!
-							i.EndSell != null && i.EndSell > DateTime.UtcNow)
+				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.StartSell)
 				.Take(numberOfItems)
 				.Select(i => new IndexViewModel
@@ -61,8 +60,7 @@
 		public async Task<IEnumerable<AllItemViewModel>> AllPublic()
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.Where(i => i.Access == AccessModifier.Public //todo: remove Access
-						&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
+				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
 				{
@@ -105,8 +103,7 @@
 			int[] categories, Guid? userId = null)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.Where(i => i.Access == AccessModifier.Public //todo: remove Access from entity
-						&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
+				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow) //removed Access from filter
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
@@ -211,8 +208,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.Where(i => i.OwnerId == userId
-						|| i.Access == AccessModifier.Public //todo: remove Access from entity
-								&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
+						|| i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
@@ -263,8 +259,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.Where(i => i.OwnerId == userId
-						|| i.Access == AccessModifier.Public //todo: remove Access
-								&& i.EndSell != null && i.EndSell > DateTime.UtcNow)
+						|| i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
 				{
@@ -463,24 +458,31 @@
 		{
 			Item item = new Item
 			{
-				Name = model.Name,
-				Quantity = model.Quantity,
-				Description = model.Description,
-				AcquiredPrice = model.AcquiredPrice,
-				AcquiredDate = model.AcquiredDate,
-				CurrentPrice = model.CurrentPrice,
-				IsAuction = model.IsAuction,
-				OnRotation = model.OnRotation,
+				Name = model.Name,//1.2
+				Quantity = model.Quantity,//1.3
+				Description = model.Description,//2.1
+				OnRotation = model.OnRotation,//2.3
+
+				AcquiredPrice = model.AcquiredPrice,//3.1
+				AcquiredDate = model.AcquiredDate,//3.2
+				CurrentPrice = model.CurrentPrice,//4.1
+				IsAuction = model.IsAuction,//4.2
 				OwnerId = userId,
 
-				MainPictureUri = model.MainPictureUri,
-				StartSell = model.StartSell,
-				EndSell = model.EndSell,
 
-				UnitId = model.UnitId,
-				PlaceId = model.PlaceId,
+
+				MainPictureUri = model.MainPictureUri,//1.1
+
+				StartSell = model.StartSell,//4.3
+				EndSell = model.EndSell,//4.4
+
+
+
+				UnitId = model.UnitId,//1.4
+				PlaceId = model.PlaceId,//2.2
 				LocationId = new Guid(),
-				CurrencyId = model.CurrencyId,
+
+				CurrencyId = model.CurrencyId,//3.3
 				ItemVisibility = new ItemVisibility
 				{
 					AcquiredDate = model.ItemVisibility.AcquiredDate,
@@ -499,18 +501,62 @@
 			Place? theChosenPlace = await dbContext.Places.FindAsync(model.PlaceId);
 			item.LocationId = theChosenPlace!.LocationId;//not null here due to controller check
 
-			foreach (CategoryFilterViewModel availableCategory in model.AvailableCategories)
+			foreach (int categoryId in model.CategoryIds)
 			{
-				if (availableCategory.Selected)
+				ItemCategory itemCategory = new ItemCategory
 				{
-					ItemCategory itemCategory = new ItemCategory
-					{
-						CategoryId = availableCategory.Id
-					};
-					item.ItemsCategories.Add(itemCategory);
-				}
-
+					CategoryId = categoryId
+				};
+				item.ItemsCategories.Add(itemCategory);
 			}
+
+			dbContext.Items.Add(item);
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<ItemFormModel> GetByIdAsync(Guid itemId)
+		{
+			Item item = await dbContext.Items
+				.SingleAsync(i => i.Id == itemId);
+
+			int[] categoryIds = await dbContext.ItemsCategories
+				.Where(ic => ic.ItemId == itemId)
+				.Select(ic => ic.CategoryId)
+				.ToArrayAsync();
+
+			ItemFormModel model = new ItemFormModel
+			{
+				Name = item.Name,
+				MainPictureUri = item.MainPictureUri,
+				Description = item.Description,
+				CurrencyId = item.CurrencyId,
+				CurrentPrice = item.CurrentPrice,
+				EndSell = item.EndSell,
+				AcquiredDate = item.AcquiredDate,
+				AcquiredPrice = item.AcquiredPrice,
+				IsAuction = item.IsAuction.HasValue ? (bool)item.IsAuction : false,
+				OnRotation = item.OnRotation,
+				PlaceId = item.PlaceId,
+				Quantity = item.Quantity,
+				StartSell = item.StartSell,
+				UnitId = item.UnitId,
+				CategoryIds = categoryIds
+			};
+
+			return model;
+		}
+
+		public async Task<bool> IsAuthorized(Guid itemId, Guid userId)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId);
+
+			return result;
+		}
+
+		public Task UpdateItemAsync(ItemFormModel model)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

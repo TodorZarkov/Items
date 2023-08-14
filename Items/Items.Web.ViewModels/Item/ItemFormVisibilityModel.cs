@@ -2,9 +2,9 @@
 {
 	using Items.Common.Enums;
 
-	public class ItemFormVisibilityViewModel
+	public class ItemFormVisibilityModel
 	{
-		public ItemFormVisibilityViewModel()
+		public ItemFormVisibilityModel()
 		{
 			Description = AccessModifier.Public;
 			CurrentPrice = AccessModifier.Public;

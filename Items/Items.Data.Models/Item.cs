@@ -36,7 +36,7 @@
 
 
 		[Required]
-        public AccessModifier Access { get; set; }
+        public AccessModifier Access { get; set; } //todo: remove Access from the entity 
 
 
         [ForeignKey(nameof(ItemVisibility))]

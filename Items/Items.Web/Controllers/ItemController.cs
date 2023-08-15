@@ -90,13 +90,13 @@
 		public async Task<IActionResult> Edit(Guid id)
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorized(id, userId);
+			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
 			if (!isAuthorized)
 			{
 				return RedirectToAction("All", "Item");
 			}
 
-			ItemFormModel model = await itemService.GetByIdAsync(id);
+			ItemFormModel model = await itemService.GetByIdForEditAsync(id);
 			model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 			model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 			model.AvailableUnits = await unitService.AllForSelectAsync();
@@ -109,7 +109,7 @@
 		public async Task<IActionResult> Edit(ItemFormModel model, Guid id)
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorized(id, userId);
+			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
 			if (!isAuthorized)
 			{
 				return RedirectToAction("All", "Item");
@@ -119,6 +119,26 @@
 			await itemService.UpdateItemAsync(model, id);
 
 			return RedirectToAction("Mine", "Item");
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Details(Guid itemId)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+
+			bool authorizedToView = await itemService.IsAuthorizedToViewAsync(itemId, userId);
+			if (!authorizedToView)
+			{
+				return RedirectToAction("All", "Item");
+			}
+
+			bool authorizedToEdit = await itemService.IsAuthorizedAsync(itemId, userId);
+			if (authorizedToEdit)
+			{
+
+			}
+
+			return View();
 		}
 	}
 }

@@ -37,8 +37,18 @@
 
 
 		Task CreateItemAsync(ItemFormModel itemFormViewModel, Guid userId);
-		Task<ItemFormModel> GetByIdAsync(Guid itemId);
-		Task<bool> IsAuthorized(Guid itemId, Guid userId);
+
+		Task<ItemFormModel> GetByIdForEditAsync(Guid itemId);
+
+		Task<ItemViewModel> GetByIdForViewAsync(Guid itemId);
+		Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId);
+
+		Task<bool> IsAuthorizedAsync(Guid itemId, Guid userId);
+		Task<bool> IsAuthorizedToViewAsync(Guid itemId, Guid userId);
+
+
 		Task UpdateItemAsync(ItemFormModel model, Guid itemId);
+
+
 	}
 }

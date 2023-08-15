@@ -180,6 +180,13 @@
 - all not owner - bid/buy, details; if owner - details, put on market, remove from sell/auction, edit
 - categories(is filter)
 - my items - order/group by, add, quick add, ; edit, details, change place, change location
+    - when deleting there are 5 conditions(dependencies) to observe:
+        - ItemsCategories
+        - Contracts !!! (here comes the conditional copy)
+        - ItemVisibilities
+        - Offers !!! (if the item is on the market)
+        - Pictures
+        - EndSellDateTime (if the item is on the market)
 - my categories
 - my bids
     - bid - update, itemDetails, refresh
@@ -187,6 +194,7 @@
 - deals 
     - cycle sell: buyer hit buy -> check item quantity -> item quantity decreases(if zero gets off the market) -> initiate contract(default send and deliver dates, default buyer comment) -> buyer may change/add - his comment, delivery date, his address - and hits confirmed OR decline the contract(if declined - item increases quantity) -> then seller may change somethin and hit ok OR may hit sell -> if sell and zero quantity, item gets off the market - end,start dates goes null -> if changed : the buyer is prompted and he/she may change it further, accept or decline it. -> if byer and seller are both ok the deal is on and awaits fulfilment. -> when the item is physically delivered to the buyer,  he/she can check the deal/contract as fulfilled or it can check itself a period after the delivery date -> if the buyer has complains he can then(after the delivery date) uncheck the ok and the contract can be revised -> if the contract is fulfilled the buyer may copy the seller's item data and set it his own item.
     - cycle auction sell: after auction ends (end endSell date is reached) the seller hit "sell opt" on "my sells" menu -> he/she can then sell the item to the highest biter or can choose from one of the barter biters, then can hit "sell", and the sell cycle is on.
+    - when item is sold it is deleted from the seller and conditional(depending on the item's visibility) copy is proposed to teh buyer when the item is physically arrived.
 - locations
 - places
 - search

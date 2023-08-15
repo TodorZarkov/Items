@@ -18,19 +18,20 @@
 	{
 		private readonly ItemsDbContext dbContext;
 		private readonly IHelper helper;
+		private readonly IDateTimeProvider dateTimeProvider;
 
-		public ItemService(ItemsDbContext dbContext, IHelper helper)
+		public ItemService(ItemsDbContext dbContext, IHelper helper, IDateTimeProvider dateTimeProvider)
 		{
 			this.dbContext = dbContext;
 			this.helper = helper;
+			this.dateTimeProvider = dateTimeProvider;
 		}
-
 
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IEnumerable<IndexViewModel> items = await dbContext.Items
 				.AsNoTracking()
-				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow)
+				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.OrderByDescending(i => i.StartSell)
 				.Take(numberOfItems)
 				.Select(i => new IndexViewModel
@@ -61,7 +62,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
-				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow)
+				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
 				{
@@ -105,7 +106,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
-				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow) //removed Access from filter
+				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime()) 
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
@@ -192,7 +193,7 @@
 
 					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
 
-					IsOnMarket = i.EndSell >= DateTime.UtcNow,
+					IsOnMarket = i.EndSell >= dateTimeProvider.GetCurrentDateTime(),
 					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
 
 				})
@@ -212,7 +213,7 @@
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => i.OwnerId == userId
-						|| i.EndSell != null && i.EndSell > DateTime.UtcNow)
+						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
@@ -246,7 +247,7 @@
 
 					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
 
-					IsOnMarket = i.EndSell >= DateTime.UtcNow,
+					IsOnMarket = i.EndSell >= dateTimeProvider.GetCurrentDateTime(),
 					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
 
 				})
@@ -264,7 +265,7 @@
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => i.OwnerId == userId
-						|| i.EndSell != null && i.EndSell > DateTime.UtcNow)
+						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
 				{
@@ -297,7 +298,7 @@
 
 					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
 
-					IsOnMarket = i.EndSell >= DateTime.UtcNow,
+					IsOnMarket = i.EndSell >= dateTimeProvider.GetCurrentDateTime(),
 					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
 				})
 				.ToArrayAsync();
@@ -322,7 +323,7 @@
 					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
 
 					IsAuction = i.IsAuction,
-					IsOnMarket = i.EndSell >= DateTime.UtcNow,
+					IsOnMarket = i.EndSell >= dateTimeProvider.GetCurrentDateTime(),
 
 
 					Categories = i.ItemsCategories
@@ -371,7 +372,7 @@
 			AllSellViewModel[] itemsOnMarket = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => i.OwnerId == userId)
-				.Where(i => i.EndSell.HasValue) //&& i.EndSell > DateTime.UtcNow)
+				.Where(i => i.EndSell.HasValue) //&& i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.OrderByDescending(i => i.EndSell)
 				.Select(i => new AllSellViewModel
 				{
@@ -522,7 +523,7 @@
 			await dbContext.SaveChangesAsync();
 		}
 
-		public async Task<ItemFormModel> GetByIdAsync(Guid itemId)
+		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
 		{
 			Item item = await dbContext.Items
 				.SingleAsync(i => i.Id == itemId);
@@ -570,7 +571,7 @@
 			return model;
 		}
 
-		public async Task<bool> IsAuthorized(Guid itemId, Guid userId)
+		public async Task<bool> IsAuthorizedAsync(Guid itemId, Guid userId)
 		{
 			bool result = await dbContext.Items
 				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId);
@@ -600,7 +601,7 @@
 			item.UnitId = model.UnitId;//1.4
 			item.PlaceId = model.PlaceId;//2.2
 			item.CurrencyId = model.CurrencyId;//3.3
-			item.ModifiedOn = DateTime.UtcNow;
+			item.ModifiedOn = dateTimeProvider.GetCurrentDateTime();
 
 			itemVisibility.AcquiredDate = model.ItemVisibility.AcquiredDate;
 			itemVisibility.AcquireDocument = model.ItemVisibility.AcquireDocument;
@@ -614,6 +615,67 @@
 			itemVisibility.Owner = model.ItemVisibility.Owner;
 
 			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<bool> IsAuthorizedToViewAsync(Guid itemId, Guid userId)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId || i.EndSell > dateTimeProvider.GetCurrentDateTime());
+
+			return result;
+		}
+
+		public Task<ItemViewModel> GetByIdForViewAsync(Guid itemId)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId)
+		{
+			Item item = await dbContext.Items
+				.SingleAsync(i => i.Id == itemId);
+
+			int[] categoryIds = await dbContext.ItemsCategories
+				.Where(ic => ic.ItemId == itemId)
+				.Select(ic => ic.CategoryId)
+				.ToArrayAsync();
+
+			ItemVisibility itemVisibility = await dbContext.ItemVisibilities
+				.SingleAsync(iv => iv.Item.Id == itemId);
+
+			ItemViewModel model = new ItemViewModel
+			{
+				Name = item.Name,
+				MainPictureUri = item.MainPictureUri,
+				Description = item.Description,
+				//CurrencyId = item.CurrencyId,
+				CurrentPrice = item.CurrentPrice,
+				EndSell = item.EndSell,
+				AcquiredDate = item.AcquiredDate,
+				AcquiredPrice = item.AcquiredPrice,
+				IsAuction = item.IsAuction.HasValue && (bool)item.IsAuction,
+				OnRotation = item.OnRotation,
+				PlaceId = item.PlaceId,
+				Quantity = item.Quantity,
+				StartSell = item.StartSell,
+				//UnitId = item.UnitId,
+				//CategoryIds = categoryIds,
+				ItemVisibility = new ItemFormVisibilityModel
+				{
+					Description = itemVisibility.Description,
+					AcquiredDate = itemVisibility.AcquiredDate,
+					AcquireDocument = itemVisibility.AcquireDocument,
+					AcquiredPrice = itemVisibility.AcquiredPrice,
+					AddedOn = itemVisibility.AddedOn,
+					CurrentPrice = itemVisibility.CurrentPrice,
+					Location = itemVisibility.Location,
+					Offers = itemVisibility.Offers,
+					Owner = itemVisibility.Owner,
+					Quantity = itemVisibility.Quantity
+				}
+			};
+
+			return model;
 		}
 	}
 }

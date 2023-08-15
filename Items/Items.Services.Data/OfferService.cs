@@ -3,7 +3,7 @@
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Bid;
-	using static Common.FormatConstants.DateAndTime;
+	using static Items.Common.FormatConstants.DateAndTime;
 
 	using Microsoft.EntityFrameworkCore;
 	using System;

@@ -4,14 +4,14 @@
 
 	using Microsoft.EntityFrameworkCore;
 
-	using static Common.EntityDbErrorMessages.Item;
-	using static Common.FormatConstants.DateAndTime;
+	using static Items.Common.EntityDbErrorMessages.Item;
+	using static Items.Common.FormatConstants.DateAndTime;
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Home;
 	using Items.Web.ViewModels.Item;
 	using Items.Web.ViewModels.Sell;
-	using Items.Common.Interfaces;
+	using Items.Services.Common.Interfaces;
 	using Items.Data.Models;
 	
 	public class ItemService : IItemService
@@ -442,7 +442,7 @@
 				.ToArrayAsync();
 
 
-			HashSet<int> rands = helper.GetRandNUniqueOfM(numberOfItems, allItemRotation.Count());
+			HashSet<int> rands = helper.GetRandNUniqueOfM(numberOfItems, allItemRotation.Length);
 			int index = 0;
 			for (int i  = 0; i<allItemRotation.Length;  i++)
 			{
@@ -545,7 +545,7 @@
 				EndSell = item.EndSell,
 				AcquiredDate = item.AcquiredDate,
 				AcquiredPrice = item.AcquiredPrice,
-				IsAuction = item.IsAuction.HasValue ? (bool)item.IsAuction : false,
+				IsAuction = item.IsAuction.HasValue && (bool)item.IsAuction,
 				OnRotation = item.OnRotation,
 				PlaceId = item.PlaceId,
 				Quantity = item.Quantity,

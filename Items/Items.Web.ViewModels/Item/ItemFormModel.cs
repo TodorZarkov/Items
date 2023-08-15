@@ -1,19 +1,20 @@
 ﻿namespace Items.Web.ViewModels.Item
 {
 	using Items.Common.Enums;
-	using static Items.Common.EntityValidationConstants.Item;
-
-	using System.ComponentModel.DataAnnotations.Schema;
-	using System.ComponentModel.DataAnnotations;
-	using Microsoft.AspNetCore.Mvc;
 	using Items.Web.ModelBinder;
+	using Items.Web.Validators.Attributes;
 	using Items.Web.ViewModels.Category;
-	using Items.Web.ViewModels.Unit;
-	using Items.Web.ViewModels.Place;
-	using Items.Web.ViewModels.Location;
 	using Items.Web.ViewModels.Currency;
+	using Items.Web.ViewModels.Place;
+	using Items.Web.ViewModels.Unit;
+	using static Items.Common.EntityValidationConstants.Item;
+	using static Items.Common.EntityValidationErrorMessages.Item;
 
-	public class ItemFormModel
+	using Microsoft.AspNetCore.Mvc;
+
+	using System.ComponentModel.DataAnnotations;
+
+	public class ItemFormModel 
 	{
 
 		public AccessModifier Access { get; set; } = AccessModifier.Private;//todo: remove Access from Item 
@@ -76,7 +77,6 @@
 
 
 
-		//todo: my dateTime? valid attribute also may check is it after now
 		public DateTime? AcquiredDate { get; set; }
 
 
@@ -92,13 +92,14 @@
 		public decimal? CurrentPrice { get; set; }
 
 
-
-        //todo: my dateTime? valid attribute also may check is it after now
+		[AfterOrEqualCurrentDateTime(ErrorMessage = StartSellCannotBeInThePast)]
+		[DateTimeBefore("EndSell", ErrorMessage = StartSellAfterEndSell)]
         public DateTime? StartSell { get; set; }
 
 
 
 		//todo: my dateTime? valid attribute also may check is it after StartSell, gets Required after StartDate is present
+		//[RequiredIfPresent("StartSell")]
 		public DateTime? EndSell { get; set; }
 
 
@@ -112,8 +113,9 @@
 
 
 		//public Document? AcquireDocument { get; set; }
-		 
+
 		//public ICollection<Picture> Pictures { get; set; }
+
 
 	}
 }

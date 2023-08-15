@@ -1,18 +1,15 @@
 namespace Items.Web
 {
+	using Items.Data;
+	using Items.Data.Models;
+	using Items.Services.Common;
+	using Items.Services.Common.Interfaces;
+	using Items.Services.Data;
+	using Items.Services.Data.Interfaces;
+	using Items.Web.ModelBinder;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Configuration;
-
-	using Items.Data;
-	using Items.Data.Models;
-	using Items.Services.Data.Interfaces;
-	using Items.Services.Data;
-	using Items.Services.Common.Interfaces;
-	using Items.Common;
-	using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-	using Items.Web.ModelBinder;
-	using Items.Services.Common;
 
 	public class Program
 	{
@@ -28,8 +25,8 @@ namespace Items.Web
 			{
 				options.UseSqlServer(connectionString, x => x.UseNetTopologySuite());
             }); 
-			
 
+              
 			builder.Services
 				.AddDefaultIdentity<ApplicationUser>(options =>
 			{
@@ -85,7 +82,6 @@ namespace Items.Web
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
-				app.UseMigrationsEndPoint();
 				app.UseDeveloperExceptionPage();
 			}
 			else

@@ -1,4 +1,4 @@
-﻿namespace Items.Common.Interfaces
+﻿namespace Items.Services.Common.Interfaces
 {
 	public interface IHelper
 	{

@@ -1,7 +1,9 @@
-﻿
+﻿@model IEnumerable<AllItemViewModel>
+
+
 <div class="d-flex flex-wrap gap-3 mt-3">
 
-	@foreach (var item in Model)
+	@foreach (AllItemViewModel item in Model)
 	{
 		<div class="card border-success mb-3" style="width: 18rem;">
 			<img src="@item.MainPictureUri" class="card-img-top" alt="...">
@@ -37,7 +39,7 @@
 						<a href="#" class="btn btn-sm btn-danger">Put on The Market</a>
 					}
 
-					<a href="#" class="btn btn-sm btn-dark">Edit</a>
+					<a asp-controller="Item" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Edit</a>
 
 
 
@@ -69,7 +71,7 @@
 
 				<p class="card-text pt-3">Categories: @string.Join(", ",item.Categories)</p>
 
-				<a href="#" class="btn btn-sm btn-info ms-auto d-block">Details</a>
+				<a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info ms-auto d-block">Details</a>
 			</div>
 		</div>
 	}

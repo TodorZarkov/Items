@@ -1,17 +1,18 @@
 namespace Items.Web
 {
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
+	using Microsoft.AspNetCore.Identity;
+	using Microsoft.EntityFrameworkCore;
+	using Microsoft.Extensions.Configuration;
 
-    using Items.Data;
-    using Items.Data.Models;
-    using Items.Services.Data.Interfaces;
-    using Items.Services.Data;
-	using Items.Common.Interfaces;
+	using Items.Data;
+	using Items.Data.Models;
+	using Items.Services.Data.Interfaces;
+	using Items.Services.Data;
+	using Items.Services.Common.Interfaces;
 	using Items.Common;
 	using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 	using Items.Web.ModelBinder;
+	using Items.Services.Common;
 
 	public class Program
 	{
@@ -77,6 +78,7 @@ namespace Items.Web
 			builder.Services.AddScoped<IUnitService, UnitService>();
 
 			builder.Services.AddScoped<IHelper, Helper>();
+			builder.Services.AddScoped<IDateTimeProvider, DateTimeUtcProvider>();
 
 			var app = builder.Build();
 

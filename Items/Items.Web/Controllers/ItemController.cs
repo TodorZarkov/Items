@@ -52,7 +52,7 @@
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Add()
+		public async Task<IActionResult> Add(int? placeId)
 		{
 			Guid userId = Guid.Parse(User.GetId());
 
@@ -64,6 +64,10 @@
 				AvailableUnits = await unitService.AllForSelectAsync(),
 				AvailablePlaces = await placeService.AllForSelectAsync(userId),
 			};
+			if (placeId.HasValue)
+			{
+				model.PlaceId = (int)placeId;
+			}
 			return View(model);
 		}
 
@@ -76,7 +80,7 @@
 
 			if (continueAdd)
 			{
-				return RedirectToAction("Add", "Item");//todo: fill appropriate model with some of the previous choices
+				return RedirectToAction("Add", "Item", new { placeId = model.PlaceId });
 			}
 
 			return RedirectToAction("Mine", "Item");
@@ -93,6 +97,10 @@
 			}
 
 			ItemFormModel model = await itemService.GetByIdAsync(id);
+			model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+			model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+			model.AvailableUnits = await unitService.AllForSelectAsync();
+			model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
 
 			return View(model);
 		}
@@ -108,7 +116,7 @@
 			}
 			//todo: check model
 
-			//await itemService.UpdateItemAsync(model);
+			await itemService.UpdateItemAsync(model, id);
 
 			return RedirectToAction("Mine", "Item");
 		}

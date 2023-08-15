@@ -4,17 +4,16 @@
 
 	using Microsoft.EntityFrameworkCore;
 
-	using Common.Enums;
+	using static Common.EntityDbErrorMessages.Item;
+	using static Common.FormatConstants.DateAndTime;
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Home;
 	using Items.Web.ViewModels.Item;
-	using static Common.FormatConstants.DateAndTime;
 	using Items.Web.ViewModels.Sell;
 	using Items.Common.Interfaces;
 	using Items.Data.Models;
-	using Items.Web.ViewModels.Category;
-
+	
 	public class ItemService : IItemService
 	{
 		private readonly ItemsDbContext dbContext;
@@ -30,6 +29,7 @@
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IEnumerable<IndexViewModel> items = await dbContext.Items
+				.AsNoTracking()
 				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.StartSell)
 				.Take(numberOfItems)
@@ -60,6 +60,7 @@
 		public async Task<IEnumerable<AllItemViewModel>> AllPublic()
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
+				.AsNoTracking()
 				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
@@ -103,6 +104,7 @@
 			int[] categories, Guid? userId = null)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
+				.AsNoTracking()
 				.Where(i => i.EndSell != null && i.EndSell > DateTime.UtcNow) //removed Access from filter
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.StartSell)
@@ -155,6 +157,7 @@
 			int[] categories, Guid userId)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
+				.AsNoTracking()
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.ModifiedOn)
@@ -207,6 +210,7 @@
 			int[] categories, Guid userId)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
+				.AsNoTracking()
 				.Where(i => i.OwnerId == userId
 						|| i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
@@ -258,6 +262,7 @@
 		public async Task<IEnumerable<AllItemViewModel>> All(Guid userId)
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
+				.AsNoTracking()
 				.Where(i => i.OwnerId == userId
 						|| i.EndSell != null && i.EndSell > DateTime.UtcNow)
 				.OrderByDescending(i => i.ModifiedOn)
@@ -304,6 +309,7 @@
 		public async Task<IEnumerable<MyItemViewModel>> Mine(Guid userId)
 		{
 			IEnumerable<MyItemViewModel> items = await dbContext.Items
+				.AsNoTracking()
 				.Where(i => i.OwnerId == userId)
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new MyItemViewModel
@@ -340,6 +346,7 @@
 		{
 			IEnumerable<ItemForBarterViewModel> allItemsForBarter =
 				await dbContext.Items
+				.AsNoTracking()
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)) // todo: observe the equality when dealing with decimal!!!!!
 				.Select(i => new ItemForBarterViewModel
@@ -427,24 +434,25 @@
 
 		public async Task SetDailyRotationsAsync(Guid userId, int numberOfItems)
 		{
-			var allItemRotation = dbContext.Items
+			var allItemRotation = await dbContext.Items
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.OnRotation)
 				.Where(i => !i.EndSell.HasValue)
-				.Where(i => i.Quantity > 0);
+				.Where(i => i.Quantity > 0)
+				.ToArrayAsync();
 
 
 			HashSet<int> rands = helper.GetRandNUniqueOfM(numberOfItems, allItemRotation.Count());
 			int index = 0;
-			foreach (var item in allItemRotation)
+			for (int i  = 0; i<allItemRotation.Length;  i++)
 			{
-				if (rands.Contains(index))
+				if (rands.Contains(i))
 				{
-					item.OnRotationNow = true;
+					allItemRotation[i].OnRotationNow = true;
 				}
 				else
 				{
-					item.OnRotationNow = false;
+					allItemRotation[i].OnRotationNow = false;
 				}
 				index++;
 			}
@@ -524,6 +532,9 @@
 				.Select(ic => ic.CategoryId)
 				.ToArrayAsync();
 
+			ItemVisibility itemVisibility = await dbContext.ItemVisibilities
+				.SingleAsync(iv => iv.Item.Id == itemId);
+
 			ItemFormModel model = new ItemFormModel
 			{
 				Name = item.Name,
@@ -540,7 +551,20 @@
 				Quantity = item.Quantity,
 				StartSell = item.StartSell,
 				UnitId = item.UnitId,
-				CategoryIds = categoryIds
+				CategoryIds = categoryIds,
+				ItemVisibility = new ItemFormVisibilityModel
+				{
+					Description = itemVisibility.Description,
+					AcquiredDate = itemVisibility.AcquiredDate,
+					AcquireDocument = itemVisibility.AcquireDocument,
+					AcquiredPrice = itemVisibility.AcquiredPrice,
+					AddedOn = itemVisibility.AddedOn,
+					CurrentPrice = itemVisibility.CurrentPrice,
+					Location = itemVisibility.Location,
+					Offers = itemVisibility.Offers,
+					Owner = itemVisibility.Owner,
+					Quantity = itemVisibility.Quantity
+				}
 			};
 
 			return model;
@@ -554,9 +578,42 @@
 			return result;
 		}
 
-		public Task UpdateItemAsync(ItemFormModel model)
+		public async Task UpdateItemAsync(ItemFormModel model, Guid itemId)
 		{
-			throw new NotImplementedException();
+			Item? item = await dbContext.Items.FindAsync(itemId) ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, "", ""));
+			ItemVisibility? itemVisibility = await dbContext
+				.ItemVisibilities
+				.FindAsync(item.ItemVisibilityId) 
+				?? throw new ArgumentException(string.Format(ItemVisibilityNotPresentInDb, "", ""));
+
+			item.Name = model.Name;//1.2
+			item.Quantity = model.Quantity;//1.3
+			item.Description = model.Description;//2.1
+			item.OnRotation = model.OnRotation;//2.3
+			item.AcquiredPrice = model.AcquiredPrice;//3.1
+			item.AcquiredDate = model.AcquiredDate;//3.2
+			item.CurrentPrice = model.CurrentPrice;//4.1
+			item.IsAuction = model.IsAuction;//4.2
+			item.MainPictureUri = model.MainPictureUri;//1.1
+			item.StartSell = model.StartSell;//4.3
+			item.EndSell = model.EndSell;//4.4
+			item.UnitId = model.UnitId;//1.4
+			item.PlaceId = model.PlaceId;//2.2
+			item.CurrencyId = model.CurrencyId;//3.3
+			item.ModifiedOn = DateTime.UtcNow;
+
+			itemVisibility.AcquiredDate = model.ItemVisibility.AcquiredDate;
+			itemVisibility.AcquireDocument = model.ItemVisibility.AcquireDocument;
+			itemVisibility.AcquiredPrice = model.ItemVisibility.AcquiredPrice;
+			itemVisibility.AddedOn = model.ItemVisibility.AddedOn;
+			itemVisibility.CurrentPrice = model.ItemVisibility.CurrentPrice;
+			itemVisibility.Description = model.ItemVisibility.Description;
+			itemVisibility.Location = model.ItemVisibility.Location;
+			itemVisibility.Offers = model.ItemVisibility.Offers;
+			itemVisibility.Quantity = model.ItemVisibility.Quantity;
+			itemVisibility.Owner = model.ItemVisibility.Owner;
+
+			await dbContext.SaveChangesAsync();
 		}
 	}
 }

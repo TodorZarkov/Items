@@ -1,6 +1,6 @@
-﻿namespace Items.Common
+﻿namespace Items.Services.Common
 {
-	using Items.Common.Interfaces;
+	using Interfaces;
 
 	public class Helper : IHelper
 	{

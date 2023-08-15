@@ -45,9 +45,9 @@
 
 			<td>
 				<div class="d-flex flex-nowrap">
-					<button class="btn btn-sm btn-primary me-1">Edit</button>
-					<button class="btn btn-sm btn-danger me-auto">Delete</button>
-					<button class="btn btn-sm btn-success">Add Items</button>
+					<a class="btn btn-sm btn-primary me-1">Edit</a>
+					<a class="btn btn-sm btn-danger me-auto">Delete</a>
+					<a asp-controller="Item" asp-action="Add" asp-route-placeId="@place.Id" class="btn btn-sm btn-success">Add Items</a>
 				</div>
 			</td>
 

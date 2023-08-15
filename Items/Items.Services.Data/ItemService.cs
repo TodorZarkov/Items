@@ -498,6 +498,7 @@
 					AcquireDocument = model.ItemVisibility.AcquireDocument,
 					AcquiredPrice = model.ItemVisibility.AcquiredPrice,
 					AddedOn = model.ItemVisibility.AddedOn,
+					ModifiedOn = model.ItemVisibility.ModifiedOn,
 					CurrentPrice = model.ItemVisibility.CurrentPrice,
 					Description = model.ItemVisibility.Description,
 					Location = model.ItemVisibility.Location,
@@ -560,6 +561,7 @@
 					AcquireDocument = itemVisibility.AcquireDocument,
 					AcquiredPrice = itemVisibility.AcquiredPrice,
 					AddedOn = itemVisibility.AddedOn,
+					ModifiedOn = itemVisibility.ModifiedOn,
 					CurrentPrice = itemVisibility.CurrentPrice,
 					Location = itemVisibility.Location,
 					Offers = itemVisibility.Offers,
@@ -607,6 +609,7 @@
 			itemVisibility.AcquireDocument = model.ItemVisibility.AcquireDocument;
 			itemVisibility.AcquiredPrice = model.ItemVisibility.AcquiredPrice;
 			itemVisibility.AddedOn = model.ItemVisibility.AddedOn;
+			itemVisibility.ModifiedOn = model.ItemVisibility.ModifiedOn;
 			itemVisibility.CurrentPrice = model.ItemVisibility.CurrentPrice;
 			itemVisibility.Description = model.ItemVisibility.Description;
 			itemVisibility.Location = model.ItemVisibility.Location;
@@ -667,6 +670,7 @@
 					AcquireDocument = itemVisibility.AcquireDocument,
 					AcquiredPrice = itemVisibility.AcquiredPrice,
 					AddedOn = itemVisibility.AddedOn,
+					ModifiedOn = itemVisibility.ModifiedOn,
 					CurrentPrice = itemVisibility.CurrentPrice,
 					Location = itemVisibility.Location,
 					Offers = itemVisibility.Offers,

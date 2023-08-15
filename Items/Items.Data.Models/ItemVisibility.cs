@@ -16,6 +16,7 @@
             Location =          AccessModifier.Private;
             Offers =            AccessModifier.Private;
             AddedOn =           AccessModifier.Private;
+            ModifiedOn =        AccessModifier.Private;
 
             Quantity =          AccessModifier.Private;
             AcquiredPrice =     AccessModifier.Private;
@@ -48,6 +49,8 @@
         public AccessModifier Offers { get; set; }
         
         public AccessModifier AddedOn { get; set; }
+
+        public AccessModifier ModifiedOn { get; set; }
 
 
         //[ForeignKey(nameof(Item))]

@@ -6,6 +6,7 @@
 
 	using static Items.Common.EntityDbErrorMessages.Item;
 	using static Items.Common.FormatConstants.DateAndTime;
+	using static Items.Common.Enums.AccessModifier;
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Home;
@@ -13,7 +14,8 @@
 	using Items.Web.ViewModels.Sell;
 	using Items.Services.Common.Interfaces;
 	using Items.Data.Models;
-	
+	using Items.Web.ViewModels.Location;
+
 	public class ItemService : IItemService
 	{
 		private readonly ItemsDbContext dbContext;
@@ -628,56 +630,139 @@
 			return result;
 		}
 
-		public Task<ItemViewModel> GetByIdForViewAsync(Guid itemId)
+		public async Task<ItemViewModel> GetByIdForViewAsync(Guid itemId)
 		{
-			throw new NotImplementedException();
+			ItemViewModel model = await dbContext.Items
+				.AsNoTracking()
+				.Where(i => i.Id == itemId)
+				.Select(i => new ItemViewModel
+				{
+					Id = i.Id,
+					MainPictureUri = i.MainPictureUri,
+					Name = i.Name,
+					CurrentPrice = i.CurrentPrice,
+					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,
+					CurrencyIsoCode = i.Currency != null ? i.Currency.IsoCode : null,
+					StartSell = i.StartSell,
+					EndSell = i.EndSell,
+					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name)),
+					IsAuction = i.IsAuction,
+
+
+					PlaceId = i.PlaceId,
+					PlaceName = i.Place.Name,
+					AsBarterForOffersCount = i.AsBarterForOffers.Count,
+					ContractsCount = i.Contracts.Count(),
+					OnRotation = i.OnRotation,
+					OnRotationNow = i.OnRotationNow,
+
+
+					Description = i.ItemVisibility.Description == Public ? i.Description : null,
+					AcquiredDate = i.ItemVisibility.AcquiredDate == Public ? i.AcquiredDate : null,
+					//document here
+					AcquiredPrice = i.ItemVisibility.AcquiredPrice == Public ? i.AcquiredPrice : null,
+					AddedOn = i.ItemVisibility.AddedOn == Public ? i.AddedOn : null,
+					ModifiedOn = i.ItemVisibility.ModifiedOn == Public ? i.ModifiedOn : null,
+					//current price todo: remove
+					Quantity = i.ItemVisibility.Quantity == Public ? i.Quantity : null,
+					UnitName = i.Unit.Name,
+					UnitSymbol = i.Unit.Symbol,
+					OffersCount = i.ItemVisibility.Offers == Public ? i.Offers.Count : null,
+					OwnerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
+					OwnerName = i.ItemVisibility.Owner == Public ? i.Owner.UserName : null,
+					OwnerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
+
+					ItemVisibility = new ItemFormVisibilityModel
+					{
+						Description = i.ItemVisibility.Description,
+						AcquiredDate = i.ItemVisibility.AcquiredDate,
+						AcquireDocument = i.ItemVisibility.AcquireDocument,
+						AcquiredPrice = i.ItemVisibility.AcquiredPrice,
+						AddedOn = i.ItemVisibility.AddedOn,
+						ModifiedOn = i.ItemVisibility.ModifiedOn,
+						CurrentPrice = i.ItemVisibility.CurrentPrice,
+						Location = i.ItemVisibility.Location,
+						Offers = i.ItemVisibility.Offers,
+						Owner = i.ItemVisibility.Owner,
+						Quantity = i.ItemVisibility.Quantity
+					},
+
+					Location = i.ItemVisibility.Location == Public ? new AllLocationViewModel
+					{
+						Name = i.Location.LocationVisibility.Name == Public ? i.Location.Name : string.Empty, //todo: fix to be nullable
+						Address = i.Location.LocationVisibility.Address == Public ? i.Location.Address : string.Empty, //todo: fix to be nullable
+						Description = i.Location.LocationVisibility.Description == Public ? i.Location.Description : null,
+						Border = i.Location.LocationVisibility.Border == Public && i.Location.Border != null ? i.Location.Border.ToString() : null,
+						Country = i.Location.LocationVisibility.Country == Public ? i.Location.Country : string.Empty, //todo: fix to be nullable
+						GeoLocation =  i.Location.LocationVisibility.GeoLocation == Public && i.Location.GeoLocation != null ? i.Location.GeoLocation.ToString() : null,
+						Town = i.Location.LocationVisibility.Town == Public ? i.Location.Town : null,
+
+					} : null
+
+					
+				})
+				.SingleAsync();
+
+			return model;
 		}
 
 		public async Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId)
 		{
-			Item item = await dbContext.Items
-				.SingleAsync(i => i.Id == itemId);
-
-			int[] categoryIds = await dbContext.ItemsCategories
-				.Where(ic => ic.ItemId == itemId)
-				.Select(ic => ic.CategoryId)
-				.ToArrayAsync();
-
-			ItemVisibility itemVisibility = await dbContext.ItemVisibilities
-				.SingleAsync(iv => iv.Item.Id == itemId);
-
-			ItemViewModel model = new ItemViewModel
-			{
-				Name = item.Name,
-				MainPictureUri = item.MainPictureUri,
-				Description = item.Description,
-				//CurrencyId = item.CurrencyId,
-				CurrentPrice = item.CurrentPrice,
-				EndSell = item.EndSell,
-				AcquiredDate = item.AcquiredDate,
-				AcquiredPrice = item.AcquiredPrice,
-				IsAuction = item.IsAuction.HasValue && (bool)item.IsAuction,
-				OnRotation = item.OnRotation,
-				PlaceId = item.PlaceId,
-				Quantity = item.Quantity,
-				StartSell = item.StartSell,
-				//UnitId = item.UnitId,
-				//CategoryIds = categoryIds,
-				ItemVisibility = new ItemFormVisibilityModel
+			ItemViewModel model = await dbContext.Items
+				.AsNoTracking()
+				.Where(i => i.Id == itemId)
+				.Select(i => new ItemViewModel
 				{
-					Description = itemVisibility.Description,
-					AcquiredDate = itemVisibility.AcquiredDate,
-					AcquireDocument = itemVisibility.AcquireDocument,
-					AcquiredPrice = itemVisibility.AcquiredPrice,
-					AddedOn = itemVisibility.AddedOn,
-					ModifiedOn = itemVisibility.ModifiedOn,
-					CurrentPrice = itemVisibility.CurrentPrice,
-					Location = itemVisibility.Location,
-					Offers = itemVisibility.Offers,
-					Owner = itemVisibility.Owner,
-					Quantity = itemVisibility.Quantity
-				}
-			};
+					Id = i.Id,
+					MainPictureUri = i.MainPictureUri,
+					Name = i.Name,
+					CurrentPrice = i.CurrentPrice,
+					CurrencySymbol = i.Currency != null?i.Currency.Symbol : null,
+					CurrencyIsoCode = i.Currency != null ? i.Currency.IsoCode : null,
+					StartSell = i.StartSell,
+					EndSell = i.EndSell,
+					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name)),
+					IsAuction = i.IsAuction,
+
+
+					PlaceId = i.PlaceId,
+					PlaceName = i.Place.Name,
+					LocationId = i.LocationId,
+					LocationName = i.Location.Name,
+					AsBarterForOffersCount = i.AsBarterForOffers.Count,
+					ContractsCount = i.Contracts.Count(),
+					OnRotation = i.OnRotation,
+					OnRotationNow = i.OnRotationNow,
+
+					Description = i.Description,
+					AcquiredDate = i.AcquiredDate,
+					AcquiredPrice = i.AcquiredPrice,
+					Quantity = i.Quantity,
+					UnitName = i.Unit.Name,
+					UnitSymbol = i.Unit.Symbol,
+					AddedOn = i.AddedOn,
+					ModifiedOn = i.ModifiedOn,
+					OffersCount = i.Offers.Count,
+					OwnerEmail = i.Owner.Email,
+					OwnerName = i.Owner.UserName,
+					OwnerPhone = i.Owner.PhoneNumber,
+
+					ItemVisibility = new ItemFormVisibilityModel
+					{
+						Description = i.ItemVisibility.Description,
+						AcquiredDate = i.ItemVisibility.AcquiredDate,
+						AcquireDocument = i.ItemVisibility.AcquireDocument,
+						AcquiredPrice = i.ItemVisibility.AcquiredPrice,
+						AddedOn = i.ItemVisibility.AddedOn,
+						ModifiedOn = i.ItemVisibility.ModifiedOn,
+						CurrentPrice = i.ItemVisibility.CurrentPrice,
+						Location = i.ItemVisibility.Location,
+						Offers = i.ItemVisibility.Offers,
+						Owner = i.ItemVisibility.Owner,
+						Quantity = i.ItemVisibility.Quantity
+					}
+				})
+				.SingleAsync();
 
 			return model;
 		}

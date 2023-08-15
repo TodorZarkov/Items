@@ -1,5 +1,7 @@
 ﻿namespace Items.Web.ViewModels.Item
 {
+	using Items.Web.ViewModels.Location;
+
 	public class ItemViewModel
 	{
 		//default public
@@ -13,11 +15,11 @@
 		public string Categories { get; set; } = null!;
 		public string MainPictureUri { get; set; } = null!;
 		public bool? IsAuction { get; set; }
+		public ItemFormVisibilityModel ItemVisibility { get; set; } = null!;
 
 
 
 		//default private
-		public ItemFormVisibilityModel? ItemVisibility { get; set; } = null!;
 		public int? PlaceId { get; set; }
 		public string? PlaceName { get; set; } = null!;
 		public Guid? LocationId { get; set; }
@@ -45,6 +47,7 @@
 
 		//public ICollection<Picture>? Pictures { get; set; }//todo: add it to ItemVisibilities table
 		public int? OffersCount { get; set; } //todo: fix it in according to visibility on AllItems
+        public AllLocationViewModel? Location { get; set; }
 
-	}
+    }
 }

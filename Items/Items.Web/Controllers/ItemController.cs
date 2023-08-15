@@ -122,23 +122,29 @@
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Details(Guid itemId)
+		public async Task<IActionResult> Details(Guid id)
 		{
 			Guid userId = Guid.Parse(User.GetId());
 
-			bool authorizedToView = await itemService.IsAuthorizedToViewAsync(itemId, userId);
+			bool authorizedToView = await itemService.IsAuthorizedToViewAsync(id, userId);
 			if (!authorizedToView)
 			{
 				return RedirectToAction("All", "Item");
 			}
 
-			bool authorizedToEdit = await itemService.IsAuthorizedAsync(itemId, userId);
+			ItemViewModel model;
+
+			bool authorizedToEdit = await itemService.IsAuthorizedAsync(id, userId);
 			if (authorizedToEdit)
 			{
-
+				model = await itemService.GetByIdForViewAsOwnerAsync(id);
+			}
+			else
+			{
+				model = await itemService.GetByIdForViewAsync(id);
 			}
 
-			return View();
+			return View(model);
 		}
 	}
 }

@@ -1,0 +1,85 @@
+﻿@model AllLocationViewModel
+
+
+<table class="table table-secondary table-striped table-hover align-middle">
+	<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Description</th>
+			<th scope="col">Country</th>
+			<th scope="col">Town</th>
+			<th scope="col">Address</th>
+			<th scope="col">GeoLocation</th>
+			<th scope="col">Border</th>
+		</tr>
+	</thead>
+
+
+
+
+	<tbody>
+
+		<tr>
+			<th scope="row">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@Model.Name</p>
+					<partial name="_AccessSign" model="@Model.Visibility.Name" />
+				</div>
+			</th>
+			<td class="dropdown">
+
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fas fa-align-left"></i>
+				</button>
+				<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;">
+					<p>
+						@Model.Description
+					</p>
+				</div>
+				<partial name="_AccessSign" model="@Model.Visibility.Description" />
+
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@Model.Country</p>
+					<partial name="_AccessSign" model="@Model.Visibility.Country" />
+				</div>
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@Model.Town</p>
+					<partial name="_AccessSign" model="@Model.Visibility.Town" />
+				</div>
+			</td>
+			<td class="dropdown">
+
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fas fa-align-left"></i>
+				</button>
+				<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;" aria-labelledby="dropdownMenuClickableInside">
+					<p>
+						@Model.Address
+					</p>
+				</div>
+
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@Model.GeoLocation</p>
+					<partial name="_AccessSign" model="@Model.Visibility.GeoLocation" />
+				</div>
+			</td>
+			<td>
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@Model.Border</p>
+					<partial name="_AccessSign" model="@Model.Visibility.Border" />
+				</div>
+			</td>
+			
+		</tr>
+
+
+
+	</tbody>
+
+</table>

@@ -496,6 +496,7 @@
 				CurrencyId = model.CurrencyId,//3.3
 				ItemVisibility = new ItemVisibility
 				{
+				
 					AcquiredDate = model.ItemVisibility.AcquiredDate,
 					AcquireDocument = model.ItemVisibility.AcquireDocument,
 					AcquiredPrice = model.ItemVisibility.AcquiredPrice,
@@ -640,7 +641,7 @@
 					Id = i.Id,
 					MainPictureUri = i.MainPictureUri,
 					Name = i.Name,
-					CurrentPrice = i.CurrentPrice,
+					CurrentPrice = i.CurrentPrice != null ? ((decimal)i.CurrentPrice).ToString("N2") : null,
 					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,
 					CurrencyIsoCode = i.Currency != null ? i.Currency.IsoCode : null,
 					StartSell = i.StartSell,
@@ -660,11 +661,11 @@
 					Description = i.ItemVisibility.Description == Public ? i.Description : null,
 					AcquiredDate = i.ItemVisibility.AcquiredDate == Public ? i.AcquiredDate : null,
 					//document here
-					AcquiredPrice = i.ItemVisibility.AcquiredPrice == Public ? i.AcquiredPrice : null,
+					AcquiredPrice = i.AcquiredPrice != null ? ((decimal)i.AcquiredPrice).ToString("N2") : null,
 					AddedOn = i.ItemVisibility.AddedOn == Public ? i.AddedOn : null,
 					ModifiedOn = i.ItemVisibility.ModifiedOn == Public ? i.ModifiedOn : null,
 					//current price todo: remove
-					Quantity = i.ItemVisibility.Quantity == Public ? i.Quantity : null,
+					Quantity = i.ItemVisibility.Quantity == Public ? i.Quantity.ToString("N3") : null,
 					UnitName = i.Unit.Name,
 					UnitSymbol = i.Unit.Symbol,
 					OffersCount = i.ItemVisibility.Offers == Public ? i.Offers.Count : null,
@@ -697,6 +698,17 @@
 						GeoLocation =  i.Location.LocationVisibility.GeoLocation == Public && i.Location.GeoLocation != null ? i.Location.GeoLocation.ToString() : null,
 						Town = i.Location.LocationVisibility.Town == Public ? i.Location.Town : null,
 
+						Visibility = new LocationVisibilityViewModel
+						{
+							Name = i.Location.LocationVisibility.Name,
+							Description = i.Location.LocationVisibility.Description,
+							Country = i.Location.LocationVisibility.Country,
+							Town = i.Location.LocationVisibility.Town,
+							Address = i.Location.LocationVisibility.Address,
+							GeoLocation = i.Location.LocationVisibility.GeoLocation,
+							Border = i.Location.LocationVisibility.Border,
+						}
+
 					} : null
 
 					
@@ -716,7 +728,7 @@
 					Id = i.Id,
 					MainPictureUri = i.MainPictureUri,
 					Name = i.Name,
-					CurrentPrice = i.CurrentPrice,
+					CurrentPrice = i.CurrentPrice != null?((decimal)i.CurrentPrice).ToString("N2") : null,
 					CurrencySymbol = i.Currency != null?i.Currency.Symbol : null,
 					CurrencyIsoCode = i.Currency != null ? i.Currency.IsoCode : null,
 					StartSell = i.StartSell,
@@ -736,8 +748,8 @@
 
 					Description = i.Description,
 					AcquiredDate = i.AcquiredDate,
-					AcquiredPrice = i.AcquiredPrice,
-					Quantity = i.Quantity,
+					AcquiredPrice = i.AcquiredPrice != null ? ((decimal)i.AcquiredPrice).ToString("N2") : null,
+					Quantity = i.Quantity.ToString("N3"),
 					UnitName = i.Unit.Name,
 					UnitSymbol = i.Unit.Symbol,
 					AddedOn = i.AddedOn,
@@ -765,6 +777,14 @@
 				.SingleAsync();
 
 			return model;
+		}
+
+		public async Task<bool> IsOnMarket(Guid id)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == id && i.EndSell != null);
+
+			return result;
 		}
 	}
 }

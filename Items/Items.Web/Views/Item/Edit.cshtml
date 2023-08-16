@@ -36,7 +36,7 @@
 
 
 						<div class="col-sm input-group">
-							<input asp-for="@Model.Quantity" type="number" step="@QuantityMinValue" min="@QuantityMinValue" max="@QuantityMaxValue" class="form-control w-50" placeholder="Quantity">
+							<input asp-for="@Model.Quantity" type="number" step="@QuantityFrontMinValue" min="@QuantityFrontMinValue" max="@QuantityFrontMaxValue" class="form-control w-50" placeholder="Quantity">
 							<select asp-for="@Model.UnitId" asp-items="@(new SelectList(Model.AvailableUnits,
 													nameof(ForSelectUnitViewModel.UnitId),
 													nameof(ForSelectUnitViewModel.UnitSymbol),
@@ -50,7 +50,7 @@
 								Categories
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								@foreach (CategoryFilterViewModel category in Model.AvailableCategories)
+								@foreach (CategoryFilterViewModel category in Model.AvailableCategories!)
 								{
 									<li class="dropdown-item ">
 										<input class="form-check-input me-1"
@@ -111,7 +111,7 @@
 						</div>
 
 						<div class="col-sm input-group">
-							<input asp-for="@Model.AcquiredPrice" type="number" step="@ValueMinValue" min="@ValueMinValue" max="@ValueMaxValue" class="form-control w-75" placeholder="Acquired Price">
+							<input asp-for="@Model.AcquiredPrice" type="number"  min="@ValueFrontMinValue" max="@ValueFrontMaxValue" class="form-control w-75" placeholder="Acquired Price">
 							<select class="form-select"
 									asp-for="@Model.CurrencyId"
 									asp-items="@(new SelectList(
@@ -144,6 +144,7 @@
 								   placeholder="StartSell Date"
 								   asp-for="@Model.StartSell">
 							<label asp-for="@Model.StartSell">Start Sell Date</label>
+							<span asp-validation-for="@Model.StartSell" class="text-danger text-sm-start"></span>
 						</div>
 
 						<div class="col-sm form-floating">
@@ -152,14 +153,15 @@
 								   class="form-control"
 								   placeholder="EndSell Date">
 							<label asp-for="@Model.EndSell">End Sell Date</label>
+							<span asp-validation-for="@Model.EndSell" class="text-danger text-sm-start"></span>
 						</div>
 
 						<div class="col-sm input-group">
 							<input asp-for="@Model.CurrentPrice"
 								   type="number"
-								   step="@ValueMinValue"
-								   min="@ValueMinValue"
-								   max="@ValueMaxValue"
+								   
+								   min="@ValueFrontMinValue"
+								   max="@ValueFrontMaxValue"
 								   class="form-control w-75"
 								   placeholder="Price">
 							<select asp-for="@Model.CurrencyId"
@@ -198,8 +200,8 @@
 													,Model.ItemVisibility.Quantity.ToString()}" />
 						<partial class="col-xs"
 								 name="_AccessRadio"
-								 model="@new string[] {nameof(Model.ItemVisibility.AddedOn)
-													,Model.ItemVisibility.AddedOn.ToString()}" />
+								 model="@(new string[] {nameof(Model.ItemVisibility.AddedOn)
+													,Model.ItemVisibility.AddedOn.ToString()})" />
 						<partial class="col-xs"
 								 name="_AccessRadio"
 								 model="@new string[] {nameof(Model.ItemVisibility.ModifiedOn)

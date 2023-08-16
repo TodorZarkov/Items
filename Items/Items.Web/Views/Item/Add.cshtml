@@ -36,7 +36,7 @@
 
 
 						<div class="col-sm input-group">
-							<input asp-for="@Model.Quantity" type="number" step="@QuantityMinValue" min="@QuantityMinValue" max="@QuantityMaxValue" class="form-control w-50" placeholder="Quantity">
+							<input asp-for="@Model.Quantity" type="number"  min="@QuantityFrontMinValue" max="@QuantityFrontMaxValue" class="form-control w-50" placeholder="Quantity">
 							<select asp-for="@Model.UnitId" asp-items="@(new SelectList(Model.AvailableUnits,
 													nameof(ForSelectUnitViewModel.UnitId),
 													nameof(ForSelectUnitViewModel.UnitSymbol),
@@ -114,7 +114,7 @@
 						</div>
 
 						<div class="col-sm input-group">
-							<input asp-for="@Model.AcquiredPrice" type="number" step="@ValueMinValue" min="@ValueMinValue" max="@ValueMaxValue" class="form-control w-75" placeholder="Acquired Price">
+							<input asp-for="@Model.AcquiredPrice" type="number" min="@ValueFrontMinValue" max="@ValueFrontMaxValue" class="form-control w-75" placeholder="Acquired Price">
 							<select class="form-select"
 									asp-for="@Model.CurrencyId"
 									asp-items="@(new SelectList(
@@ -160,9 +160,9 @@
 						<div class="col-sm input-group">
 							<input asp-for="@Model.CurrentPrice"
 								   type="number"
-								   step="@ValueMinValue"
-								   min="@ValueMinValue"
-								   max="@ValueMaxValue"
+								   step="@ValueFrontMinValue"
+								   min="@ValueFrontMinValue"
+								   max="@ValueFrontMaxValue"
 								   class="form-control w-75"
 								   placeholder="Price">
 							<select asp-for="@Model.CurrencyId"

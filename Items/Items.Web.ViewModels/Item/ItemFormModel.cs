@@ -27,13 +27,13 @@
 		[Required]
 		[ModelBinder(binderType: typeof(UnitIdModelBinder))]
 		public int UnitId { get; set; }
-		public IEnumerable<ForSelectUnitViewModel> AvailableUnits { get; set; } = null!;
+		public IEnumerable<ForSelectUnitViewModel>? AvailableUnits { get; set; }
 
 
 		[Required]
 		//todo: asynchronous validation with db with model binding
 		public int PlaceId { get; set; }
-		public IEnumerable<ForSelectPlaceViewModel> AvailablePlaces { get; set; } = null!;//todo: filter available places over client(ajax) or go supDropdown
+		public IEnumerable<ForSelectPlaceViewModel>? AvailablePlaces { get; set; } //todo: filter available places over client(ajax) or go supDropdown
 
 
 		//[Required]
@@ -45,13 +45,13 @@
 		//todo: asynchronous validation with db
 		//todo: validate if any price is set to be required
 		public int? CurrencyId { get; set; }
-		public IEnumerable<ForSelectCurrencyViewModel> AvailableCurrencies { get; set; } = null!;
+		public IEnumerable<ForSelectCurrencyViewModel>? AvailableCurrencies { get; set; }
 
 
 		[Required]
 		//todo: asynchronous validation with db With model binder
 		public int[] CategoryIds { get; set; } = null!;
-        public IEnumerable<CategoryFilterViewModel> AvailableCategories { get; set; } = null!;
+        public IEnumerable<CategoryFilterViewModel>? AvailableCategories { get; set; }
 
 
 

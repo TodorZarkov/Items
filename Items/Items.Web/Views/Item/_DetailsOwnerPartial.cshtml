@@ -1,0 +1,46 @@
+﻿@model ItemViewModel
+@using static Items.Common.Enums.AccessModifier;
+
+<div class="d-flex justify-content-center align-items-center align-content-center">
+
+	<div class="card mb-3 border border- border-danger" style="max-width: 1200px;">
+		<div class="row g-0">
+			<div class="col-md-4">
+				<img src="@Model.MainPictureUri" class="img-fluid rounded-start" alt="...">
+			</div>
+			<div class="col-md-8">
+				<div class="card-body">
+					<h4 class="card-title">@Model.Name</h4>
+					<p class="card-text"><partial name="_AccessSign" model="@Public" /><strong>Categories: </strong>@Model.Categories</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Description" /><strong>Description: </strong>@Model.Description</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Quantity" /><strong>Quantity: </strong>@Model.Quantity @Model.UnitSymbol</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Public" /><strong>Price: </strong>@Model.CurrentPrice @Model.CurrencySymbol (@Model.CurrencyIsoCode)</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.AcquiredPrice" /><strong>Acquired Price: </strong>@Model.AcquiredPrice @Model.CurrencySymbol (@Model.CurrencyIsoCode)</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.AcquiredDate" /><strong>Acquired Date: </strong>@Model.AcquiredDate </p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.AddedOn" /><strong>Created On: </strong>@Model.AddedOn</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Private" /><strong>Quantity Sold: </strong>@Model.ContractsCount</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Private" /><strong>Quantity For Barter: </strong>@Model.AsBarterForOffersCount</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Public" /><strong>On The Market From: </strong>@Model.StartSell</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Public" /><strong>On The Market To: </strong>@Model.EndSell</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Public" /><strong>Is On Auction: </strong>@Model.IsAuction</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Offers" /><strong>#Offers: </strong>@Model.OffersCount</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Private" /><strong>Is On Rotation: </strong>@Model.OnRotation</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Private" /><strong>Is On Rotation Now: </strong>@Model.OnRotationNow</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Owner" /><strong>Owner Name: </strong>@Model.OwnerName</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Owner" /><strong>Owner Phone: </strong>@Model.OwnerPhone</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Owner" /><strong>Owner Email: </strong>@Model.OwnerEmail</p>
+					<p class="card-text"><partial name="_AccessSign" model="@Private" /><a asp-controller="Place" asp-action="All"><strong>Place: </strong>@Model.PlaceName</a></p>
+					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Location" /><a asp-controller="Location" asp-action="All"><strong>Location: </strong>@Model.LocationName</a></p>
+					<p class="card-text">
+						<small class="text-muted">
+							<partial name="_AccessSign" model="@Model.ItemVisibility.ModifiedOn" />Last Update:  @Model.ModifiedOn
+						</small>
+					</p>
+					<a asp-controller="Item" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+

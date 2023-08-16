@@ -48,7 +48,6 @@
 
 
 		Task UpdateItemAsync(ItemFormModel model, Guid itemId);
-
-
+		Task<bool> IsOnMarket(Guid id);
 	}
 }

@@ -7,7 +7,7 @@ namespace Items.Web
 	using Items.Services.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ModelBinder;
-	using Microsoft.AspNetCore.Identity;
+
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Configuration;
 
@@ -20,6 +20,7 @@ namespace Items.Web
 
 			var connectionString = 
 				builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 
 			builder.Services.AddDbContext<ItemsDbContext>(options =>
 			{
@@ -58,6 +59,7 @@ namespace Items.Web
 					= builder.Configuration.GetValue<int>("Lockout:MaxFailedAccessAttempts");
 			})
 				.AddEntityFrameworkStores<ItemsDbContext>();
+
 
 			builder.Services.AddControllersWithViews(opt =>
 				{

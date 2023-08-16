@@ -1,0 +1,16 @@
+﻿@model ItemViewModel
+@using static Items.Common.Enums.AccessModifier;
+
+@{
+	ViewData["Title"] = "Details Item";
+	//ViewBag.ActiveLink = "MineItem";
+	string? userName = User.Identity?.Name;
+	string? ownerName = Model.OwnerName;
+}
+
+@if (userName != null && ownerName != null && userName == ownerName) {
+	<partial name="_DetailsOwnerPartial" model="@Model"/>
+}
+else {
+	<partial name="_DetailsPartial" model="@Model" />
+}

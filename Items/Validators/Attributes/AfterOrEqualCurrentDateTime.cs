@@ -21,7 +21,8 @@
 				throw new ArgumentNullException(nameof(validationContext));
 			}
 
-			if (currentValue < dateTimeProvider.GetCurrentDateTime())
+			DateTime currentDateTime = dateTimeProvider.GetCurrentDateTime();
+			if (currentValue < currentDateTime)
 			{
 				return new ValidationResult(ErrorMessage);
 			}

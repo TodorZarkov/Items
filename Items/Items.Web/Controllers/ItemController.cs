@@ -1,11 +1,14 @@
 ﻿namespace Items.Web.Controllers
 {
-	using Items.Data.Models;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.Extensions;
 	using Items.Web.ViewModels.Item;
+	using static Common.NotificationMessages;
+
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
+
+
 
 	public class ItemController : BaseController
 	{
@@ -74,9 +77,18 @@
 		[HttpPost]
 		public async Task<IActionResult> Add(ItemFormModel model, bool continueAdd)
 		{
-			//todo: check the model!!!!!
 			Guid userId = Guid.Parse(User.GetId());
 			await itemService.CreateItemAsync(model, userId);
+			if (!ModelState.IsValid)
+			{
+				//todo:more model async checks 
+				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+				model.AvailableUnits = await unitService.AllForSelectAsync();
+				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+				return View(model);
+			}
+			
 
 			if (continueAdd)
 			{
@@ -93,6 +105,7 @@
 			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
 			if (!isAuthorized)
 			{
+
 				return RedirectToAction("All", "Item");
 			}
 
@@ -114,7 +127,16 @@
 			{
 				return RedirectToAction("All", "Item");
 			}
-			//todo: check model
+
+			if (!ModelState.IsValid)
+			{
+				//todo:more model async checks 
+				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+				model.AvailableUnits = await unitService.AllForSelectAsync();
+				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+				return View(model);
+			}
 
 			await itemService.UpdateItemAsync(model, id);
 
@@ -145,6 +167,27 @@
 			}
 
 			return View(model);
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> Delete(Guid id)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
+			if (!isAuthorized)
+			{
+				return RedirectToAction("All", "Item");
+			}
+
+			bool isOnMarket = await itemService.IsOnMarket(id);
+			if (isOnMarket)
+			{
+				TempData[ErrorMessage] = "Item must be removed from The Market first!";
+				return RedirectToAction("Mine", "Item");
+			}
+
+			return RedirectToAction("Mine", "Item");
 		}
 	}
 }

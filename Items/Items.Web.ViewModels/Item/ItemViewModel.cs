@@ -7,7 +7,7 @@
 		//default public
 		public Guid Id { get; set; }
 		public string Name { get; set; } = null!;
-		public decimal? CurrentPrice { get; set; } //todo: delete it from ItemVisibilities table
+		public string? CurrentPrice { get; set; } //todo: delete it from ItemVisibilities table
 		public string? CurrencySymbol { get; set; } = null!;
 		public string? CurrencyIsoCode { get; set; } = null!;
 		public DateTime? StartSell { get; set; }
@@ -34,13 +34,13 @@
 		public string? OwnerName { get; set; }
         public string? OwnerEmail { get; set; }
         public string? OwnerPhone { get; set; }
-		public decimal? Quantity { get; set; }
+		public string? Quantity { get; set; }
 		public string? UnitSymbol { get; set; } = null!;
 		public string? UnitName { get; set; } = null!;
 		public string? Description { get; set; }
 		public DateTime? AddedOn { get; set; }
 		public DateTime? ModifiedOn { get; set; }//todo: add it to ItemVisibilities table
-		public decimal? AcquiredPrice { get; set; }
+		public string? AcquiredPrice { get; set; }
 		public DateTime? AcquiredDate { get; set; }
 
 		//public Document? AcquireDocument { get; set; }

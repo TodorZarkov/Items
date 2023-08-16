@@ -48,6 +48,10 @@
 
 
 		Task UpdateItemAsync(ItemFormModel model, Guid itemId);
-		Task<bool> IsOnMarket(Guid id);
+		Task<bool> IsOnMarketAsync(Guid id);
+		Task<PreDeleteItemViewModel> GetForDeleteByIdAsync(Guid id);
+		Task DeleteByIdAsync(Guid id);
+		Task<bool> ExistAsync(Guid id);
+		Task<bool> IsAuctionAsync(Guid id);
 	}
 }

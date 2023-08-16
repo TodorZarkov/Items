@@ -105,8 +105,14 @@
 			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
 			if (!isAuthorized)
 			{
-
 				return RedirectToAction("All", "Item");
+			}
+
+			bool isAuction = await itemService.IsAuctionAsync(id);
+			if (isAuction)
+			{
+				TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
+				return RedirectToAction("All", "Sell");
 			}
 
 			ItemFormModel model = await itemService.GetByIdForEditAsync(id);
@@ -126,6 +132,13 @@
 			if (!isAuthorized)
 			{
 				return RedirectToAction("All", "Item");
+			}
+
+			bool isAuction = await itemService.IsAuctionAsync(id);
+			if (isAuction)
+			{
+				TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
+				return RedirectToAction("All", "Sell");
 			}
 
 			if (!ModelState.IsValid)
@@ -180,12 +193,52 @@
 				return RedirectToAction("All", "Item");
 			}
 
-			bool isOnMarket = await itemService.IsOnMarket(id);
+			bool exists = await itemService.ExistAsync(id);
+			if (!exists)
+			{
+				TempData[ErrorMessage] = "Item has already been removed!";
+				return RedirectToAction("Mine", "Item");
+			}
+
+			bool isOnMarket = await itemService.IsOnMarketAsync(id);
 			if (isOnMarket)
 			{
 				TempData[ErrorMessage] = "Item must be removed from The Market first!";
 				return RedirectToAction("Mine", "Item");
 			}
+
+			PreDeleteItemViewModel model = await itemService.GetForDeleteByIdAsync(id);
+
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Delete(Guid id, PreDeleteItemViewModel model)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
+			if (!isAuthorized)
+			{
+				return RedirectToAction("All", "Item");
+			}
+
+			bool exists = await itemService.ExistAsync(id);
+			if (!exists)
+			{
+				TempData[ErrorMessage] = "Item has already been removed!";
+				return RedirectToAction("Mine", "Item");
+			}
+
+			bool isOnMarket = await itemService.IsOnMarketAsync(id);
+			if (isOnMarket)
+			{
+				TempData[ErrorMessage] = "Item must be removed from The Market first!";
+				return RedirectToAction("Mine", "Item");
+			}
+
+			await itemService.DeleteByIdAsync(id);
+
+			TempData[SuccessMessage] = "Item was Deleted Successfully!";
 
 			return RedirectToAction("Mine", "Item");
 		}

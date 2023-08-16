@@ -33,6 +33,7 @@
 		{
 			IEnumerable<IndexViewModel> items = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.OrderByDescending(i => i.StartSell)
 				.Take(numberOfItems)
@@ -64,6 +65,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
+				.Where(i => !i.Deleted)
 				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
@@ -108,6 +110,8 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
+				.Where(i => !i.Deleted)
+				.Where(i => !i.Deleted)
 				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime()) 
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.StartSell)
@@ -161,6 +165,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.ModifiedOn)
@@ -214,6 +219,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId
 						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
@@ -266,6 +272,7 @@
 		{
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId
 						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.OrderByDescending(i => i.ModifiedOn)
@@ -313,6 +320,7 @@
 		{
 			IEnumerable<MyItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new MyItemViewModel
@@ -350,6 +358,7 @@
 			IEnumerable<ItemForBarterViewModel> allItemsForBarter =
 				await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)) // todo: observe the equality when dealing with decimal!!!!!
 				.Select(i => new ItemForBarterViewModel
@@ -373,6 +382,7 @@
 		{
 			AllSellViewModel[] itemsOnMarket = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.EndSell.HasValue) //&& i.EndSell > dateTimeProvider.GetCurrentDateTime())
 				.OrderByDescending(i => i.EndSell)
@@ -414,6 +424,7 @@
 		{
 			IEnumerable<OnRotationViewModel> currentItemRotation = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.OnRotation && i.OnRotationNow)
 				.Where(i => !i.EndSell.HasValue)
@@ -438,6 +449,7 @@
 		public async Task SetDailyRotationsAsync(Guid userId, int numberOfItems)
 		{
 			var allItemRotation = await dbContext.Items
+				.Where(i => !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.OnRotation)
 				.Where(i => !i.EndSell.HasValue)
@@ -530,6 +542,7 @@
 		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
 		{
 			Item item = await dbContext.Items
+				.Where(i => !i.Deleted)
 				.SingleAsync(i => i.Id == itemId);
 
 			int[] categoryIds = await dbContext.ItemsCategories
@@ -579,6 +592,7 @@
 		public async Task<bool> IsAuthorizedAsync(Guid itemId, Guid userId)
 		{
 			bool result = await dbContext.Items
+				.Where(i => !i.Deleted)
 				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId);
 
 			return result;
@@ -586,7 +600,10 @@
 
 		public async Task UpdateItemAsync(ItemFormModel model, Guid itemId)
 		{
-			Item? item = await dbContext.Items.FindAsync(itemId) ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, "", ""));
+			Item? item = await dbContext.Items
+				.Where(i => !i.Deleted && i.Id == itemId)
+				.SingleAsync() ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, "", ""));
+
 			ItemVisibility? itemVisibility = await dbContext
 				.ItemVisibilities
 				.FindAsync(item.ItemVisibilityId) 
@@ -626,6 +643,7 @@
 		public async Task<bool> IsAuthorizedToViewAsync(Guid itemId, Guid userId)
 		{
 			bool result = await dbContext.Items
+				.Where(i => !i.Deleted)
 				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId || i.EndSell > dateTimeProvider.GetCurrentDateTime());
 
 			return result;
@@ -635,6 +653,7 @@
 		{
 			ItemViewModel model = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.Id == itemId)
 				.Select(i => new ItemViewModel
 				{
@@ -722,6 +741,7 @@
 		{
 			ItemViewModel model = await dbContext.Items
 				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
 				.Where(i => i.Id == itemId)
 				.Select(i => new ItemViewModel
 				{
@@ -779,10 +799,57 @@
 			return model;
 		}
 
-		public async Task<bool> IsOnMarket(Guid id)
+		public async Task<bool> IsOnMarketAsync(Guid id)
 		{
 			bool result = await dbContext.Items
 				.AnyAsync(i => i.Id == id && i.EndSell != null);
+
+			return result;
+		}
+
+		public async Task<PreDeleteItemViewModel> GetForDeleteByIdAsync(Guid id)
+		{
+			PreDeleteItemViewModel model = await dbContext.Items
+				.AsNoTracking()
+				.Where(i =>  !i.Deleted)
+				.Where(i => i.Id == id)
+				.Select(i => new PreDeleteItemViewModel
+				{
+					Name = i.Name,
+					MainPictureUri = i.MainPictureUri,
+					Quantity = i.Quantity.ToString("N3"),
+					Unit = i.Unit.Symbol,
+					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name))
+				})
+				.SingleAsync();
+
+			return model;
+		}
+
+		public async Task DeleteByIdAsync(Guid id)
+		{
+			Item item = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.SingleAsync(i => i.Id == id);
+
+			item.Deleted = true;
+			item.ModifiedOn = dateTimeProvider.GetCurrentDateTime();
+
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<bool> ExistAsync(Guid id)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == id && !i.Deleted);
+
+			return result;
+		}
+
+		public async Task<bool> IsAuctionAsync(Guid id)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == id && i.IsAuction != null && i.IsAuction == true);
 
 			return result;
 		}

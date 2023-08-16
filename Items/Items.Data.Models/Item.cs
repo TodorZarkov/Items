@@ -145,5 +145,8 @@
 
         public bool OnRotation { get; set; }
         public bool OnRotationNow { get; set; }
+
+
+        public bool Deleted { get; set; }
     }
 }

@@ -187,6 +187,9 @@
         - Offers !!! (if the item is on the market)
         - Pictures
         - EndSellDateTime (if the item is on the market)
+    - soft deleting is performed
+    - cannot delete item on the  market - first remove from the market message
+    - cannot edit item on auction - edit auction or remove from market message
 - my categories
 - my bids
     - bid - update, itemDetails, refresh

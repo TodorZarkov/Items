@@ -43,7 +43,9 @@
 			Guid userId = Guid.Parse(User.GetId());
 			DateTime rotationDate = await userService.GetRotationItemsDateAsync(userId);
 
-			if (rotationDate.Date != dateTimeProvider.GetCurrentDate())
+			DateTime currentDate = dateTimeProvider.GetCurrentDate();
+
+			if (rotationDate.Date != currentDate)
 			{
 				await userService
 					.SetRotationItemsDateAsync(userId,
@@ -58,6 +60,27 @@
 
 			return View(itemsToRotate);
 		}
+
+		public async Task<IActionResult> NewRotation()
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			DateTime rotationDate = await userService.GetRotationItemsDateAsync(userId);
+
+			DateTime currentDate = dateTimeProvider.GetCurrentDate();
+			DateTime currentDateTime = dateTimeProvider.GetCurrentDateTime();
+
+
+			await userService
+				.SetRotationItemsDateAsync(userId, currentDateTime);
+
+			await itemService
+				.SetDailyRotationsAsync(userId,
+										CarouselItemsNumber);
+
+
+			return RedirectToAction("DailyRotation");
+		}
+
 
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

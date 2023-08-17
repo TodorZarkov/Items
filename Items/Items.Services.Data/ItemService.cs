@@ -31,7 +31,7 @@
 
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
-			IEnumerable<IndexViewModel> items = await dbContext.Items
+			IndexViewModel[] items = await dbContext.Items
 				.AsNoTracking()
 				.Where(i =>  !i.Deleted)
 				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
@@ -57,7 +57,7 @@
 
 				})
 				.ToArrayAsync();
-
+			Array.Reverse(items);
 			return items;
 		}
 

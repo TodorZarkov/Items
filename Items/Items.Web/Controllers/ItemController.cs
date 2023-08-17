@@ -165,7 +165,6 @@
 		}
 
 		[HttpGet]
-		[AllowAnonymous]
 		public async Task<IActionResult> Details(Guid id)
 		{
 			Guid userId = Guid.Parse(User.GetId());

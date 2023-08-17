@@ -6,6 +6,10 @@
 	{
 		public HashSet<int> GetRandNUniqueOfM(int n, int m)
 		{
+			if (n > m)
+			{
+				n = m;
+			}
 			HashSet<int> rands = new HashSet<int>(n);
 			var rnd = new Random(DateTime.UtcNow.Ticks.GetHashCode());
 			while (rands.Count < n)

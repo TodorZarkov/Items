@@ -54,5 +54,7 @@
 		Task<bool> ExistAsync(Guid id);
 		Task<bool> IsAuctionAsync(Guid id);
 		Task StopSellByItemIdAsync(Guid id);
+		Task<AuctionFormModel> GetForAuctionUpdateAsync(Guid id);
+		Task AuctionUpdateAsync(AuctionFormModel model, Guid id);
 	}
 }

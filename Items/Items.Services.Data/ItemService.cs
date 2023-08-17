@@ -865,5 +865,34 @@
 
 			await dbContext.SaveChangesAsync();
 		}
+
+		public async Task<AuctionFormModel> GetForAuctionUpdateAsync(Guid id)
+		{
+			AuctionFormModel model = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == id)
+				.Select(i => new AuctionFormModel
+				{
+					MainPictureUri = i.MainPictureUri,
+					Name = i.Name,
+					StartSell = (DateTime)i.StartSell!,
+					EndSell = (DateTime)i.EndSell!,
+
+				})
+				.SingleAsync();
+
+			return model;
+		}
+
+		public async Task AuctionUpdateAsync(AuctionFormModel model, Guid id)
+		{
+			Item item = await dbContext.Items
+				.FindAsync(id) ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, id.ToString(), ""));
+
+			item.EndSell = model.EndSell;
+
+			await dbContext.SaveChangesAsync();
+
+		}
 	}
 }

@@ -112,10 +112,19 @@
 					}
 					else
 					{
-						<button type="submit" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+						<a asp-controller="Item" asp-action="Details" asp-route-id="@sell.ItemId" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
 							<p class="p-0 mb-0 me-2 ">Details</p>
-						</button>
-						<button type="submit" class="btn btn-sm btn-primary align-self-center ms-2">Modify</button>
+						</a>
+
+						if (!sell.IsAuction)
+						{
+							<a asp-controller="Item" asp-action="Edit" asp-route-id="@sell.ItemId" class="btn btn-sm btn-primary align-self-center ms-2">Modify</a>
+						}
+						else
+						{
+							<a asp-controller="Sell" asp-action="Edit" asp-route-id="@sell.ItemId" class="btn btn-sm btn-primary align-self-center ms-2">Modify</a>
+						}
+
 					}
 					
 				</div>

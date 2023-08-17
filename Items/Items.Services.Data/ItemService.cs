@@ -853,5 +853,17 @@
 
 			return result;
 		}
+
+		public async Task StopSellByItemIdAsync(Guid id)
+		{
+			Item item = await dbContext.Items
+				.FindAsync(id) ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, id.ToString(), ""));
+
+			item.StartSell = null;
+			item.EndSell = null;
+			item.ModifiedOn = dateTimeProvider.GetCurrentDateTime();
+
+			await dbContext.SaveChangesAsync();
+		}
 	}
 }

@@ -156,6 +156,14 @@
 			return RedirectToAction("Mine", "Item");
 		}
 
+
+		[HttpGet]
+		public  IActionResult PutOnMarket(Guid id)
+		{
+			TempData[InformationMessage] = "You Must Edit The \"Market Section\"";
+			return RedirectToAction("Edit", "Item", new {id});
+		}
+
 		[HttpGet]
 		public async Task<IActionResult> Details(Guid id)
 		{
@@ -241,6 +249,46 @@
 			TempData[SuccessMessage] = "Item was Deleted Successfully!";
 
 			return RedirectToAction("Mine", "Item");
+		}
+
+
+
+		[HttpGet]
+		public async Task<IActionResult> StopSell(Guid id)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
+			if (!isAuthorized)
+			{
+				return RedirectToAction("All", "Item");
+			}
+
+			bool exists = await itemService.ExistAsync(id);
+			if (!exists)
+			{
+				TempData[InformationMessage] = "Item has already been removed!";
+				return RedirectToAction("Mine", "Item");
+			}
+
+			bool isOnMarket = await itemService.IsOnMarketAsync(id);
+			if (!isOnMarket)
+			{
+				TempData[InformationMessage] = "Item Is Not On The  Market!";
+				return RedirectToAction("Mine", "Item");
+			}
+
+			bool isAuction = await itemService.IsAuctionAsync(id);
+			if (isAuction)
+			{
+				TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
+				return RedirectToAction("All", "Sell");
+			}
+
+
+			await itemService.StopSellByItemIdAsync(id);
+			TempData[SuccessMessage] = "Item Removed From The  Market!";
+
+			return RedirectToAction("All", "Item");
 		}
 	}
 }

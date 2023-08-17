@@ -53,5 +53,6 @@
 		Task DeleteByIdAsync(Guid id);
 		Task<bool> ExistAsync(Guid id);
 		Task<bool> IsAuctionAsync(Guid id);
+		Task StopSellByItemIdAsync(Guid id);
 	}
 }

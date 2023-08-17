@@ -1,6 +1,6 @@
 ﻿namespace Items.Web.ViewModels.Deal
 {
-	public class AllDealViewModel
+	public class ContractAllViewModel
 	{
 		
 		public Guid Id { get; set; }

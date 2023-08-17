@@ -19,13 +19,13 @@
 			this.dbContext = dbContext;
 		}
 
-		public async Task<IEnumerable<AllDealViewModel>> AllAsync(Guid userId)
+		public async Task<IEnumerable<ContractAllViewModel>> AllAsync(Guid userId)
 		{
-			AllDealViewModel[] allDeals = await dbContext.Contracts
+			ContractAllViewModel[] allDeals = await dbContext.Contracts
 				.Where(c => c.BuyerId == userId || c.SellerId == userId)
 				.OrderBy(c => c.BuyerId == userId)
 				.ThenByDescending(c => c.ContractDate)
-				.Select(c => new AllDealViewModel
+				.Select(c => new ContractAllViewModel
 				{
 					ItemId = c.ItemId,
 					ItemName = c.Item.Name,

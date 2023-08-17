@@ -4,7 +4,7 @@
 
 	public interface IContractService
 	{
-		public Task<IEnumerable<AllDealViewModel>> AllAsync(Guid userId);
+		public Task<IEnumerable<ContractAllViewModel>> AllAsync(Guid userId);
 
 	}
 }

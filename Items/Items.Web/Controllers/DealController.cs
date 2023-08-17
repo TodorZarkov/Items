@@ -17,9 +17,11 @@
 		public async Task<IActionResult> All()
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			IEnumerable<AllDealViewModel> allDealsModel = await contractService.AllAsync(userId);
+			IEnumerable<ContractAllViewModel> allDealsModel = await contractService.AllAsync(userId);
 
 			return View(allDealsModel);
 		}
+
+
 	}
 }

@@ -195,9 +195,25 @@
     - bid - update, itemDetails, refresh
 - my sells - all my items on sell or auction
 - deals 
-    - cycle sell: buyer hit buy -> check item quantity -> item quantity decreases(if zero gets off the market) -> initiate contract(default send and deliver dates, default buyer comment) -> buyer may change/add - his comment, delivery date, his address - and hits confirmed OR decline the contract(if declined - item increases quantity) -> then seller may change somethin and hit ok OR may hit sell -> if sell and zero quantity, item gets off the market - end,start dates goes null -> if changed : the buyer is prompted and he/she may change it further, accept or decline it. -> if byer and seller are both ok the deal is on and awaits fulfilment. -> when the item is physically delivered to the buyer,  he/she can check the deal/contract as fulfilled or it can check itself a period after the delivery date -> if the buyer has complains he can then(after the delivery date) uncheck the ok and the contract can be revised -> if the contract is fulfilled the buyer may copy the seller's item data and set it his own item.
-    - cycle auction sell: after auction ends (end endSell date is reached) the seller hit "sell opt" on "my sells" menu -> he/she can then sell the item to the highest biter or can choose from one of the barter biters, then can hit "sell", and the sell cycle is on.
-    - when item is sold it is deleted from the seller and conditional(depending on the item's visibility) copy is proposed to teh buyer when the item is physically arrived.
+    - sell
+        - hit buy
+        - standard checks
+        - fulfills form
+        - standard checks
+        - quantity check
+        - quantity decrease
+        - creates ItemInDelivery copy of the item for the contract
+        - the contract is discussed over that copy
+        - when the contract is fulfilled, the copy of the item stays 
+for further references and the buyer may get the data to
+create his own item
+        - the relation to the original item persist until the contract is
+fulfilled. So the relation is "one to zero or one" not "one to one".
+
+- put on the market
+    - above zero quantity is required
+    - start end sell dates are required
+    - when end sell date is not null and after now the sell is on
 - locations
 - places
 - search

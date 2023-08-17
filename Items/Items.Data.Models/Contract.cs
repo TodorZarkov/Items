@@ -14,19 +14,19 @@
             Id = Guid.NewGuid();
         }
 
+
         [Key]
         public Guid Id { get; set; }
+
 
 
         [ForeignKey(nameof(Buyer))]
         [Required]
         public Guid BuyerId { get; set; }
 
-
         [ForeignKey(nameof(Seller))]
         [Required]
         public Guid SellerId { get; set; }
-
 
         [Required]
         public ApplicationUser Buyer { get; set; } = null!;
@@ -36,9 +36,9 @@
 
 
 
+
         [Precision(ValuePrecision, ValueScale)]
         public decimal Price { get; set; }
-
 
         [ForeignKey(nameof(Currency))]
         public int CurrencyId { get; set; }
@@ -52,7 +52,7 @@
         public Guid ItemId { get; set; }
 
         [Required]
-        public Item Item { get; set; }
+        public Item Item { get; set; } = null!;
 
 
         [Precision(QuantityPrecision, QuantityScale)]

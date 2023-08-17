@@ -680,7 +680,8 @@
 					Description = i.ItemVisibility.Description == Public ? i.Description : null,
 					AcquiredDate = i.ItemVisibility.AcquiredDate == Public ? i.AcquiredDate : null,
 					//document here
-					AcquiredPrice = i.AcquiredPrice != null ? ((decimal)i.AcquiredPrice).ToString("N2") : null,
+					AcquiredPrice = i.ItemVisibility.AcquiredPrice == Public ?
+						i.AcquiredPrice != null?((decimal)i.AcquiredPrice).ToString("N2"):null : null,
 					AddedOn = i.ItemVisibility.AddedOn == Public ? i.AddedOn : null,
 					ModifiedOn = i.ItemVisibility.ModifiedOn == Public ? i.ModifiedOn : null,
 					//current price todo: remove

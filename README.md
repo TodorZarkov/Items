@@ -1,5 +1,17 @@
-## **Site with pics for items**
+# Items Web App
 
+## **App for your Items - you can store, find and get rid of your possessions **
+#### There are  :
+    - Items
+    - Places and Locations where you store items
+    - Easy way to search and locate items
+    - Market to sell your unused or buy new items
+    - There's a way to transfer the data from the new bought item 
+    and use it to create your own
+    - There's daily rotation  of number of items in randoom, so you can 
+    summon few forgoten items
+
+### Here's the structure of the app:
 ### **entities**
 - users
     - default user

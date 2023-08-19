@@ -1,10 +1,10 @@
-﻿
+﻿@using static Items.Common.FormatConstants.DateAndTime;
 
 <tbody>
 
 	@foreach (ContractAllViewModel deal in Model)
 	{
-		<tr >
+		<tr class="table-@deal.RowStatusColor">
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
@@ -20,7 +20,7 @@
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
-					<p class="p-0 mb-0 me-2 "><strong>@deal.ContractStatus</strong></p>
+					<p class="p-0 mb-0 me-2 "><strong>@deal.DealStatus</strong></p>
 				</div>
 			</td>
 
@@ -36,7 +36,7 @@
 				</div>
 
 			</td>
-			
+
 			<td class="dropdown">
 
 				<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -79,7 +79,7 @@
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100 ">
 
-					<p class="p-0 mb-0 me-1">@deal.DeliverDue</p>
+					<p class="p-0 mb-0 me-1">@deal.DeliverDue.ToString(ContractDateTime)</p>
 
 				</div>
 			</td>
@@ -99,10 +99,31 @@
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100">
-					
-						<button type="submit" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+					@if (deal.RowStatusColor == "danger")
+					{
+						<a asp-controller="Deal" asp-action="Revise" asp-route-id="@deal.Id" class="btn btn-sm btn-primary align-self-center d-flex flex-nowrap align-items-center">
+							<p class="p-0 mb-0 me-2 ">Take Action</p>
+						</a>
+					}
+					else if (deal.RowStatusColor == "success" && deal.IsSeller)
+					{
+						<a asp-controller="Deal" asp-action="SellerReceived" asp-route-id="@deal.Id" class="btn btn-sm btn-danger align-self-center d-flex flex-nowrap align-items-center">
+							<p class="p-0 mb-0 me-2 ">Set to Paid!</p>
+						</a>
+					}
+					else if (deal.RowStatusColor == "success" && !deal.IsSeller)
+					{
+						<a asp-controller="Deal" asp-action="BuyerReceived" asp-route-id="@deal.Id" class="btn btn-sm btn-danger align-self-center d-flex flex-nowrap align-items-center">
+							<p class="p-0 mb-0 me-2 ">Set to Delivered!</p>
+						</a>
+					}
+					else
+					{
+						<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
 							<p class="p-0 mb-0 me-2 ">Details</p>
-						</button>
+						</a>
+					}
+					
 
 				</div>
 			</td>

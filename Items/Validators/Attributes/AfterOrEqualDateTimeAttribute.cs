@@ -3,7 +3,7 @@
 	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 	using System.ComponentModel.DataAnnotations;
 
-	public class AfterOrEqualDateTimeAttribute : ValidationAttribute, IClientModelValidator
+	public class AfterOrEqualDateTimeAttribute : ValidationAttribute//, IClientModelValidator
 	{
 		DateTime dateTime;
 
@@ -30,11 +30,11 @@
 			return ValidationResult.Success;
 		}
 
-		public void AddValidation(ClientModelValidationContext context)
-		{
-			string? error = FormatErrorMessage(context.ModelMetadata.GetDisplayName());
-			context.Attributes.Add("data-val", "true");
-			context.Attributes.Add("data-val-error", error);
-		}
+		//public void AddValidation(ClientModelValidationContext context)
+		//{
+		//	string? error = FormatErrorMessage(context.ModelMetadata.GetDisplayName());
+		//	context.Attributes.Add("data-val", "true");
+		//	context.Attributes.Add("data-val-error", error);
+		//}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿namespace Items.Web.ViewModels.Deal
 {
+	using  Items.Common.Enums;
 	public class ContractAllViewModel
 	{
 		
@@ -11,9 +12,10 @@
 
 
         //public ApplicationUser Seller { get; set; } = null!;
+        public bool IsSeller { get; set; }
+		public string RowStatusColor { get; set; } = null!;
 
-
-        public Guid ItemId { get; set; }
+		public Guid? ItemId { get; set; }
 		public string ItemName { get; set; } = null!;
 		public string ItemPicture { get; set; } = null!;
 
@@ -36,9 +38,9 @@
 
 		public bool SellerOk { get; set; }
 		public bool BuyerOk { get; set; }
-		public bool? BuyerConfirm { get; set; }
-		public bool Fulfilled { get; set; }
-		public string ContractStatus { get; set; } = null!;
+		public bool BuyerReceived { get; set; }
+		public bool SellerReceived { get; set; }
+		public DealStatus DealStatus { get; set; }
 
 
         public string? SellerComment { get; set; }

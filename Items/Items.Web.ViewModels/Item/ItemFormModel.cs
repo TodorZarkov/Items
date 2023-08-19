@@ -92,7 +92,7 @@
 		public decimal? CurrentPrice { get; set; }
 
 
-		[AfterOrEqualCurrentDateTime(ErrorMessage = StartSellCannotBeInThePast)]
+		[AfterOrEqualCurrentDateTimeAttribute(ErrorMessage = StartSellCannotBeInThePast)]
 		[DateTimeBefore("EndSell", ErrorMessage = StartSellAfterEndSell)]
         public DateTime? StartSell { get; set; }
 

@@ -1,28 +1,29 @@
 ﻿namespace Items.Web.Validators.Attributes
 {
+	using Items.Services.Common.Interfaces;
 	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 	using System.ComponentModel.DataAnnotations;
 
-	public class BeforeDateTimeAttribute : ValidationAttribute//, IClientModelValidator
+	public class AfterOrEqualCurrentDateAttribute : ValidationAttribute //, IClientModelValidator
 	{
-		DateTime dateTime;
-
-		public BeforeDateTimeAttribute(DateTime dateTime)
-		{
-			this.dateTime = dateTime;
-		}
-
 		protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 		{
 			ErrorMessage = ErrorMessageString;
 
 			DateTime? currentValue = (DateTime?)value;
-			if (currentValue == null)
+			if (!currentValue.HasValue)
 			{
-				return ValidationResult.Success; //not care to compare with null
+				return ValidationResult.Success;
 			}
 
-			if (currentValue > dateTime )
+			IDateTimeProvider? dateTimeProvider = (IDateTimeProvider?)validationContext.GetService(typeof(IDateTimeProvider));
+			if (dateTimeProvider == null)
+			{
+				throw new ArgumentNullException(nameof(validationContext));
+			}
+
+			DateTime currentDate = dateTimeProvider.GetCurrentDate();
+			if (currentValue < currentDate)
 			{
 				return new ValidationResult(ErrorMessage);
 			}
@@ -34,7 +35,7 @@
 		//{
 		//	string? error = FormatErrorMessage(context.ModelMetadata.GetDisplayName());
 		//	context.Attributes.Add("data-val", "true");
-		//	context.Attributes.Add("data-val-error", error);
+		//	context.Attributes.Add("data-val-cannotbepast", error);
 		//}
 	}
 }

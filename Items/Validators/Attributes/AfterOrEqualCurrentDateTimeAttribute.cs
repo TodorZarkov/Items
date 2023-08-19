@@ -1,9 +1,10 @@
 ﻿namespace Items.Web.Validators.Attributes
 {
 	using Items.Services.Common.Interfaces;
+	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 	using System.ComponentModel.DataAnnotations;
 
-	public class AfterOrEqualCurrentDateTime : ValidationAttribute
+	public class AfterOrEqualCurrentDateTimeAttribute : ValidationAttribute//, IClientModelValidator
 	{
 		protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 		{
@@ -29,5 +30,12 @@
 
 			return ValidationResult.Success;
 		}
+
+		//public void AddValidation(ClientModelValidationContext context)
+		//{
+		//	string? error = FormatErrorMessage(context.ModelMetadata.GetDisplayName());
+		//	context.Attributes.Add("data-val", "true");
+		//	context.Attributes.Add("data-val-cannotbeafterdt", error);
+		//}
 	}
 }

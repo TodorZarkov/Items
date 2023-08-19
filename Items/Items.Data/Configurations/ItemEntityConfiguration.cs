@@ -46,20 +46,20 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder
-                .HasOne(e => e.Currency)
+                .HasOne(i => i.Currency)
                 .WithMany()
-                .HasForeignKey(e => e.CurrencyId)
+                .HasForeignKey(i => i.CurrencyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder
-                .HasOne(e => e.ItemVisibility)
-                .WithOne(e => e.Item)
+                .HasOne(i => i.ItemVisibility)
+                .WithOne(iv => iv.Item)
                 .OnDelete(DeleteBehavior.Restrict);
-
+            
             builder
-                .HasMany(e => e.Contracts)
-                .WithOne(e => e.Item)
-                .HasForeignKey(e => e.ItemId)
+                .HasMany(i => i.Contracts)
+                .WithOne(c => c.Item)
+                .HasForeignKey(c => c.ItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder

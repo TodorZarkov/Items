@@ -15,6 +15,12 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder
+                .HasOne(e => e.Unit)
+                .WithMany()
+                .HasForeignKey(e => e.UnitId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
                 .HasOne(e => e.Seller)
                 .WithMany(e => e.ContractsAsSeller)
                 .HasForeignKey(e => e.SellerId)

@@ -56,5 +56,8 @@
 		Task StopSellByItemIdAsync(Guid id);
 		Task<AuctionFormModel> GetForAuctionUpdateAsync(Guid id);
 		Task AuctionUpdateAsync(AuctionFormModel model, Guid id);
+		Task<bool> IsOwnerAsync(Guid id, Guid buyerId);
+		Task<bool> HasQuantity(Guid id);
+		Task<bool> SufficientQuantity(Guid itemId, decimal quantity);
 	}
 }

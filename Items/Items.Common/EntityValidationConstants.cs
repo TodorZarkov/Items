@@ -110,12 +110,26 @@
 
             public const int ValuePrecision = 18;
             public const int ValueScale = 6;
+			public const double ValueMinValue = 0.01;
+			public const double ValueMaxValue = 9999999999999999.99;
 
-            public const int QuantityPrecision = 18;
+			public const int QuantityPrecision = 18;
             public const int QuantityScale = 6;
+
+			public const double QuantityMinValue = 0.001;
+			public const double QuantityMaxValue = 999999999999999.999;
 
 			public const int DeliveryAddressMinLength = 5;
 			public const int DeliveryAddressMaxLength = 1000;
+
+			public const int ItemNameMinLength = 2;
+			public const int ItemNameMaxLength = 200;
+
+			public const int UriMinLength = 1;
+			public const int UriMaxLength = 2048;
+
+			public const int ItemDescriptionMinLength = 10;
+			public const int ItemDescriptionMaxLength = 1000;
 		}
         
         

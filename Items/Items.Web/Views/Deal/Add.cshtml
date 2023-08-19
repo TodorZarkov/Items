@@ -1,0 +1,115 @@
+﻿@using Items.Web.ViewModels.Category;
+@using Items.Web.ViewModels.Currency;
+@using Items.Web.ViewModels.Unit;
+@using static Items.Common.EntityValidationConstants.Item;
+
+@model ContractFormViewModel
+
+@{
+	ViewData["Title"] = "Add Deal";
+	ViewBag.ActiveLink = "AllDeal";
+}
+
+<form asp-area="" asp-controller="Deal" asp-action="Preview" asp-route-itemId="@Model.ItemId" method="post" class="mx-auto row">
+
+	<div class="col col">
+		<div class="mb-3 small">
+			<label asp-for="@Model.SellerName" class="form-label">Seller name</label>
+			<input type="text" asp-for="@Model.SellerName" class="form-control" readonly />
+		</div>
+
+		<div class="mb-3 small">
+			<label asp-for="@Model.SellerEmail" class="form-label">Seller e-mail</label>
+			<input type="text" asp-for="@Model.SellerEmail" class="form-control" readonly />
+		</div>
+
+		<div class="mb-3 small">
+			<label asp-for="@Model.SellerPhone" class="form-label">Seller phone number</label>
+			<input type="text" asp-for="@Model.SellerPhone" class="form-control" readonly />
+		</div>
+	</div>
+
+
+
+
+	<div class="col col">
+		<img src="@Model.ItemPictureUri" style="width: 300px;" class="img-thumbnail mb-3" />
+		<input type="text" asp-for="@Model.ItemPictureUri" hidden />
+
+		<div class="mb-3">
+			<label asp-for="@Model.ItemName" class="form-label">Item name</label>
+			<input type="text" asp-for="@Model.ItemName" class="form-control" readonly />
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.ItemDescription" class="form-label">Item description</label>
+			<textarea type="text" asp-for="@Model.ItemDescription" class="form-control" readonly></textarea>
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.Price" class="form-label">Item price per Quantity</label>
+			<div class="input-group mb-3">
+				<input type="number" asp-for="@Model.Price" class="form-control   w-auto" readonly />
+				<input type="text" asp-for="@Model.CurrencySymbol" class="form-control input-group-text" readonly />
+			</div>
+
+		</div>
+	</div>
+
+
+	<div class="col col">
+		<div class="mb-3">
+			<label asp-for="@Model.Quantity" class="form-label">Quantity to buy</label>
+			<div class="input-group mb-3">
+				<input type="number" asp-for="@Model.Quantity" class="form-control w-auto" />
+				<input type="text" asp-for="@Model.UnitSymbol" class="form-control input-group-text" readonly />
+			</div>
+
+		</div>
+
+		<div class="mb-3 form-check">
+			<label asp-for="@Model.ConsentBuyerInfo" class="form-check-label">Do you want to send your name, email and phone number to the seller?</label>
+			<input type="checkbox" asp-for="@Model.ConsentBuyerInfo" class="form-check-input" />
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.SendDue" class="form-label">Seller can send the Item on:</label>
+			<input type="date" asp-for="@Model.SendDue" class="form-control" readonly />
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.DeliverDue" class="form-label">The Item will be delivered on:</label>
+			<input type="date" asp-for="@Model.DeliverDue" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.DeliveryAddress" class="form-label">Fill out your delivery address</label>
+			<textarea type="text" asp-for="@Model.DeliveryAddress" class="form-control"></textarea>
+		</div>
+	</div>
+
+	<div class="col col">
+		<div class="mb-3">
+			<label asp-for="@Model.SellerComment" class="form-label">Note from The Seller</label>
+			<textarea type="text" asp-for="@Model.SellerComment" class="form-control" readonly></textarea>
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.BuyerComment" class="form-label">Note for The Seller</label>
+			<textarea type="text" asp-for="@Model.BuyerComment" class="form-control" ></textarea>
+		</div>
+
+
+
+		<button type="submit" class="btn btn-primary">Show Preview</button>
+		<a asp-controller="Item" asp-action="All" class="btn btn-secondary">Cancel</a>
+	</div>
+
+
+</form>
+
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
+

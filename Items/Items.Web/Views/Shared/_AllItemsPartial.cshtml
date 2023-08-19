@@ -65,7 +65,7 @@
 						<h6 class="card-text">
 							Price: @item.CurrentPrice @item.CurrencySymbol
 						</h6>
-						<a href="#" class="btn btn-sm btn-primary">Buy</a>
+						<a asp-controller="Deal" asp-action="Add" asp-route-itemId="@item.Id" class="btn btn-sm btn-primary">Buy</a>
 					}
 				}
 

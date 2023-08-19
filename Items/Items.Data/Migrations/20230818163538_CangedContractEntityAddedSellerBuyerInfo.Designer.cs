@@ -4,6 +4,7 @@ using Items.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
@@ -12,9 +13,10 @@ using NetTopologySuite.Geometries;
 namespace Items.Data.Migrations
 {
     [DbContext(typeof(ItemsDbContext))]
-    partial class ItemsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230818163538_CangedContractEntityAddedSellerBuyerInfo")]
+    partial class CangedContractEntityAddedSellerBuyerInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,6 +165,9 @@ namespace Items.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<bool?>("BuyerConfirm")
+                        .HasColumnType("bit");
+
                     b.Property<string>("BuyerEmail")
                         .HasColumnType("nvarchar(max)");
 
@@ -177,9 +182,6 @@ namespace Items.Data.Migrations
 
                     b.Property<string>("BuyerPhone")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("BuyerReceived")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ContractDate")
                         .HasColumnType("datetime2");
@@ -197,6 +199,9 @@ namespace Items.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("Fulfilled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ItemDescription")
                         .HasMaxLength(1000)
@@ -241,9 +246,6 @@ namespace Items.Data.Migrations
 
                     b.Property<string>("SellerPhone")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("SellerReceived")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("SendDue")
                         .HasColumnType("datetime2");
@@ -441,7 +443,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 60m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3403),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3328),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -451,7 +453,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("8d725141-2b5a-468f-9e1e-61ab0c7f8f5e"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://i5.walmartimages.com/asr/19fe13d7-ea2e-47f7-8547-202ce8c88717_1.bc800cefd11bb60ebc07ebdd7fac8ff6.jpeg",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3407),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3331),
                             Name = "Ford Mustang Mach1 1973",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -467,7 +469,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 10m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3542),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3465),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -476,7 +478,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("a78c2eda-79cb-4acc-a7e4-92e0b45e20eb"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://image.pushauction.com/0/0/77191e32-26bc-45d1-b916-1425f6513281/4533eb18-a6eb-4783-b444-aad16f842869.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3543),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3465),
                             Name = "Toyota Rav 4",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -492,7 +494,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2022, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 11m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3565),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3508),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -501,7 +503,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("0fb06c25-8e6f-4fd2-a1d9-3cebb4621d2e"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://static2.redcart.pl/templates/images/thumb/10281/800/9999/pl/0/templates/images/products/10281/067a782229f0ab90838b869e943673ca.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3565),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3508),
                             Name = "Trabant",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -517,14 +519,14 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2020, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 22m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3599),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3609),
                             CurrencyId = 1,
                             Deleted = false,
                             Description = "The Porsche 911 (pronounced Nine Eleven or in German: Neunelf) is a two-door 2+2 high performance rear-engined sports car introduced in September 1964 by Porsche AG of Stuttgart, Germany. It has a rear-mounted flat-six engine and originally a torsion bar suspension. The car has been continuously enhanced through the years but the basic concept has remained unchanged.[1] The engines were air-cooled until the introduction of the 996 series in 1998.[",
                             ItemVisibilityId = new Guid("a33dd8ed-4619-4d18-a25c-2bb25b7bb456"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://i5.walmartimages.com/asr/0b26c2b4-5459-424c-ae09-364824104c90_1.642441b6196644f95b66202bb6185285.jpeg?odnWidth=1000&odnHeight=1000&odnBg=ffffff",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3599),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3609),
                             Name = "1997 Porsche 911 Carrera, Red",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -539,14 +541,14 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2020, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 23m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3623),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3621),
                             CurrencyId = 1,
                             Deleted = false,
                             Description = "Hollywood Rides 1:24 Scale 2006",
                             ItemVisibilityId = new Guid("d009129e-5655-4cd2-ba67-114e2e792b8c"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureUri = "https://i5.walmartimages.com/asr/ea368e4c-f0e3-401b-8cff-2344a05955ed_2.de437c99da79acc1cc2bec706fea7ce4.jpeg",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3624),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3622),
                             Name = "Chevrolet Camaro",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -561,7 +563,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 110m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3710),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3637),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -571,7 +573,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("c0bbcabf-5c24-4ca6-86bc-eca11ae46eb8"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureUri = "https://i5.walmartimages.com/asr/cb1717c7-d4b2-483b-91a9-770f3db40076_1.1f5d5f997641b1adb8323d08d95e6bd6.jpeg",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3710),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3637),
                             Name = "Land Rover Discovery",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -587,7 +589,7 @@ namespace Items.Data.Migrations
                             Access = 2,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 8m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3734),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3657),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -596,7 +598,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("61c89a18-8bda-4d12-9a70-cdb17aedd752"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureUri = "http://www.babylonhobbies.com/ebay/pictures/EDU_14862.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3734),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3657),
                             Name = "Puzzle Cars",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -612,14 +614,14 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 9m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3752),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3678),
                             CurrencyId = 1,
                             Deleted = false,
                             Description = "Hape knob puzzle vehicles",
                             ItemVisibilityId = new Guid("cbd7bd12-aa21-4e33-95cf-fd9c342db010"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureUri = "https://www.kids-room.com/WebRoot/KidsroomDE/Shops/Kidsroom/55B8/CACC/36F4/5060/F31B/4DEB/AE1C/138D/BILD3_E6319/IC_IMAGE/en-hape-knob-puzzle-vehicles.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3752),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3678),
                             Name = "puzzle vehicles",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -634,13 +636,13 @@ namespace Items.Data.Migrations
                             Access = 1,
                             AcquiredDate = new DateTime(2022, 2, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 50m,
-                            AddedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3764),
+                            AddedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3690),
                             CurrencyId = 1,
                             Deleted = false,
                             ItemVisibilityId = new Guid("49abfa42-69f7-4240-a2ef-4e1b3ef7c16c"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureUri = "https://jigsawpuzzles.online/king-include/uploads1/auto-cadillac-oldtimer-classic-vehicle-chrome-607938272.jpg",
-                            ModifiedOn = new DateTime(2023, 8, 18, 21, 18, 18, 882, DateTimeKind.Utc).AddTicks(3764),
+                            ModifiedOn = new DateTime(2023, 8, 18, 16, 35, 37, 155, DateTimeKind.Utc).AddTicks(3690),
                             Name = "Puzzle Cadillac",
                             OnRotation = true,
                             OnRotationNow = false,

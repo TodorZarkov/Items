@@ -4,7 +4,7 @@
 	using System.ComponentModel.DataAnnotations;
 	using System.Reflection;
 
-	public class DateTimeBeforeAttribute : ValidationAttribute, IClientModelValidator
+	public class DateTimeBeforeAttribute : ValidationAttribute//, IClientModelValidator
 	{
 		private readonly string targetProperty;
         public DateTimeBeforeAttribute(string targetProperty)
@@ -50,11 +50,11 @@
 
 
 
-		public void AddValidation(ClientModelValidationContext context)
-		{
-			string? error = FormatErrorMessage(context.ModelMetadata.GetDisplayName());
-			context.Attributes.Add("data-val", "true");
-			context.Attributes.Add("data-val-error", error);
-		}
+		//public void AddValidation(ClientModelValidationContext context)
+		//{
+		//	string? error = FormatErrorMessage(context.ModelMetadata.GetDisplayName());
+		//	context.Attributes.Add("data-val", "true");
+		//	context.Attributes.Add("data-val-error", error);
+		//}
 	}
 }

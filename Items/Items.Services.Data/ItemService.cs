@@ -7,6 +7,7 @@
 	using static Items.Common.EntityDbErrorMessages.Item;
 	using static Items.Common.FormatConstants.DateAndTime;
 	using static Items.Common.Enums.AccessModifier;
+	using static Items.Common.EntityValidationConstants.Item;
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Home;
@@ -34,7 +35,7 @@
 			IndexViewModel[] items = await dbContext.Items
 				.AsNoTracking()
 				.Where(i =>  !i.Deleted)
-				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
+				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
 				.OrderByDescending(i => i.StartSell)
 				.Take(numberOfItems)
 				.Select(i => new IndexViewModel
@@ -66,7 +67,7 @@
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => !i.Deleted)
-				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
+				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
 				{
@@ -111,8 +112,7 @@
 			IEnumerable<AllItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => !i.Deleted)
-				.Where(i => !i.Deleted)
-				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime()) 
+				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue) 
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.StartSell)
 				.Select(i => new AllItemViewModel
@@ -221,7 +221,7 @@
 				.AsNoTracking()
 				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId
-						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
+						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
 				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
@@ -274,7 +274,7 @@
 				.AsNoTracking()
 				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId
-						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime())
+						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
 				{
@@ -384,7 +384,7 @@
 				.AsNoTracking()
 				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId)
-				.Where(i => i.EndSell.HasValue) //&& i.EndSell > dateTimeProvider.GetCurrentDateTime())
+				.Where(i => i.EndSell.HasValue) //&& i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
 				.OrderByDescending(i => i.EndSell)
 				.Select(i => new AllSellViewModel
 				{
@@ -644,7 +644,7 @@
 		{
 			bool result = await dbContext.Items
 				.Where(i => !i.Deleted)
-				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId || i.EndSell > dateTimeProvider.GetCurrentDateTime());
+				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId || i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue);
 
 			return result;
 		}
@@ -803,7 +803,7 @@
 		public async Task<bool> IsOnMarketAsync(Guid id)
 		{
 			bool result = await dbContext.Items
-				.AnyAsync(i => i.Id == id && i.EndSell != null);
+				.AnyAsync(i => i.Id == id && i.EndSell != null && i.Quantity >= (decimal)QuantityMinValue);
 
 			return result;
 		}
@@ -894,6 +894,32 @@
 
 			await dbContext.SaveChangesAsync();
 
+		}
+
+		public async Task<bool> IsOwnerAsync(Guid id, Guid buyerId)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == id && i.OwnerId == buyerId && !i.Deleted);
+
+			return result;
+		}
+
+		public async Task<bool> HasQuantity(Guid id)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == id && i.Quantity >= (decimal)QuantityMinValue && !i.Deleted);
+
+			return result;
+		}
+
+		public async Task<bool> SufficientQuantity(Guid itemId, decimal quantity)
+		{
+			bool result = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.AnyAsync(i => i.Quantity >= quantity);//todo: seller must have an option to restrict the quantity threshold!!!
+
+			return result;
 		}
 	}
 }

@@ -11,6 +11,13 @@
 		{
 			public const string StartSellCannotBeInThePast = "Start Sell Cannot Be In The Past.";
 			public const string StartSellAfterEndSell = "Start Sell Cannot Be After End Sell.";
+
+			public const string CannotBeDeliveredBeforeSent = "Cannot Be Delivered Before Sent.";
+		}
+
+		public static class Contract
+		{
+			public const string CannotBeDeliveredBeforeSent = "Cannot Be Delivered Before Sent.";
 		}
 	}
 }

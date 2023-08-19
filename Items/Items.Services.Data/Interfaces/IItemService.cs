@@ -59,5 +59,6 @@
 		Task<bool> IsOwnerAsync(Guid id, Guid buyerId);
 		Task<bool> HasQuantity(Guid id);
 		Task<bool> SufficientQuantity(Guid itemId, decimal quantity);
+		Task<ItemFormModel> CopyFromContract(Guid id, Guid userId);
 	}
 }

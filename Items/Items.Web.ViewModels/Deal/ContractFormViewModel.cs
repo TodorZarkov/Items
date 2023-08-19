@@ -5,6 +5,8 @@
 	using static Common.EntityValidationErrorMessages.Contract;
 
 	using System.ComponentModel.DataAnnotations;
+	using Microsoft.VisualBasic;
+
 	public class ContractFormViewModel
 	{
         public Guid? Id { get; set; }
@@ -74,5 +76,31 @@
 
 		[StringLength(DeliveryAddressMaxLength, MinimumLength = DeliveryAddressMinLength)]
 		public string DeliveryAddress { get; set; } = null!;
+
+
+		public override bool Equals(object? contractViewModel)
+		{
+			ContractViewModel toCompare;
+			try
+			{
+				toCompare = (ContractViewModel)contractViewModel!;
+			}
+			catch (Exception)
+			{
+
+				return false;
+			}
+
+			if (SendDue == toCompare.SendDue &&
+				DeliverDue == toCompare.DeliverDue &&
+				DeliveryAddress == toCompare.DeliveryAddress &&
+				(SellerComment??string.Empty).Trim() == (toCompare.SellerComment??string.Empty).Trim() &&
+				BuyerComment == toCompare.BuyerComment)
+			{
+				return true;
+			}
+
+			return false;
+		}
 	}
 }

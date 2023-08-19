@@ -921,5 +921,27 @@
 
 			return result;
 		}
+
+		public async Task<ItemFormModel> CopyFromContract(Guid id, Guid userId)
+		{
+			ItemFormModel model = await dbContext.Contracts
+				.Where(c => c.Id == id && c.BuyerId == userId)
+				.Select(c => new ItemFormModel
+				{
+					MainPictureUri = c.ItemPictureUri,
+					Name = c.ItemName,
+					Description = c.ItemDescription,
+					AcquiredDate = c.ContractDate,
+					AcquiredPrice = c.Price,
+					CurrencyId = c.CurrencyId,
+					Quantity = c.Quantity,
+					UnitId = c.UnitId
+				})
+				.SingleAsync();
+
+			return model;
+		}
 	}
+
+
 }

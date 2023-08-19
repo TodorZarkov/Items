@@ -21,6 +21,7 @@
 		{
 			Guid userId = Guid.Parse(User.GetId());
 			IEnumerable<ContractAllViewModel> allDealsModel = await contractService.AllAsync(userId);
+			
 
 			return View(allDealsModel);
 		}
@@ -178,7 +179,7 @@
 		public async Task<IActionResult> Revise(Guid id)
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			
+
 			bool canRevise = await contractService.CanReviseAsync(id, userId);
 			if (!canRevise)
 			{
@@ -190,6 +191,41 @@
 
 			return View(model);
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> Revise(Guid id, ContractFormViewModel model)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+
+			bool canRevise = await contractService.CanReviseAsync(id, userId);
+			if (!canRevise)
+			{
+				//todo: General error provider
+				return RedirectToAction("All", "Item");
+			}
+
+			ContractViewModel beforeRevise = await contractService.GetForDetailsAsync(id);
+			if (model.Equals(beforeRevise))
+			{
+				await contractService.SetSignedAsync(id);
+			}
+			else
+			{
+				if (!ModelState.IsValid)
+				{
+					//todo: general error provider (at this point if model is wrong this is due to intentional violation
+					//todo: check model async if any
+					return RedirectToAction("All", "Item");
+				}
+
+				await contractService.UpdateAsync(id, model);
+				await contractService.ChangeReviserAsync(id);
+			}
+
+			return RedirectToAction("All", "Deal");
+		}
+
+
 
 		[HttpGet]
 		public async Task<IActionResult> Off(Guid id)
@@ -205,7 +241,7 @@
 
 			try
 			{
-				await contractService.Cancel(id, userId);
+				await contractService.CancelAsync(id, userId);
 				TempData[SuccessMessage] = "The Deal Is Off!";
 			}
 			catch (Exception)
@@ -216,5 +252,42 @@
 
 			return RedirectToAction("All", "Deal");
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> Received(Guid id)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			bool isSigned = await contractService.SignedAsync(id);
+			if (!isSigned)
+			{
+				//todo: general error provider
+				return RedirectToAction("All", "Item");
+			}
+
+			await contractService.CompleteAsync(id, userId);
+
+
+			return RedirectToAction("All", "Deal");
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> Complain(Guid id)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			bool canComplainAndReceive = await contractService.CanComplainAndReceiveAsync(id, userId);
+			if (canComplainAndReceive)
+			{
+				//todo: Implement complain
+				TempData[InformationMessage] = "Complain Sent!";
+				
+			}
+			else
+			{
+				TempData[ErrorMessage] = "Cannot Complain! The Delivery Date is not Reached Yet.";
+			}
+			return RedirectToAction("All", "Deal");
+		}
+
 	}
 }

@@ -1,18 +1,19 @@
 ﻿namespace Items.Services.Data
 {
 	using Items.Data;
+	using Items.Data.Models;
+	using Items.Services.Common.Interfaces;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Deal;
-	using static Items.Common.FormatConstants.DateAndTime;
 	using static Items.Common.Enums.AccessModifier;
+	using static Items.Common.FormatConstants.DateAndTime;
 	using static Items.Common.GeneralConstants;
 
 	using Microsoft.EntityFrameworkCore;
 
 	using System;
 	using System.Threading.Tasks;
-	using Items.Data.Models;
-	using Items.Services.Common.Interfaces;
+	
 
 	public class ContractService : IContractService
 	{
@@ -38,10 +39,14 @@
 				.Select(c => new ContractAllViewModel
 				{
 					Id = c.Id,
-
+					CanComplainAndReceive = c.BuyerOk && c.SellerOk &&
+											(!c.BuyerReceived && c.BuyerId == userId) || (!c.SellerReceived && c.SellerId == userId) &&
+											c.DeliverDue < dateTimeProvider.GetCurrentDate(),
 					IsSeller = c.SellerId == userId,
 					RowStatusColor = helper
-						.GetDealRowColor(c.SellerOk, c.BuyerOk, c.BuyerReceived, c.SellerReceived, c.SellerId == userId).ToString(),
+						.GetDealRowColor(c.SellerOk, c.BuyerOk, c.SellerReceived, c.BuyerReceived, c.SellerId == userId),
+
+
 					ItemId = c.ItemId,
 					ItemName = c.ItemName,
 					ItemPicture = c.ItemPictureUri,
@@ -50,7 +55,7 @@
 					BuyerOk = c.BuyerOk,
 					BuyerReceived = c.BuyerReceived,
 					SellerReceived = c.SellerReceived,
-					DealStatus = helper.GetDealStatus(c.SellerOk, c.BuyerOk, c.BuyerReceived, c.SellerReceived),
+					DealStatus = helper.GetDealStatus(c.SellerOk, c.BuyerOk, c.SellerReceived, c.BuyerReceived),
 
 					BuyerComment = c.BuyerComment,
 					SellerComment = c.SellerComment,
@@ -299,7 +304,7 @@
 			return model;
 		}
 
-		public async Task Cancel(Guid id, Guid userId)
+		public async Task CancelAsync(Guid id, Guid userId)
 		{
 			Contract deal = await dbContext.Contracts
 				.SingleAsync(c => c.Id == id && c.SellerId == userId || c.BuyerId == userId);
@@ -307,7 +312,108 @@
 			deal.BuyerOk = false;
 			deal.SellerOk = false;
 
+			Item item = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == (Guid)deal.ItemId!)
+				.SingleAsync();
+			decimal currentItemQuantity = item.Quantity;
+
+			item.Quantity = currentItemQuantity + deal.Quantity;
+
+			//todo: Revise Quantity behaviour according to Seller and Signing
+			deal.ItemId = null;
+
 			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task SetSignedAsync(Guid id)
+		{
+			Contract deal = await dbContext.Contracts
+				.SingleAsync(c => c.Id == id );
+
+			deal.BuyerOk = true;
+			deal.SellerOk = true;
+			deal.ContractDate = dateTimeProvider.GetCurrentDateTime();
+
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task UpdateAsync(Guid id, ContractFormViewModel model)
+		{
+			Contract contract = await dbContext.Contracts
+				.SingleAsync(c => c.Id == id);
+
+			contract.DeliverDue = model.DeliverDue;
+			contract.SendDue = model.SendDue;
+			contract.DeliveryAddress = model.DeliveryAddress;
+
+
+			if ((contract.BuyerComment??string.Empty).Trim() != (model.BuyerComment??string.Empty).Trim())
+			{
+				contract.BuyerComment = model.BuyerComment;
+			}
+			else if ((contract.SellerComment ?? string.Empty).Trim() != (model.SellerComment ?? string.Empty).Trim())
+			{
+				contract.SellerComment = model.SellerComment;
+			}
+
+			await dbContext.SaveChangesAsync();
+			
+		}
+
+		public async Task ChangeReviserAsync(Guid id)
+		{
+			Contract contract = await dbContext.Contracts
+				.SingleAsync(c => c.Id == id);
+
+			contract.BuyerOk = !contract.BuyerOk;
+			contract.SellerOk = !contract.SellerOk;
+
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<bool> SignedAsync(Guid id)
+		{
+			bool result = await dbContext.Contracts
+				.AnyAsync(c => c.Id == id && c.BuyerOk && c.SellerOk);
+
+			return result;
+		}
+
+		public async Task CompleteAsync(Guid id, Guid userId)
+		{
+			Contract contract = await dbContext.Contracts
+				.SingleAsync(c => c.Id == id);
+
+			if (contract.SellerId == userId)
+			{
+				contract.SellerReceived = true;
+			}
+			else if (contract.BuyerId == userId)
+			{
+				contract.BuyerReceived = true;
+			}
+
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<bool> CanComplainAndReceiveAsync(Guid id, Guid userId)
+		{
+			bool result = await dbContext.Contracts
+				.AnyAsync(c => c.Id == id &&
+				c.BuyerOk && c.SellerOk &&
+				(!c.BuyerReceived && c.BuyerId == userId) || (!c.SellerReceived && c.SellerId == userId) &&
+				c.DeliverDue < dateTimeProvider.GetCurrentDate());
+
+			return result;
+		}
+
+		public async Task<bool> IsBuyerAsync(Guid dealId, Guid userId)
+		{
+			bool result = await dbContext.Contracts
+				.AnyAsync(c => c.Id == dealId && c.BuyerId == userId);
+
+			return result;
 		}
 	}
 }

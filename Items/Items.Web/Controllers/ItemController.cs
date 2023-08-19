@@ -7,8 +7,7 @@
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
-
-
+	using Items.Web.ViewModels.Deal;
 
 	public class ItemController : BaseController
 	{
@@ -17,14 +16,16 @@
 		private readonly IPlaceService placeService;
 		private readonly ICurrencyService currencyService;
 		private readonly IUnitService unitService;
+		private readonly IContractService contractService;
 
-		public ItemController(IItemService itemService, ICategoryService categoryService, IPlaceService placeService, ICurrencyService currencyService, IUnitService unitService)
+		public ItemController(IItemService itemService, ICategoryService categoryService, IPlaceService placeService, ICurrencyService currencyService, IUnitService unitService, IContractService contractService)
 		{
 			this.itemService = itemService;
 			this.categoryService = categoryService;
 			this.placeService = placeService;
 			this.currencyService = currencyService;
 			this.unitService = unitService;
+			this.contractService = contractService;
 		}
 
 		[HttpGet]
@@ -78,7 +79,6 @@
 		public async Task<IActionResult> Add(ItemFormModel model, bool continueAdd)
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			await itemService.CreateItemAsync(model, userId);
 			if (!ModelState.IsValid)
 			{
 				//todo:more model async checks 
@@ -89,6 +89,7 @@
 				return View(model);
 			}
 			
+			await itemService.CreateItemAsync(model, userId);
 
 			if (continueAdd)
 			{
@@ -289,6 +290,29 @@
 			TempData[SuccessMessage] = "Item Removed From The  Market!";
 
 			return RedirectToAction("All", "Item");
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> CreateFromDeal(Guid id)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			bool isBuyer = await contractService.IsBuyerAsync(id, userId);
+			if (!isBuyer)
+			{
+				//todo: general error provider
+				return RedirectToAction("All", "Item");
+			}
+
+			ItemFormModel model = await itemService.CopyFromContract(id, userId);
+
+			model.ItemVisibility = new ItemFormVisibilityModel();
+			model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+			model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+			model.AvailableUnits = await unitService.AllForSelectAsync();
+			model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+
+			return View("Add", model);
 		}
 	}
 }

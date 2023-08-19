@@ -12,8 +12,9 @@
 
 
         //public ApplicationUser Seller { get; set; } = null!;
+        public bool CanComplainAndReceive { get; set; }
         public bool IsSeller { get; set; }
-		public string RowStatusColor { get; set; } = null!;
+		public Colors RowStatusColor { get; set; }
 
 		public Guid? ItemId { get; set; }
 		public string ItemName { get; set; } = null!;

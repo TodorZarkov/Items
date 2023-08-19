@@ -1,0 +1,93 @@
+﻿@using static Items.Common.Enums.DealStatus;
+
+@model ContractAllViewModel
+
+@{
+	ContractAllViewModel deal = Model;
+}
+
+<div class="d-flex flex-nowrap align-items-center h-100">
+	@if (deal.IsSeller && deal.DealStatus == SellerAttention)
+	{
+		<a asp-controller="Deal" asp-action="Revise" asp-route-id="@deal.Id" class="btn btn-sm btn-primary align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Take Action</p>
+		</a>
+	}
+	else if (deal.IsSeller && deal.DealStatus == BuyerAttention)
+	{
+		<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Details</p>
+		</a>
+	}
+	else if (deal.IsSeller && deal.DealStatus == SellerAwaits)
+	{
+		<a asp-controller="Deal" asp-action="Complain" asp-route-id="@deal.Id" class="btn btn-sm btn-warning me-1 align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-0 ">Complain</p>
+		</a>
+		<a asp-controller="Deal" asp-action="Received" asp-route-id="@deal.Id" class="btn btn-sm btn-danger align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-0 ">Set to Paid!</p>
+		</a>
+	}
+	else if (deal.IsSeller && deal.DealStatus == BuyerAwaits)
+	{
+		<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Details</p>
+		</a>
+	}
+	else if (deal.IsSeller && deal.DealStatus == OnDelivery)
+	{
+		<a asp-controller="Deal" asp-action="Received" asp-route-id="@deal.Id" class="btn btn-sm btn-danger align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Set to Paid!</p>
+		</a>
+	}
+	else if (!deal.IsSeller && deal.DealStatus == SellerAttention)
+	{
+		<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Details</p>
+		</a>
+	}
+	else if (!deal.IsSeller && deal.DealStatus == BuyerAttention)
+	{
+		<a asp-controller="Deal" asp-action="Revise" asp-route-id="@deal.Id" class="btn btn-sm btn-primary align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Take Action</p>
+		</a>
+	}
+	else if (!deal.IsSeller && deal.DealStatus == SellerAwaits)
+	{
+		<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Details</p>
+		</a>
+	}
+	else if (!deal.IsSeller && deal.DealStatus == BuyerAwaits)
+	{
+		<a asp-controller="Deal" asp-action="Complain" asp-route-id="@deal.Id" class="btn btn-sm btn-warning me-1 align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-0 ">Complain</p>
+		</a>
+		<a asp-controller="Deal" asp-action="Received" asp-route-id="@deal.Id" class="btn btn-sm btn-danger align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-0 ">Set to Delivered!</p>
+		</a>
+	}
+	else if (!deal.IsSeller && deal.DealStatus == OnDelivery)
+	{
+		<a asp-controller="Deal" asp-action="Received" asp-route-id="@deal.Id" class="btn btn-sm btn-danger align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Set to Delivered!</p>
+		</a>
+	}
+	else if(!deal.IsSeller && deal.DealStatus == Fulfilled)
+	{
+		<a asp-controller="Item" asp-action="CreateFromDeal" asp-route-id="@deal.Id" class="btn btn-sm me-1 btn-primary align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-0 ">Create Item</p>
+		</a>
+		<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-0 "><i class="fas fa-info-circle"></i></p>
+		</a>
+	}
+	else //Off
+	{
+		<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
+			<p class="p-0 mb-0 me-2 ">Details</p>
+		</a>
+	}
+
+
+</div>

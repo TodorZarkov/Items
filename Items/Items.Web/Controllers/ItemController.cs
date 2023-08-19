@@ -4,6 +4,7 @@
 	using Items.Web.Extensions;
 	using Items.Web.ViewModels.Item;
 	using static Common.NotificationMessages;
+	using static Common.EntityValidationErrorMessages.General;
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
@@ -79,7 +80,18 @@
 		public async Task<IActionResult> Add(ItemFormModel model, bool continueAdd)
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			if (!ModelState.IsValid)
+
+			bool isValidAsync = true;
+			bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
+			bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
+			bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
+			bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
+			if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
+			{
+				isValidAsync = false;
+				ModelState.AddModelError("", GeneralFormError);
+			}
+			if (!(ModelState.IsValid && isValidAsync))
 			{
 				//todo:more model async checks 
 				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
@@ -88,7 +100,7 @@
 				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
 				return View(model);
 			}
-			
+
 			await itemService.CreateItemAsync(model, userId);
 
 			if (continueAdd)
@@ -142,9 +154,19 @@
 				return RedirectToAction("All", "Sell");
 			}
 
-			if (!ModelState.IsValid)
+			bool isValidAsync = true;
+			bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
+			bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
+			bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
+			bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
+			if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
 			{
-				//todo:more model async checks 
+				isValidAsync = false;
+				ModelState.AddModelError("", GeneralFormError);
+			}
+
+			if (!(ModelState.IsValid && isValidAsync))
+			{
 				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 				model.AvailableUnits = await unitService.AllForSelectAsync();
@@ -159,10 +181,10 @@
 
 
 		[HttpGet]
-		public  IActionResult PutOnMarket(Guid id)
+		public IActionResult PutOnMarket(Guid id)
 		{
 			TempData[InformationMessage] = "You Must Edit The \"Market Section\"";
-			return RedirectToAction("Edit", "Item", new {id});
+			return RedirectToAction("Edit", "Item", new { id });
 		}
 
 		[HttpGet]

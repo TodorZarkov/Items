@@ -4,10 +4,10 @@
 	using System.ComponentModel.DataAnnotations;
 	using System.Reflection;
 
-	public class DateTimeBeforeAttribute : ValidationAttribute//, IClientModelValidator
+	public class DateBeforeAttribute : ValidationAttribute//, IClientModelValidator
 	{
 		private readonly string targetProperty;
-        public DateTimeBeforeAttribute(string targetProperty)
+        public DateBeforeAttribute(string targetProperty)
         {
 			this.targetProperty = targetProperty;
         }
@@ -38,7 +38,7 @@
 				return ValidationResult.Success; //not care to compare with null
 			}
 
-			if (currentValue > propertyValue)
+			if (((DateTime)currentValue).Date >= ((DateTime)propertyValue).Date)
 			{
 				return new ValidationResult(ErrorMessage);
 			}

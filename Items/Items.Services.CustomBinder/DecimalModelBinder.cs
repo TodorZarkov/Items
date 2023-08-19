@@ -1,5 +1,4 @@
-﻿
-namespace Items.Web.ModelBinder
+﻿namespace Items.Services.CustomBinder
 {
 	using Microsoft.AspNetCore.Mvc.ModelBinding;
 	using System.Globalization;
@@ -7,7 +6,7 @@ namespace Items.Web.ModelBinder
 
 	public class DecimalModelBinder : IModelBinder
 	{
-		
+
 		public Task BindModelAsync(ModelBindingContext bindingContext)
 		{
 			ValueProviderResult valueResult = bindingContext.ValueProvider

@@ -4,9 +4,9 @@ namespace Items.Web
 	using Items.Data.Models;
 	using Items.Services.Common;
 	using Items.Services.Common.Interfaces;
+	using Items.Services.CustomBinder;
 	using Items.Services.Data;
 	using Items.Services.Data.Interfaces;
-	using Items.Web.ModelBinder;
 
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Configuration;

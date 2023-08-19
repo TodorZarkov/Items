@@ -13,7 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Items.Common\Items.Common.csproj" />
     <ProjectReference Include="..\Items.Services.Common\Items.Services.Common.csproj" />
-    <ProjectReference Include="..\Items.Web.ModelBinder\Items.Web.ModelBinder.csproj" />
+    <ProjectReference Include="..\Items.Services.CustomBinder\Items.Services.CustomBinder.csproj" />
     <ProjectReference Include="..\Validators\Items.Web.Validators.csproj" />
   </ItemGroup>
 

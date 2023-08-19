@@ -1,4 +1,5 @@
-﻿namespace Items.Web.ModelBinder
+﻿
+namespace Items.Services.CustomBinder
 {
 	using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -11,7 +12,7 @@
 				throw new ArgumentNullException(nameof(context));
 			}
 
-			if (context.Metadata.ModelType == typeof(decimal) 
+			if (context.Metadata.ModelType == typeof(decimal)
 				|| context.Metadata.ModelType == typeof(decimal?))
 			{
 				return new DecimalModelBinder();

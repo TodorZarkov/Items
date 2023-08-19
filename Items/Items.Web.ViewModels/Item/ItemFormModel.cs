@@ -1,7 +1,6 @@
 ﻿namespace Items.Web.ViewModels.Item
 {
 	using Items.Common.Enums;
-	using Items.Web.ModelBinder;
 	using Items.Web.Validators.Attributes;
 	using Items.Web.ViewModels.Category;
 	using Items.Web.ViewModels.Currency;
@@ -10,10 +9,7 @@
 	using static Items.Common.EntityValidationConstants.Item;
 	using static Items.Common.EntityValidationErrorMessages.Item;
 
-	using Microsoft.AspNetCore.Mvc;
-
 	using System.ComponentModel.DataAnnotations;
-
 	public class ItemFormModel 
 	{
 
@@ -25,13 +21,11 @@
 
 
 		[Required]
-		[ModelBinder(binderType: typeof(UnitIdModelBinder))]
 		public int UnitId { get; set; }
 		public IEnumerable<ForSelectUnitViewModel>? AvailableUnits { get; set; }
 
 
 		[Required]
-		//todo: asynchronous validation with db with model binding
 		public int PlaceId { get; set; }
 		public IEnumerable<ForSelectPlaceViewModel>? AvailablePlaces { get; set; } //todo: filter available places over client(ajax) or go supDropdown
 
@@ -42,14 +36,11 @@
 		//public IEnumerable<ForSelectLocationViewModel> AvailableLocations { get; set; } = null!;
 
 
-		//todo: asynchronous validation with db
-		//todo: validate if any price is set to be required
 		public int? CurrencyId { get; set; }
 		public IEnumerable<ForSelectCurrencyViewModel>? AvailableCurrencies { get; set; }
 
 
 		[Required]
-		//todo: asynchronous validation with db With model binder
 		public int[] CategoryIds { get; set; } = null!;
         public IEnumerable<CategoryFilterViewModel>? AvailableCategories { get; set; }
 
@@ -73,6 +64,7 @@
 
 
 		[Range(ValueMinValue, ValueMaxValue)]
+		[RequiredIfPresent("CurrencyId", ErrorMessage = PriceCurrencyRequired)]
 		public decimal? AcquiredPrice { get; set; }
 
 
@@ -92,19 +84,17 @@
 		public decimal? CurrentPrice { get; set; }
 
 
-		[AfterOrEqualCurrentDateTimeAttribute(ErrorMessage = StartSellCannotBeInThePast)]
-		[DateTimeBefore("EndSell", ErrorMessage = StartSellAfterEndSell)]
+		[EqualCurrentDate(ErrorMessage = StartSellMustBeToday)]
+		[DateBefore("EndSell", ErrorMessage = StartSellAfterEndSell)]
         public DateTime? StartSell { get; set; }
 
 
 
-		//todo: my dateTime? valid attribute also may check is it after StartSell, gets Required after StartDate is present
-		//[RequiredIfPresent("StartSell")]
+		[RequiredIfPresent("CurrentPrice", "CurrencyId", "IsAuction", ErrorMessage = StartSellPriceCurrencyRequired)]
 		public DateTime? EndSell { get; set; }
 
 
 
-		//todo: gets Required after StartSell is present
 		public bool IsAuction { get; set; }
 
 

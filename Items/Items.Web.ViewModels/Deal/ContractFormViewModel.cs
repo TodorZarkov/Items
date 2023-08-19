@@ -59,7 +59,7 @@
 		public decimal Quantity { get; set; }
 
 
-		[DateTimeBefore("DeliverDue", ErrorMessage = CannotBeDeliveredBeforeSent)]
+		[DateBefore("DeliverDue", ErrorMessage = CannotBeDeliveredBeforeSent)]
 		[AfterOrEqualCurrentDate]
 		public DateTime SendDue { get; set; }// seller set after reads the address of the buyer, NEGOTIABLE
 

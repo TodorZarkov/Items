@@ -4,7 +4,7 @@
 
 	public interface IUnitService
 	{
-		Task<bool> IsValidId(int unitId);
+		Task<bool> IsValidIdAsync(int unitId);
 
 		Task<IEnumerable<ForSelectUnitViewModel>> AllForSelectAsync();
 	}

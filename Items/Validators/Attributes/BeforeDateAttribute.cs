@@ -3,11 +3,11 @@
 	using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 	using System.ComponentModel.DataAnnotations;
 
-	public class BeforeDateTimeAttribute : ValidationAttribute//, IClientModelValidator
+	public class BeforeDateAttribute : ValidationAttribute//, IClientModelValidator
 	{
 		DateTime dateTime;
 
-		public BeforeDateTimeAttribute(DateTime dateTime)
+		public BeforeDateAttribute(DateTime dateTime)
 		{
 			this.dateTime = dateTime;
 		}
@@ -22,7 +22,7 @@
 				return ValidationResult.Success; //not care to compare with null
 			}
 
-			if (currentValue > dateTime )
+			if (((DateTime)currentValue).Date >= dateTime.Date )
 			{
 				return new ValidationResult(ErrorMessage);
 			}

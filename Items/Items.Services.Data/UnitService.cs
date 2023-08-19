@@ -30,8 +30,9 @@
 			return forSelectUnits;
 		}
 
-		public async Task<bool> IsValidId(int unitId)
+		public async Task<bool> IsValidIdAsync(int unitId)
 		{
+
 			Unit? actualUnit = await dbContext.Units.FindAsync(unitId);
 
 			return actualUnit != null;

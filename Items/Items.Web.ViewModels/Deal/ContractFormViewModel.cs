@@ -5,14 +5,13 @@
 	using static Common.EntityValidationErrorMessages.Contract;
 
 	using System.ComponentModel.DataAnnotations;
-	using Microsoft.VisualBasic;
 
 	public class ContractFormViewModel
 	{
         public Guid? Id { get; set; }
         public bool? IsSeller { get; set; }
 
-        //to view and to confirm that nothing has changed in the period between confirmations, in the considering item
+//to view and to confirm that nothing has changed in the period between confirmations, in the considering item ---------------------
         public string? SellerName { get; set; } // permission from  the Item visibility
 		public string? SellerEmail { get; set; }// permission from  the Item visibility
 		public string? SellerPhone { get; set; }// permission from  the Item visibility
@@ -45,10 +44,10 @@
 
         public string? TotalPrice { get; set; }
 
+//------------------------------------------------------------------------
 
 
-
-        // to form
+// to form ---------------------------------------------------------------
         [Required]
 		public bool ConsentBuyerInfo { get; set; }
 
@@ -77,7 +76,7 @@
 		[StringLength(DeliveryAddressMaxLength, MinimumLength = DeliveryAddressMinLength)]
 		public string DeliveryAddress { get; set; } = null!;
 
-
+//-----------------------------------------------------------------------------------------------------------------
 		public override bool Equals(object? contractViewModel)
 		{
 			ContractViewModel toCompare;

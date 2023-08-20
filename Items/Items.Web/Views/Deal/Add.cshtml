@@ -11,7 +11,7 @@
 }
 
 <form asp-area="" asp-controller="Deal" asp-action="Preview" asp-route-itemId="@Model.ItemId" method="post" class="mx-auto row">
-
+	<div asp-validation-summary="ModelOnly" class="text-warning"></div>
 	<div class="col col">
 		<div class="mb-3 small">
 			<label asp-for="@Model.SellerName" class="form-label">Seller name</label>
@@ -63,6 +63,7 @@
 			<div class="input-group mb-3">
 				<input type="number" asp-for="@Model.Quantity" class="form-control w-auto" />
 				<input type="text" asp-for="@Model.UnitSymbol" class="form-control input-group-text" readonly />
+				<span asp-validation-for="@Model.Quantity" class="text-danger text-sm-start"></span>
 			</div>
 
 		</div>
@@ -70,21 +71,25 @@
 		<div class="mb-3 form-check">
 			<label asp-for="@Model.ConsentBuyerInfo" class="form-check-label">Do you want to send your name, email and phone number to the seller?</label>
 			<input type="checkbox" asp-for="@Model.ConsentBuyerInfo" class="form-check-input" />
+		
 		</div>
 
 		<div class="mb-3">
 			<label asp-for="@Model.SendDue" class="form-label">Seller can send the Item on:</label>
 			<input type="date" asp-for="@Model.SendDue" class="form-control" readonly />
+			<span asp-validation-for="@Model.SendDue" class="text-danger text-sm-start"></span>
 		</div>
 
 		<div class="mb-3">
 			<label asp-for="@Model.DeliverDue" class="form-label">The Item will be delivered on:</label>
 			<input type="date" asp-for="@Model.DeliverDue" class="form-control" />
+			<span asp-validation-for="@Model.DeliverDue" class="text-danger text-sm-start"></span>
 		</div>
 
 		<div class="mb-3">
 			<label asp-for="@Model.DeliveryAddress" class="form-label">Fill out your delivery address</label>
 			<textarea type="text" asp-for="@Model.DeliveryAddress" class="form-control"></textarea>
+			<span asp-validation-for="@Model.DeliveryAddress" class="text-danger text-sm-start"></span>
 		</div>
 	</div>
 
@@ -92,11 +97,13 @@
 		<div class="mb-3">
 			<label asp-for="@Model.SellerComment" class="form-label">Note from The Seller</label>
 			<textarea type="text" asp-for="@Model.SellerComment" class="form-control" readonly></textarea>
+			<span asp-validation-for="@Model.SellerComment" class="text-danger text-sm-start"></span>
 		</div>
 
 		<div class="mb-3">
 			<label asp-for="@Model.BuyerComment" class="form-label">Note for The Seller</label>
 			<textarea type="text" asp-for="@Model.BuyerComment" class="form-control" ></textarea>
+			<span asp-validation-for="@Model.BuyerComment" class="text-danger text-sm-start"></span>
 		</div>
 
 

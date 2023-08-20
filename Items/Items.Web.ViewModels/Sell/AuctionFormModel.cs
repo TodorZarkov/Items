@@ -1,12 +1,15 @@
 ﻿namespace Items.Web.ViewModels.Sell
 {
+	using Items.Web.Validators.Attributes;
+	using static Common.EntityValidationErrorMessages.Item;
+
 	public class AuctionFormModel
 	{
-		//validate end sell according to start sell and now
         public DateTime EndSell { get; set; }
 
-
-        public DateTime StartSell { get; set; }
+		[AfterOrEqualCurrentDate(ErrorMessage = StartSellCannotBeInThePast)]
+		[DateBefore("EndSell", ErrorMessage = StartSellAfterEndSell)]
+		public DateTime StartSell { get; set; }
 
 		public string Name { get; set; } = null!;
 

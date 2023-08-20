@@ -62,9 +62,19 @@
 			return items;
 		}
 
-		public async Task<IEnumerable<AllItemViewModel>> AllPublic()
+		public async Task<IEnumerable<AllItemViewModel>> AllPublic(string? searchTerm = null)
 		{
-			IEnumerable<AllItemViewModel> items = await dbContext.Items
+			var itemsQuery = dbContext.Items.AsQueryable();
+			if (!string.IsNullOrEmpty(searchTerm))
+			{
+				itemsQuery = itemsQuery
+					.Where(i => i.Name.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
+			}
+
+			var items = await itemsQuery
 				.AsNoTracking()
 				.Where(i => !i.Deleted)
 				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
@@ -268,9 +278,19 @@
 				.ToArray(); ;
 		}
 
-		public async Task<IEnumerable<AllItemViewModel>> All(Guid userId)
+		public async Task<IEnumerable<AllItemViewModel>> All(Guid userId, string? searchTerm = null)
 		{
-			IEnumerable<AllItemViewModel> items = await dbContext.Items
+			var itemsQuery = dbContext.Items.AsQueryable();
+			if (!string.IsNullOrEmpty(searchTerm))
+			{
+				itemsQuery = itemsQuery
+					.Where(i => i.Name.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
+			}
+
+			var items = await itemsQuery
 				.AsNoTracking()
 				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId

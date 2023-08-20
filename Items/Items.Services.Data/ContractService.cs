@@ -307,7 +307,7 @@
 		public async Task CancelAsync(Guid id, Guid userId)
 		{
 			Contract deal = await dbContext.Contracts
-				.SingleAsync(c => c.Id == id && c.SellerId == userId || c.BuyerId == userId);
+				.SingleAsync(c => c.Id == id);//&& c.SellerId == userId || c.BuyerId == userId);
 
 			deal.BuyerOk = false;
 			deal.SellerOk = false;

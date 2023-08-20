@@ -139,6 +139,10 @@
 				.ToArrayAsync();
 			HashSet<int> validIdsHS = validIds.ToHashSet();
 			//todo: which is faster - to convert to hash set to search list?
+			if (ids == null || ids.Length == 0)
+			{
+				return false;
+			}
 			return ids.All(i => validIdsHS.Contains(i));
 		}
 

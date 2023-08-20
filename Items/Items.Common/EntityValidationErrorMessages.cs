@@ -16,6 +16,10 @@
 			public const string PriceCurrencyRequired = "If Price is Present, Currency is Required!";
 
 			public const string CannotBeDeliveredBeforeSent = "Cannot Be Delivered Before Sent.";
+
+			public const string InsufficientQuantity = "Insufficient Item Quantity! Try reduce order Quantity.";
+
+
 		}
 
 		public static class Contract

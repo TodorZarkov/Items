@@ -13,6 +13,7 @@
 }
 
 <form asp-controller="Deal" asp-action="Revise" class="mx-auto row">
+	<div asp-validation-summary="ModelOnly" class="text-warning"></div>
 
 	<div class="col col">
 		<div class="mb-3 small">
@@ -81,6 +82,8 @@
 			<div class="input-group mb-3">
 				<input type="number" asp-for="@Model.Quantity" class="form-control w-auto" readonly />
 				<input type="text" asp-for="@Model.UnitSymbol" class="form-control input-group-text" readonly />
+				<span asp-validation-for="@Model.Quantity" class="text-danger text-sm-start"></span>
+
 			</div>
 
 		</div>
@@ -96,6 +99,7 @@
 			{
 				<input type="date" asp-for="@Model.SendDue" class="form-control" readonly />
 			}
+			<span asp-validation-for="@Model.SendDue" class="text-danger text-sm-start"></span>
 
 		</div>
 
@@ -103,6 +107,7 @@
 			<label asp-for="@Model.DeliverDue" class="form-label">The Item will be delivered on:</label>
 
 			<input type="date" asp-for="@Model.DeliverDue" class="form-control" />
+			<span asp-validation-for="@Model.DeliverDue" class="text-danger text-sm-start"></span>
 
 		</div>
 
@@ -116,6 +121,7 @@
 			{
 				<textarea type="text" asp-for="@Model.DeliveryAddress" class="form-control" readonly></textarea>
 			}
+			<span asp-validation-for="@Model.DeliveryAddress" class="text-danger text-sm-start"></span>
 
 		</div>
 	</div>
@@ -131,6 +137,7 @@
 			{
 				<textarea type="text" asp-for="@Model.SellerComment" class="form-control" readonly></textarea>
 			}
+			<span asp-validation-for="@Model.SellerComment" class="text-danger text-sm-start"></span>
 
 		</div>
 
@@ -144,6 +151,7 @@
 			{
 				<textarea type="text" asp-for="@Model.BuyerComment" class="form-control" readonly></textarea>
 			}
+			<span asp-validation-for="@Model.BuyerComment" class="text-danger text-sm-start"></span>
 
 		</div>
 

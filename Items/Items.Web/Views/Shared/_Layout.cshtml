@@ -107,11 +107,13 @@
 
 
 
-					<form class="d-flex">
+					<form asp-action="All" asp-controller="Item" method="get" class="d-flex">
 						<input class="form-control me-2"
 							   type="search"
 							   placeholder="Search Items"
-							   aria-label="Search">
+							   aria-label="Search"
+							   name="searchTerm"
+						>
 						<button class="btn btn-outline-success" type="submit">Search</button>
 					</form>
 

@@ -3,9 +3,10 @@
 	using Items.Services.Data.Interfaces;
 	using Items.Web.Extensions;
 	using Items.Web.ViewModels.Deal;
-	using Microsoft.AspNetCore.Mvc;
 	using static Common.NotificationMessages;
+	using static Common.EntityValidationErrorMessages.Item;
 
+	using Microsoft.AspNetCore.Mvc;
 	public class DealController : BaseController
 	{
 		private readonly IContractService contractService;
@@ -81,20 +82,11 @@
 			if (!isOnTheMarket)
 			{
 				TempData[InformationMessage] = "Item Is Not On The  Market Anymore!";
-				RedirectToAction("All", "Item");
+				return RedirectToAction("All", "Item");
 			}
-
-			if (!ModelState.IsValid)
-			{
-				model.ItemId = itemId;
-				//todo: fill model more?
-				return View(model);
-			}
-			//todo: async model check
-
-			//check if meanwhile item hash changed  if changed - notification "Alarm Buyer for change"
 
 			ContractFormViewModel previewModel = await contractService.GetForCreate(model, itemId, buyerId);
+
 
 			return View(previewModel);
 		}
@@ -128,14 +120,15 @@
 			{
 				//todo: general error provider (at this point if model is wrong this is due to intentional violation
 
-				return RedirectToAction("All", "Item");
+				return View(previewModel);
 			}
 
 			bool isQuantitySufficient = await itemService.SufficientQuantity(itemId, previewModel.Quantity);
 			if (!isQuantitySufficient)
 			{
-				TempData[ErrorMessage] = "Insufficient Item Quantity! Try reduce order Quantity.";
-				RedirectToAction("All", "Item");
+				//TempData[ErrorMessage] = "";
+				ModelState.AddModelError("Quantity", InsufficientQuantity);
+				return View(previewModel);
 			}
 
 			//todo: check if meanwhile item hash changed  if changed - notification "Alarm Buyer for change"

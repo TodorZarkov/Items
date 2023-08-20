@@ -18,9 +18,9 @@
 		Task<IEnumerable<AllItemViewModel>> GetByCategoriesAllItemsAsync(
 			int[] categories, Guid userId);
 
-		Task<IEnumerable<AllItemViewModel>> AllPublic();
+		Task<IEnumerable<AllItemViewModel>> AllPublic(string? searchTerm = null);
 
-		Task<IEnumerable<AllItemViewModel>> All(Guid userId);
+		Task<IEnumerable<AllItemViewModel>> All(Guid userId, string? searchTerm = null);
 
 
 		Task<IEnumerable<MyItemViewModel>> Mine(Guid userId);

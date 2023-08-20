@@ -31,18 +31,18 @@
 
 		[HttpGet]
 		[AllowAnonymous]
-		public async Task<IActionResult> All()
+		public async Task<IActionResult> All(string? searchTerm = null)
 		{
 			IEnumerable<AllItemViewModel> model;
 
 			if (User.Identity?.IsAuthenticated ?? false)
 			{
 				Guid userId = Guid.Parse(User.GetId());
-				model = await itemService.All(userId);
+				model = await itemService.All(userId, searchTerm);
 			}
 			else
 			{
-				model = await itemService.AllPublic();
+				model = await itemService.AllPublic(searchTerm);
 			}
 			return View(model);
 		}

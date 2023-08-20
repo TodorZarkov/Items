@@ -165,7 +165,7 @@
     - has one currency
     - has one item
 
-    <img src="\ReadmeAssets\dbDiagram-12Aug2023-last.png" width="1800">
+    <img src="\ReadmeAssets\dbDiagram-20Aug2023-last.png" width="1800">
 
 ***
 

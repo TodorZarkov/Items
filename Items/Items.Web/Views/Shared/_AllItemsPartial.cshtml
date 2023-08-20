@@ -57,7 +57,7 @@
 							Barter Offers: @item.BarterOffers
 						</h6>
 						<p>Auction End: @item.EndSell</p>
-						<a href="#" class="btn btn-sm btn-warning">Bid</a>
+						<a asp-controller="Bid" asp-action="Add" asp-route-itemId="@item.Id" class="btn btn-sm btn-warning">Bid</a>
 					}
 					else
 					{

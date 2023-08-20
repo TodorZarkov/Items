@@ -43,5 +43,15 @@
 
 			return RedirectToAction("All", "Bid");
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> Add(Guid itemId)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+
+			//todo: implement
+
+			return RedirectToAction("All", "Bid");
+		}
 	}
 }

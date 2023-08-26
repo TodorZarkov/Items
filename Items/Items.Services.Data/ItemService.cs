@@ -64,7 +64,7 @@
 
 		//todo: unite the query with categories, pagination, sorting
 		//todo: and remove get by category
-		public async Task<IEnumerable<AllItemViewModel>> AllPublic(string? searchTerm = null)
+		public async Task<IEnumerable<AllItemViewModel>> GetAllPublicAsync(string? searchTerm = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
 			if (!string.IsNullOrEmpty(searchTerm))
@@ -282,7 +282,7 @@
 
 
 		//todo: unite the query with categories, pagination, sorting
-		public async Task<IEnumerable<AllItemViewModel>> All(Guid userId, string? searchTerm = null)
+		public async Task<IEnumerable<AllItemViewModel>> GetAllAsync(Guid userId, string? searchTerm = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
 			if (!string.IsNullOrEmpty(searchTerm))
@@ -340,7 +340,7 @@
 			return items;
 		}
 
-		public async Task<IEnumerable<MyItemViewModel>> Mine(Guid userId)
+		public async Task<IEnumerable<MyItemViewModel>> GetMineAsync(Guid userId)
 		{
 			IEnumerable<MyItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
@@ -501,7 +501,7 @@
 
 
 
-		public async Task CreateItemAsync(ItemFormModel model, Guid userId)
+		public async Task<Guid> CreateItemAsync(ItemFormModel model, Guid userId)
 		{
 			Item item = new Item
 			{
@@ -532,7 +532,6 @@
 				CurrencyId = model.CurrencyId,//3.3
 				ItemVisibility = new ItemVisibility
 				{
-				
 					AcquiredDate = model.ItemVisibility.AcquiredDate,
 					AcquireDocument = model.ItemVisibility.AcquireDocument,
 					AcquiredPrice = model.ItemVisibility.AcquiredPrice,
@@ -548,7 +547,7 @@
 			};
 
 			Place? theChosenPlace = await dbContext.Places.FindAsync(model.PlaceId);
-			item.LocationId = theChosenPlace!.LocationId;//not null here due to controller check
+			item.LocationId = theChosenPlace!.LocationId;
 
 			foreach (int categoryId in model.CategoryIds)
 			{
@@ -561,6 +560,8 @@
 
 			dbContext.Items.Add(item);
 			await dbContext.SaveChangesAsync();
+
+			return item.Id;
 		}
 
 		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
@@ -616,7 +617,7 @@
 			return model;
 		}
 
-		public async Task<bool> IsAuthorizedAsync(Guid itemId, Guid userId)
+		public async Task<bool> IsOwnerAsync(Guid itemId, Guid userId)
 		{
 			bool result = await dbContext.Items
 				.Where(i => !i.Deleted)
@@ -667,14 +668,6 @@
 			await dbContext.SaveChangesAsync();
 		}
 
-		public async Task<bool> IsAuthorizedToViewAsync(Guid itemId, Guid userId)
-		{
-			bool result = await dbContext.Items
-				.Where(i => !i.Deleted)
-				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId || i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue);
-
-			return result;
-		}
 
 		public async Task<ItemViewModel> GetByIdForViewAsync(Guid itemId)
 		{
@@ -830,7 +823,12 @@
 		public async Task<bool> IsOnMarketAsync(Guid id)
 		{
 			bool result = await dbContext.Items
-				.AnyAsync(i => i.Id == id && i.EndSell != null && i.Quantity >= (decimal)QuantityMinValue);
+				.Where(i => !i.Deleted)
+				.AnyAsync(i => 
+				i.Id == id && 
+				i.EndSell != null && 
+				i.EndSell > dateTimeProvider.GetCurrentDateTime() && 
+				i.Quantity >= (decimal)QuantityMinValue);
 
 			return result;
 		}
@@ -923,13 +921,6 @@
 
 		}
 
-		public async Task<bool> IsOwnerAsync(Guid id, Guid buyerId)
-		{
-			bool result = await dbContext.Items
-				.AnyAsync(i => i.Id == id && i.OwnerId == buyerId && !i.Deleted);
-
-			return result;
-		}
 
 		public async Task<bool> HasQuantity(Guid id)
 		{

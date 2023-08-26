@@ -18,12 +18,12 @@
 		Task<IEnumerable<AllItemViewModel>> GetByCategoriesAllItemsAsync(
 			int[] categories, Guid userId);
 
-		Task<IEnumerable<AllItemViewModel>> AllPublic(string? searchTerm = null);
+		Task<IEnumerable<AllItemViewModel>> GetAllPublicAsync(string? searchTerm = null);
 
-		Task<IEnumerable<AllItemViewModel>> All(Guid userId, string? searchTerm = null);
+		Task<IEnumerable<AllItemViewModel>> GetAllAsync(Guid userId, string? searchTerm = null);
 
 
-		Task<IEnumerable<MyItemViewModel>> Mine(Guid userId);
+		Task<IEnumerable<MyItemViewModel>> GetMineAsync(Guid userId);
 
 
 		Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarter(Guid userId);
@@ -36,15 +36,14 @@
 
 
 
-		Task CreateItemAsync(ItemFormModel itemFormViewModel, Guid userId);
+		Task<Guid> CreateItemAsync(ItemFormModel itemFormViewModel, Guid userId);
 
 		Task<ItemFormModel> GetByIdForEditAsync(Guid itemId);
 
 		Task<ItemViewModel> GetByIdForViewAsync(Guid itemId);
 		Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId);
 
-		Task<bool> IsAuthorizedAsync(Guid itemId, Guid userId);
-		Task<bool> IsAuthorizedToViewAsync(Guid itemId, Guid userId);
+		Task<bool> IsOwnerAsync(Guid itemId, Guid userId);
 
 
 		Task UpdateItemAsync(ItemFormModel model, Guid itemId);
@@ -56,7 +55,7 @@
 		Task StopSellByItemIdAsync(Guid id);
 		Task<AuctionFormModel> GetForAuctionUpdateAsync(Guid id);
 		Task AuctionUpdateAsync(AuctionFormModel model, Guid id);
-		Task<bool> IsOwnerAsync(Guid id, Guid buyerId);
+		
 		Task<bool> HasQuantity(Guid id);
 		Task<bool> SufficientQuantity(Guid itemId, decimal quantity);
 		Task<ItemFormModel> CopyFromContract(Guid id, Guid userId);

@@ -12,10 +12,6 @@
 	using System.ComponentModel.DataAnnotations;
 	public class ItemFormModel //: IValidatableObject
 	{
-
-		public AccessModifier Access { get; set; } = AccessModifier.Private;//todo: remove Access from Item 
-
-
 		[Required]
 		public ItemFormVisibilityModel ItemVisibility { get; set; } = null!;
 
@@ -68,7 +64,7 @@
 
 
 		[Range(ValueMinValue, ValueMaxValue)]
-		[RequiredIfPresent("CurrencyId", ErrorMessage = PriceCurrencyRequired)]
+		[RequiredIfPresent("CurrencyId", "AcquiredDate", ErrorMessage = PriceCurrencyRequired)]
 		public decimal? AcquiredPrice { get; set; }
 
 
@@ -104,12 +100,7 @@
 
         public bool OnRotation { get; set; }
 
-		//public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-		//{
-		//	//todo: try validate async here
-		//	throw new NotImplementedException();
-		//}
-
+		
 
 
 		//public Document? AcquireDocument { get; set; }

@@ -29,7 +29,7 @@
 		public async Task<IActionResult> Edit(Guid id)
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
+			bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
 			if (!isAuthorized)
 			{
 				return RedirectToAction("All", "Item");
@@ -42,18 +42,11 @@
 				return RedirectToAction("Mine", "Item");
 			}
 
-			bool isOnMarket = await itemService.IsOnMarketAsync(id);
-			if (!isOnMarket)
-			{
-				TempData[InformationMessage] = "Item Is Not On The  Market!";
-				return RedirectToAction("Mine", "Item");
-			}
-
 			bool isAuction = await itemService.IsAuctionAsync(id);
 			if (!isAuction)
 			{
 				TempData[InformationMessage] = "Is Not An Auction, You Can Edit Regular.";
-				return RedirectToAction("Edit", "Item");
+				return RedirectToAction("Edit", "Item", new { id });
 			}
 
 			AuctionFormModel model = await itemService.GetForAuctionUpdateAsync(id);
@@ -67,7 +60,7 @@
 		public async Task<IActionResult> Edit(AuctionFormModel model, Guid id)
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
+			bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
 			if (!isAuthorized)
 			{
 				return RedirectToAction("All", "Item");
@@ -80,18 +73,12 @@
 				return RedirectToAction("Mine", "Item");
 			}
 
-			bool isOnMarket = await itemService.IsOnMarketAsync(id);
-			if (!isOnMarket)
-			{
-				TempData[InformationMessage] = "Item Is Not On The  Market!";
-				return RedirectToAction("Mine", "Item");
-			}
 
 			bool isAuction = await itemService.IsAuctionAsync(id);
 			if (!isAuction)
 			{
 				TempData[InformationMessage] = "Is Not An Auction, You Can Edit Regular.";
-				return RedirectToAction("Edit", "Item");
+				return RedirectToAction("Edit", "Item", new {id});
 			}
 
 			//todo: model check

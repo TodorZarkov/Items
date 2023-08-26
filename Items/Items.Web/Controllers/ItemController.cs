@@ -2,13 +2,13 @@
 {
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Item;
+	using Items.Web.ViewModels.Deal;
+	using Items.Web.Infrastructure.Extensions;
 	using static Common.NotificationMessages;
 	using static Common.EntityValidationErrorMessages.General;
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
-	using Items.Web.ViewModels.Deal;
-	using Items.Web.Infrastructure.Extensions;
 
 	public class ItemController : BaseController
 	{
@@ -35,27 +35,43 @@
 		[AllowAnonymous]
 		public async Task<IActionResult> All(string? searchTerm = null)
 		{
-			IEnumerable<AllItemViewModel> model;
+			try
+			{
+				IEnumerable<AllItemViewModel> model;
 
-			if (User.Identity?.IsAuthenticated ?? false)
-			{
-				Guid userId = Guid.Parse(User.GetId());
-				model = await itemService.All(userId, searchTerm);
+				if (User.Identity?.IsAuthenticated ?? false)
+				{
+					Guid userId = Guid.Parse(User.GetId());
+					model = await itemService.GetAllAsync(userId, searchTerm);
+				}
+				else
+				{
+					model = await itemService.GetAllPublicAsync(searchTerm);
+				}
+				return View(model);
 			}
-			else
+			catch (Exception e)
 			{
-				model = await itemService.AllPublic(searchTerm);
+				return GeneralError(e);
 			}
-			return View(model);
+			
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> Mine()
 		{
 			Guid userId = Guid.Parse(User.GetId());
-			IEnumerable<MyItemViewModel> model = await itemService.Mine(userId);
+			try
+			{
+				IEnumerable<MyItemViewModel> model = await itemService.GetMineAsync(userId);
 
-			return View(model);
+				return View(model);
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
+			
 		}
 
 		[HttpGet]
@@ -63,122 +79,153 @@
 		{
 			Guid userId = Guid.Parse(User.GetId());
 
-			ItemFormModel model = new ItemFormModel
+			try
 			{
-				ItemVisibility = new ItemFormVisibilityModel(),
-				AvailableCategories = await categoryService.AllForSelectAsync(userId),
-				AvailableCurrencies = await currencyService.AllForSelectAsync(),
-				AvailableUnits = await unitService.AllForSelectAsync(),
-				AvailablePlaces = await placeService.AllForSelectAsync(userId),
-			};
-			if (placeId.HasValue)
-			{
-				model.PlaceId = (int)placeId;
+				ItemFormModel model = new ItemFormModel
+				{
+					ItemVisibility = new ItemFormVisibilityModel(),
+					AvailableCategories = await categoryService.AllForSelectAsync(userId),
+					AvailableCurrencies = await currencyService.AllForSelectAsync(),
+					AvailableUnits = await unitService.AllForSelectAsync(),
+					AvailablePlaces = await placeService.AllForSelectAsync(userId),
+				};
+				if (placeId.HasValue)
+				{
+					model.PlaceId = (int)placeId;
+				}
+				return View(model);
 			}
-			return View(model);
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> Add(ItemFormModel model, bool continueAdd)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-
-			bool isValidAsync = true;
-			bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
-			bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
-			bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
-			bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
-			if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
+			try
 			{
-				isValidAsync = false;
-				ModelState.AddModelError("", GeneralFormError);
-			}
-			if (!(ModelState.IsValid && isValidAsync))
-			{
-				//todo:more model async checks 
-				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
-				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
-				model.AvailableUnits = await unitService.AllForSelectAsync();
-				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
-				return View(model);
-			}
-			//todo: create to return the new id
-			await itemService.CreateItemAsync(model, userId);
+				Guid userId = Guid.Parse(User.GetId());
 
-			if (continueAdd)
-			{
-				return RedirectToAction("Add", "Item", new { placeId = model.PlaceId });
-			}
+				bool isValidAsync = true;
+				bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
+				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
+				bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
+				bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
+				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
+				{
+					isValidAsync = false;
+					ModelState.AddModelError("", GeneralFormError);
+				}
+				if (!(ModelState.IsValid && isValidAsync))
+				{
+					model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+					model.AvailableUnits = await unitService.AllForSelectAsync();
+					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+					return View(model);
+				}
 
-			return RedirectToAction("Mine", "Item");
+				Guid itemId = await itemService.CreateItemAsync(model, userId);
+				TempData[SuccessMessage] = "Item successfully Created!";
+
+
+				if (continueAdd)
+				{
+					return RedirectToAction("Add", "Item", new { placeId = model.PlaceId });
+				}
+
+				return RedirectToAction("Details", "Item", new { id = itemId });
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> Edit(Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
-			if (!isAuthorized)
+			try
 			{
-				return RedirectToAction("All", "Item");
-			}
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					TempData[ErrorMessage] = "You must be owner to edit Item!";
+					return RedirectToAction("Mine", "Item");
+				}
 
-			bool isAuction = await itemService.IsAuctionAsync(id);
-			if (isAuction)
+				bool isAuction = await itemService.IsAuctionAsync(id);
+				if (isAuction)
+				{
+					TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
+					return RedirectToAction("All", "Sell");
+				}
+
+				ItemFormModel model = await itemService.GetByIdForEditAsync(id);
+				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+				model.AvailableUnits = await unitService.AllForSelectAsync();
+				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+
+				return View(model);
+			}
+			catch (Exception e)
 			{
-				TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
-				return RedirectToAction("All", "Sell");
+				return GeneralError(e);
 			}
-
-			ItemFormModel model = await itemService.GetByIdForEditAsync(id);
-			model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
-			model.AvailableCurrencies = await currencyService.AllForSelectAsync();
-			model.AvailableUnits = await unitService.AllForSelectAsync();
-			model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
-
-			return View(model);
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> Edit(ItemFormModel model, Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
-			if (!isAuthorized)
+			try
 			{
-				return RedirectToAction("All", "Item");
-			}
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					TempData[ErrorMessage] = "You must be owner to edit Item!";
+					return RedirectToAction("Mine", "Item");
+				}
 
-			bool isAuction = await itemService.IsAuctionAsync(id);
-			if (isAuction)
+				bool isAuction = await itemService.IsAuctionAsync(id);
+				if (isAuction)
+				{
+					TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
+					return RedirectToAction("All", "Sell");
+				}
+
+				bool isValidAsync = true;
+				bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
+				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
+				bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
+				bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
+				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
+				{
+					isValidAsync = false;
+					ModelState.AddModelError("", GeneralFormError);
+				}
+
+				if (!(ModelState.IsValid && isValidAsync))
+				{
+					model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+					model.AvailableUnits = await unitService.AllForSelectAsync();
+					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+					return View(model);
+				}
+
+				await itemService.UpdateItemAsync(model, id);
+
+				return RedirectToAction("Details", "Item", new { id });
+			}
+			catch (Exception  e)
 			{
-				TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
-				return RedirectToAction("All", "Sell");
+				return GeneralError(e);
 			}
-
-			bool isValidAsync = true;
-			bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
-			bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
-			bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
-			bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
-			if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
-			{
-				isValidAsync = false;
-				ModelState.AddModelError("", GeneralFormError);
-			}
-
-			if (!(ModelState.IsValid && isValidAsync))
-			{
-				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
-				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
-				model.AvailableUnits = await unitService.AllForSelectAsync();
-				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
-				return View(model);
-			}
-			//todo: try catch all interaction with db and if catch return private IActionResult GeneralError()
-			await itemService.UpdateItemAsync(model, id);
-
-			return RedirectToAction("Mine", "Item");
 		}
 
 
@@ -192,88 +239,112 @@
 		[HttpGet]
 		public async Task<IActionResult> Details(Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-
-			bool authorizedToView = await itemService.IsAuthorizedToViewAsync(id, userId);
-			if (!authorizedToView)
+			try
 			{
-				return RedirectToAction("All", "Item");
+				Guid userId = Guid.Parse(User.GetId());
+				bool isOwner = await itemService.IsOwnerAsync(id, userId);
+				bool isOnMarket = await itemService.IsOnMarketAsync(id);
+
+				bool authorizedToView = isOwner || isOnMarket;
+				if (!authorizedToView)
+				{
+					TempData[ErrorMessage] = "The Item is not Public Anymore!";
+					return RedirectToAction("All", "Item");
+				}
+
+				ItemViewModel model;
+
+				if (isOwner)
+				{
+					model = await itemService.GetByIdForViewAsOwnerAsync(id);
+				}
+				else
+				{
+					model = await itemService.GetByIdForViewAsync(id);
+				}
+
+				return View(model);
 			}
-
-			ItemViewModel model;
-
-			bool authorizedToEdit = await itemService.IsAuthorizedAsync(id, userId);
-			if (authorizedToEdit)
+			catch (Exception e)
 			{
-				model = await itemService.GetByIdForViewAsOwnerAsync(id);
+				return GeneralError(e);
 			}
-			else
-			{
-				model = await itemService.GetByIdForViewAsync(id);
-			}
-
-			return View(model);
 		}
 
 
 		[HttpGet]
 		public async Task<IActionResult> Delete(Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
-			if (!isAuthorized)
+			try
 			{
-				return RedirectToAction("All", "Item");
-			}
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					TempData[ErrorMessage] = "Only Owner can Delete!";
+					return RedirectToAction("Mine", "Item");
+				}
 
-			bool exists = await itemService.ExistAsync(id);
-			if (!exists)
+				bool exists = await itemService.ExistAsync(id);
+				if (!exists)
+				{
+					TempData[ErrorMessage] = "Item has already been removed!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+				bool isOnMarket = await itemService.IsOnMarketAsync(id);
+				if (isOnMarket)
+				{
+					TempData[ErrorMessage] = "Item must be removed from The Market first!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+				PreDeleteItemViewModel model = await itemService.GetForDeleteByIdAsync(id);
+
+				return View(model);
+			}
+			catch (Exception e)
 			{
-				TempData[ErrorMessage] = "Item has already been removed!";
-				return RedirectToAction("Mine", "Item");
+				return GeneralError(e);
 			}
-
-			bool isOnMarket = await itemService.IsOnMarketAsync(id);
-			if (isOnMarket)
-			{
-				TempData[ErrorMessage] = "Item must be removed from The Market first!";
-				return RedirectToAction("Mine", "Item");
-			}
-
-			PreDeleteItemViewModel model = await itemService.GetForDeleteByIdAsync(id);
-
-			return View(model);
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> Delete(Guid id, PreDeleteItemViewModel model)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
-			if (!isAuthorized)
+			try
 			{
-				return RedirectToAction("All", "Item");
-			}
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					TempData[ErrorMessage] = "Only Owner can Delete!";
+					return RedirectToAction("Mine", "Item");
+				}
 
-			bool exists = await itemService.ExistAsync(id);
-			if (!exists)
-			{
-				TempData[ErrorMessage] = "Item has already been removed!";
+				bool exists = await itemService.ExistAsync(id);
+				if (!exists)
+				{
+					TempData[ErrorMessage] = "Item has already been removed!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+				bool isOnMarket = await itemService.IsOnMarketAsync(id);
+				if (isOnMarket)
+				{
+					TempData[ErrorMessage] = "Item must be removed from The Market first!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+				await itemService.DeleteByIdAsync(id);
+				TempData[SuccessMessage] = "Item was Deleted Successfully!";
+
 				return RedirectToAction("Mine", "Item");
 			}
-
-			bool isOnMarket = await itemService.IsOnMarketAsync(id);
-			if (isOnMarket)
+			catch (Exception e)
 			{
-				TempData[ErrorMessage] = "Item must be removed from The Market first!";
-				return RedirectToAction("Mine", "Item");
+				return GeneralError(e);
 			}
-
-			await itemService.DeleteByIdAsync(id);
-
-			TempData[SuccessMessage] = "Item was Deleted Successfully!";
-
-			return RedirectToAction("Mine", "Item");
 		}
 
 
@@ -281,62 +352,74 @@
 		[HttpGet]
 		public async Task<IActionResult> StopSell(Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsAuthorizedAsync(id, userId);
-			if (!isAuthorized)
+			try
 			{
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					TempData[ErrorMessage] = "You must be Owner to manage Items!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+				bool exists = await itemService.ExistAsync(id);
+				if (!exists)
+				{
+					TempData[InformationMessage] = "Item has already been removed!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+
+				bool isAuction = await itemService.IsAuctionAsync(id);
+				if (isAuction)
+				{
+					TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
+					return RedirectToAction("All", "Sell");
+				}
+
+
+				await itemService.StopSellByItemIdAsync(id);
+				TempData[SuccessMessage] = "Item Removed From The  Market!";
+
 				return RedirectToAction("All", "Item");
 			}
-
-			bool exists = await itemService.ExistAsync(id);
-			if (!exists)
+			catch (Exception e)
 			{
-				TempData[InformationMessage] = "Item has already been removed!";
-				return RedirectToAction("Mine", "Item");
+				return GeneralError(e);
 			}
-
-			bool isOnMarket = await itemService.IsOnMarketAsync(id);
-			if (!isOnMarket)
-			{
-				TempData[InformationMessage] = "Item Is Not On The  Market!";
-				return RedirectToAction("Mine", "Item");
-			}
-
-			bool isAuction = await itemService.IsAuctionAsync(id);
-			if (isAuction)
-			{
-				TempData[WarningMessage] = "Edit from Sells or Remove From The Market!";
-				return RedirectToAction("All", "Sell");
-			}
-
-
-			await itemService.StopSellByItemIdAsync(id);
-			TempData[SuccessMessage] = "Item Removed From The  Market!";
-
-			return RedirectToAction("All", "Item");
 		}
 
 
 		[HttpGet]
 		public async Task<IActionResult> CreateFromDeal(Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			bool isBuyer = await contractService.IsBuyerAsync(id, userId);
-			if (!isBuyer)
+			try
 			{
-				//todo: general error provider
-				return RedirectToAction("All", "Item");
+				Guid userId = Guid.Parse(User.GetId());
+				bool isBuyer = await contractService.IsBuyerAsync(id, userId);
+				if (!isBuyer)
+				{
+					TempData[ErrorMessage] = "You must be The Buyer to Create from Deal!";
+					return RedirectToAction("All", "Item");
+				}
+
+				ItemFormModel model = await itemService.CopyFromContract(id, userId);
+
+				model.ItemVisibility = new ItemFormVisibilityModel();
+				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+				model.AvailableUnits = await unitService.AllForSelectAsync();
+				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+
+				return View("Add", model);
 			}
-
-			ItemFormModel model = await itemService.CopyFromContract(id, userId);
-
-			model.ItemVisibility = new ItemFormVisibilityModel();
-			model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
-			model.AvailableCurrencies = await currencyService.AllForSelectAsync();
-			model.AvailableUnits = await unitService.AllForSelectAsync();
-			model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
-
-			return View("Add", model);
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 		}
+
+
+		
 	}
 }

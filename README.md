@@ -1,6 +1,6 @@
 # Items Web App
 
-## **App for your Items - you can store, find and get rid of your possessions **
+## App for your Items - you can store, find and get rid of your possessions 
 #### There are  :
     - Items
     - Places and Locations where you store items

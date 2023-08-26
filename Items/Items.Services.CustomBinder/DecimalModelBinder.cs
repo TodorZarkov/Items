@@ -4,6 +4,9 @@
 	using System.Globalization;
 	using System.Threading.Tasks;
 
+	//todo: move it in infrastructure folder .Web.Infrastructure (binders, extensions...)
+	//todo: override the jQuery front end number validation to accept comma and dot
+	//or it is culture related and it changes when the os culture is changed?
 	public class DecimalModelBinder : IModelBinder
 	{
 

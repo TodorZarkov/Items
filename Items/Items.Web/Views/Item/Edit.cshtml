@@ -8,7 +8,7 @@
 	ViewData["Title"] = "Edit Item";
 	ViewBag.ActiveLink = "MineItem";
 }
-
+@*todo: add form partial*@
 <form asp-area="" asp-controller="Item" asp-action="Edit" method="post">
 	<div asp-validation-summary="ModelOnly" class="text-warning"></div>
 	<div class="accordion" id="accordionPanelsStayOpenExample">
@@ -247,6 +247,8 @@
 
 
 </form>
+
+
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
 }

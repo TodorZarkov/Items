@@ -10,7 +10,7 @@
 	using static Items.Common.EntityValidationErrorMessages.Item;
 
 	using System.ComponentModel.DataAnnotations;
-	public class ItemFormModel 
+	public class ItemFormModel : IValidatableObject
 	{
 
 		public AccessModifier Access { get; set; } = AccessModifier.Private;//todo: remove Access from Item 
@@ -54,6 +54,10 @@
 
 		[Required]
 		[Range(QuantityMinValue, QuantityMaxValue)]
+		//todo: add Display to  reduce view code (in <label asp-for)
+		//todo: custom decimal validation attribute (why the double doesn't fit well?)
+		//todo: see how it works with comma or point in the number as a string?
+		//[Range(typeof(decimal), maximum:QuantityMaxValue, minimum:QuantityMinValue)]
 		public decimal Quantity { get; set; }
 
 
@@ -99,6 +103,12 @@
 
 
         public bool OnRotation { get; set; }
+
+		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+		{
+			//todo: try validate async here
+			throw new NotImplementedException();
+		}
 
 
 

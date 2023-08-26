@@ -62,6 +62,8 @@
 			return items;
 		}
 
+		//todo: unite the query with categories, pagination, sorting
+		//todo: and remove get by category
 		public async Task<IEnumerable<AllItemViewModel>> AllPublic(string? searchTerm = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
@@ -278,6 +280,8 @@
 				.ToArray(); ;
 		}
 
+
+		//todo: unite the query with categories, pagination, sorting
 		public async Task<IEnumerable<AllItemViewModel>> All(Guid userId, string? searchTerm = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
@@ -561,6 +565,9 @@
 
 		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
 		{
+			//todo: instead of many queries, use Include! In all similar places.
+			//todo: implement auto mapper in all similar places!
+
 			Item item = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.SingleAsync(i => i.Id == itemId);

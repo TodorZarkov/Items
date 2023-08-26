@@ -29,6 +29,8 @@
 			this.contractService = contractService;
 		}
 
+
+		//todo: when with query not to forget [FromQuery] because we pass whole model.
 		[HttpGet]
 		[AllowAnonymous]
 		public async Task<IActionResult> All(string? searchTerm = null)
@@ -100,7 +102,7 @@
 				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
 				return View(model);
 			}
-
+			//todo: create to return the new id
 			await itemService.CreateItemAsync(model, userId);
 
 			if (continueAdd)
@@ -173,7 +175,7 @@
 				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
 				return View(model);
 			}
-
+			//todo: try catch all interaction with db and if catch return private IActionResult GeneralError()
 			await itemService.UpdateItemAsync(model, id);
 
 			return RedirectToAction("Mine", "Item");

@@ -3,8 +3,8 @@
 	using Microsoft.AspNetCore.Mvc;
 
 	using Items.Services.Data.Interfaces;
-	using Items.Web.Extensions;
 	using Items.Web.ViewModels.Category;
+	using Items.Web.Infrastructure.Extensions;
 
 	public class NavDropdownViewComponent : ViewComponent
 	{

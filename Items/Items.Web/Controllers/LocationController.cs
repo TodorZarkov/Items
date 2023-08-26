@@ -1,7 +1,7 @@
 ﻿namespace Items.Web.Controllers
 {
 	using Items.Services.Data.Interfaces;
-	using Items.Web.Extensions;
+	using Items.Web.Infrastructure.Extensions;
 	using Microsoft.AspNetCore.Mvc;
 
 	public class LocationController : BaseController

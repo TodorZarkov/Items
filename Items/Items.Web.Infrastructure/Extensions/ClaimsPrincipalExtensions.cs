@@ -1,4 +1,4 @@
-﻿namespace Items.Web.Extensions
+﻿namespace Items.Web.Infrastructure.Extensions
 {
 	using System.Security.Claims;
 

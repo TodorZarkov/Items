@@ -28,7 +28,7 @@
 		public async Task SetRotationItemsDateAsync(Guid userId, DateTime newDateTime)
 		{
 			dbContext.Users
-				.Find(userId)! //todo: is null possible here?
+				.Find(userId)!
 				.RotationItemsDate = newDateTime;
 
 			await dbContext.SaveChangesAsync();

@@ -18,7 +18,6 @@
             Pictures = new HashSet<Picture>();
             Offers = new HashSet<Offer>();
             AsBarterForOffers = new HashSet<Offer>();
-			Access = AccessModifier.Private;
             Contracts = new HashSet<Contract>();
 		}
 
@@ -34,9 +33,6 @@
 		public ApplicationUser Owner { get; set; } = null!;
 
 
-
-		[Required]
-        public AccessModifier Access { get; set; } //todo: remove Access from the entity 
 
 
         [ForeignKey(nameof(ItemVisibility))]

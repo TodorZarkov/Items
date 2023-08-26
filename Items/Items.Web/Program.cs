@@ -4,10 +4,9 @@ namespace Items.Web
 	using Items.Data.Models;
 	using Items.Services.Common;
 	using Items.Services.Common.Interfaces;
-	using Items.Services.CustomBinder;
 	using Items.Services.Data;
 	using Items.Services.Data.Interfaces;
-
+	using Items.Web.Infrastructure.ModelBinders;
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Configuration;
 
@@ -92,6 +91,11 @@ namespace Items.Web
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+
+			app.Use(async (ctx, next) =>
+			{
+				await next.Invoke();
+			});
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

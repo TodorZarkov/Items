@@ -10,7 +10,7 @@
 	using static Items.Common.EntityValidationErrorMessages.Item;
 
 	using System.ComponentModel.DataAnnotations;
-	public class ItemFormModel : IValidatableObject
+	public class ItemFormModel //: IValidatableObject
 	{
 
 		public AccessModifier Access { get; set; } = AccessModifier.Private;//todo: remove Access from Item 
@@ -104,11 +104,11 @@
 
         public bool OnRotation { get; set; }
 
-		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-		{
-			//todo: try validate async here
-			throw new NotImplementedException();
-		}
+		//public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+		//{
+		//	//todo: try validate async here
+		//	throw new NotImplementedException();
+		//}
 
 
 

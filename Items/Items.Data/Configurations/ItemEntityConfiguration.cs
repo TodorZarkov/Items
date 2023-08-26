@@ -87,7 +87,7 @@
                 
                 CurrencyId = 1,
 
-				Access = AccessModifier.Public,
+				
 				StartSell = DateTime.Parse("12-12-2023"),
                 EndSell = DateTime.Parse("01-08-2024"),
                 CurrentPrice = 55m,
@@ -121,7 +121,7 @@
                 PlaceId = 1,
                 CurrencyId = 1,
 
-                Access = AccessModifier.Public,
+                
                 StartSell = DateTime.Parse("11-11-2023"),
                 EndSell = DateTime.Parse("01-08-2024"),
                 CurrentPrice = 55m,
@@ -154,7 +154,7 @@
 				PlaceId = 1,
 				CurrencyId = 1,
 
-                Access = AccessModifier.Public,
+                
                 StartSell = DateTime.Parse("10-10-2023"),
                 EndSell = DateTime.Parse("01-08-2024"),
                 CurrentPrice = 55m,
@@ -227,7 +227,7 @@
 				AcquiredPrice = 110m,
 				AcquiredDate = DateTime.Parse("12-12-2021"),
 
-				Access = AccessModifier.Public,
+				
 				StartSell = DateTime.Parse("09-09-2023"),
 				EndSell = DateTime.Parse("01-08-2024"),
                 CurrentPrice = 55m,
@@ -259,7 +259,7 @@
 				AcquiredDate = DateTime.Parse("12-12-2021"),
 
 
-				Access = AccessModifier.Public,
+				
 				StartSell = DateTime.Parse("08-08-2023"),
 				EndSell = DateTime.Parse("01-08-2024"),
                 CurrentPrice = 55m,

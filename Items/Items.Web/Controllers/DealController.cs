@@ -1,12 +1,13 @@
 ﻿namespace Items.Web.Controllers
 {
 	using Items.Services.Data.Interfaces;
-	using Items.Web.Extensions;
 	using Items.Web.ViewModels.Deal;
 	using static Common.NotificationMessages;
 	using static Common.EntityValidationErrorMessages.Item;
 
 	using Microsoft.AspNetCore.Mvc;
+	using Items.Web.Infrastructure.Extensions;
+
 	public class DealController : BaseController
 	{
 		private readonly IContractService contractService;

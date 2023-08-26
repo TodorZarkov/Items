@@ -2,8 +2,8 @@
 {
 	using Items.Services.Common.Interfaces;
 	using Items.Services.Data.Interfaces;
-	using Items.Web.Extensions;
 	using Items.Web.ViewModels.Home;
+	using Items.Web.Infrastructure.Extensions;
 	using static Items.Common.GeneralConstants;
 
 	using Microsoft.AspNetCore.Authorization;

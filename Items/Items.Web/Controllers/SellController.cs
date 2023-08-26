@@ -18,75 +18,101 @@
 
 		public async Task<IActionResult> All()
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			IEnumerable<AllSellViewModel> model = await itemService.MyAllOnMarket(userId);
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				IEnumerable<AllSellViewModel> model = 
+					await itemService.MyAllOnMarketAsync(userId);
 
-			return View(model);
+				return View(model);
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 		}
 
 
 		[HttpGet]
 		public async Task<IActionResult> Edit(Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
-			if (!isAuthorized)
+			try
 			{
-				return RedirectToAction("All", "Item");
-			}
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					return RedirectToAction("All", "Item");
+				}
 
-			bool exists = await itemService.ExistAsync(id);
-			if (!exists)
+				bool exists = await itemService.ExistAsync(id);
+				if (!exists)
+				{
+					TempData[InformationMessage] = "Item has already been removed!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+				bool isAuction = await itemService.IsAuctionAsync(id);
+				if (!isAuction)
+				{
+					TempData[InformationMessage] = "Is Not An Auction, You Can Edit Regular.";
+					return RedirectToAction("Edit", "Item", new { id });
+				}
+
+				AuctionFormModel model = await itemService.GetForAuctionUpdateAsync(id);
+
+
+				return View(model);
+			}
+			catch (Exception e)
 			{
-				TempData[InformationMessage] = "Item has already been removed!";
-				return RedirectToAction("Mine", "Item");
+				return GeneralError(e);
 			}
-
-			bool isAuction = await itemService.IsAuctionAsync(id);
-			if (!isAuction)
-			{
-				TempData[InformationMessage] = "Is Not An Auction, You Can Edit Regular.";
-				return RedirectToAction("Edit", "Item", new { id });
-			}
-
-			AuctionFormModel model = await itemService.GetForAuctionUpdateAsync(id);
-
-
-			return View(model);
 		}
 
 
 		[HttpPost]
 		public async Task<IActionResult> Edit(AuctionFormModel model, Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
-			if (!isAuthorized)
+			try
 			{
-				return RedirectToAction("All", "Item");
-			}
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					TempData[ErrorMessage] = "You must be owner to edit!";
+					return RedirectToAction("Mine", "Item");
+				}
 
-			bool exists = await itemService.ExistAsync(id);
-			if (!exists)
+				bool exists = await itemService.ExistAsync(id);
+				if (!exists)
+				{
+					TempData[InformationMessage] = "Item has already been removed!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+
+				bool isAuction = await itemService.IsAuctionAsync(id);
+				if (!isAuction)
+				{
+					TempData[InformationMessage] = "Is Not An Auction, You Can Edit Regular.";
+					return RedirectToAction("Edit", "Item", new { id });
+				}
+
+				if (!ModelState.IsValid)
+				{
+					return View(model);
+				}
+
+				await itemService.AuctionUpdateAsync(model, id);
+
+
+				return RedirectToAction("All", "Sell");
+			}
+			catch (Exception e)
 			{
-				TempData[InformationMessage] = "Item has already been removed!";
-				return RedirectToAction("Mine", "Item");
+				return GeneralError(e);
 			}
-
-
-			bool isAuction = await itemService.IsAuctionAsync(id);
-			if (!isAuction)
-			{
-				TempData[InformationMessage] = "Is Not An Auction, You Can Edit Regular.";
-				return RedirectToAction("Edit", "Item", new {id});
-			}
-
-			//todo: model check
-
-			await itemService.AuctionUpdateAsync(model, id);
-
-
-			return RedirectToAction("All", "Sell");
 		}
 	}
 }

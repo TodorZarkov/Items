@@ -402,7 +402,7 @@
 			return allItemsForBarter;
 		}
 
-		public async Task<IEnumerable<AllSellViewModel>> MyAllOnMarket(Guid userId)
+		public async Task<IEnumerable<AllSellViewModel>> MyAllOnMarketAsync(Guid userId)
 		{
 			AllSellViewModel[] itemsOnMarket = await dbContext.Items
 				.AsNoTracking()
@@ -419,7 +419,7 @@
 					Place = i.Place.Name,
 					Quantity = i.Quantity.ToString("N2"),
 					Unit = i.Unit.Symbol,
-					CurrentPrice = ((decimal)i.CurrentPrice!).ToString("N2"),// It has to have it at this point. It's ether start or sell price!
+					CurrentPrice = ((decimal)i.CurrentPrice!).ToString("N2"),
 					Currency = i.Currency!.Symbol,
 					StartSell = ((DateTime)i.StartSell!).ToString(BiddingLongUtcDateTime),
 					EndSell = ((DateTime)i.EndSell!),

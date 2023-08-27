@@ -16,10 +16,17 @@
 
 		public async Task<IActionResult> All()
 		{
-			Guid userId = Guid.Parse(User.GetId());
-			IEnumerable<AllPlaceViewModel> model = await placeService.AllAsync(userId);
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				IEnumerable<AllPlaceViewModel> model = await placeService.AllAsync(userId);
 
-			return View(model);
+				return View(model);
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 		}
 	}
 }

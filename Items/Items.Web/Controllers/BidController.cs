@@ -58,7 +58,7 @@
 		{
 			Guid userId = Guid.Parse(User.GetId());
 
-			// todo: implement
+			// TODO: implement
 
 			return RedirectToAction("All", "Bid");
 		}

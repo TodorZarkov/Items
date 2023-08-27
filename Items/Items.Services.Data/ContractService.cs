@@ -99,11 +99,11 @@
 					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
 					SendDue = dateTimeProvider.GetCurrentDate()
 						.AddDays(SendDueDateDaysAfterNow),
-					DeliverDue = dateTimeProvider.GetCurrentDate()// todo: automatize according to buyer distance
+					DeliverDue = dateTimeProvider.GetCurrentDate()// TODO: automatize according to buyer distance
 						.AddDays(SendDueDateDaysAfterNow)
 						.AddDays(DeliverDueDateDaysAfterSend),
 					SellerComment = SellerDefaultComment,
-					//DeliveryAddress = ...  todo: get address from new user property Address (if set)
+					//DeliveryAddress = ...  TODO: get address from new user property Address (if set)
 
 				})
 				.SingleAsync();
@@ -161,13 +161,13 @@
 
 			decimal itemQuantity = item.Quantity;
 
-			item.Quantity = itemQuantity - previewModel.Quantity; // todo: extract to different service
+			item.Quantity = itemQuantity - previewModel.Quantity; // TODO: extract to different service
 
 			Contract contract = new Contract
 			{
 				BuyerOk = true,
 
-				SellerId = item.OwnerId,
+				SellerId = item.OwnerId, // TODO: as long as there's soft delete the item owner can be extracted
 				BuyerId = buyerId,
 
 				SellerName = previewModel.SellerName,
@@ -180,8 +180,8 @@
 
 				ItemId = itemId,
 				Price = previewModel.Price,
-				CurrencyId = (int)item.CurrencyId!,//  todo: observe the risk of changing model currency in the interval between the model check and the save changes!
-				UnitId = item.UnitId,//  todo: observe the risk of changing model currency in the interval between the model check and the save changes!
+				CurrencyId = (int)item.CurrencyId!,//  WARNING: observe the risk of changing model currency in the interval between the model check and the save changes! - it's practically zero due to isOnTheMarketCheck and Forbidding to Edit When on market;
+				UnitId = item.UnitId,//  WARNING: observe the risk of changing model currency in the interval between the model check and the save changes!- it's practically zero due to isOnTheMarketCheck and Forbidding to Edit When on market;
 				ItemName = previewModel.ItemName,
 				ItemPictureUri = previewModel.ItemPictureUri,
 				ItemDescription = previewModel.ItemDescription,
@@ -312,7 +312,7 @@
 			deal.BuyerOk = false;
 			deal.SellerOk = false;
 
-			// todo: move this block to separate service method!
+			// TODO: move this block to separate service method!
 			try
 			{
 				Item item = await dbContext.Items
@@ -327,7 +327,7 @@
 			}
 			catch (Exception e)
 			{
-				// todo: message to  the seller and/or add to  log
+				// TODO: message to  the seller and/or add to  log
 			}
 
 			await dbContext.SaveChangesAsync();

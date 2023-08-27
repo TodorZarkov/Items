@@ -9,7 +9,7 @@
         public string LocationName { get; set; } = null!;
 
 
-        public int PlaceId { get; set; }// todo: filter available places over client(ajax) or go supDropdown
-		public IEnumerable<ForSelectPlaceViewModel> AvailablePlaces { get; set; } = null!; // todo: filter available places over client(ajax) or go supDropdown
+        public int PlaceId { get; set; }// TODO: filter available places over client(ajax) or go supDropdown
+		public IEnumerable<ForSelectPlaceViewModel> AvailablePlaces { get; set; } = null!; // TODO: filter available places over client(ajax) or go supDropdown
     }
 }

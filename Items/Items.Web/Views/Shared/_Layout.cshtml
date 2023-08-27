@@ -68,7 +68,7 @@
 						
 						@if (User.Identity?.IsAuthenticated ?? false)
 						{
-							// todo: Filter for active links
+							// TODO: Filter for active links
 							<li class="nav-item ms-3">
 								<a class="nav-link @(ViewBag.ActiveLink == "AllLocation" ? "active" : string.Empty)"
 								   asp-area=""

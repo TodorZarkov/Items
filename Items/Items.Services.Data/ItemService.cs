@@ -62,8 +62,8 @@
 			return items;
 		}
 
-		// todo: unite the query with categories, pagination, sorting
-		// todo: and remove get by category
+		// TODO: unite the query with categories, pagination, sorting
+		// TODO: and remove get by category
 		public async Task<IEnumerable<AllItemViewModel>> GetAllPublicAsync(string? searchTerm = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
@@ -166,8 +166,8 @@
 
 
 
-			// todo: now the required can be more than the returned. to  implement set equality!!!
-			// todo: prevent client side filtering!!!
+			// TODO: now the required can be more than the returned. to  implement set equality!!!
+			// TODO: prevent client side filtering!!!
 			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
 				.ToArray();
 		}
@@ -219,8 +219,8 @@
 				.ToArrayAsync();
 
 
-			// todo: now the required can be more than the returned. to  implement set equality!!!
-			// todo: prevent client side filtering!!!
+			// TODO: now the required can be more than the returned. to  implement set equality!!!
+			// TODO: prevent client side filtering!!!
 			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
 				.ToArray(); ;
 
@@ -274,14 +274,14 @@
 				.ToArrayAsync();
 
 
-			// todo: now the required can be more than the returned. to  implement set equality!!!
-			// todo: prevent client side filtering!!!
+			// TODO: now the required can be more than the returned. to  implement set equality!!!
+			// TODO: prevent client side filtering!!!
 			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
 				.ToArray(); ;
 		}
 
 
-		// todo: unite the query with categories, pagination, sorting
+		// TODO: unite the query with categories, pagination, sorting
 		public async Task<IEnumerable<AllItemViewModel>> GetAllAsync(Guid userId, string? searchTerm = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
@@ -384,7 +384,7 @@
 				.AsNoTracking()
 				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId)
-				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)) //  todo: observe the equality when dealing with decimal!!!!!
+				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)) //  TODO: observe the equality when dealing with decimal!!!!!
 				.Select(i => new ItemForBarterViewModel
 				{
 					Id = i.Id,
@@ -565,8 +565,8 @@
 
 		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
 		{
-			// todo: instead of many queries, use Include! In all similar places.
-			// todo: implement auto mapper in all similar places!
+			// TODO: instead of many queries, use Include! In all similar places.
+			// TODO: implement auto mapper in all similar places!
 
 			Item item = await dbContext.Items
 				.Where(i => !i.Deleted)
@@ -725,11 +725,11 @@
 
 					Location = i.ItemVisibility.Location == Public ? new AllLocationViewModel
 					{
-						Name = i.Location.LocationVisibility.Name == Public ? i.Location.Name : string.Empty, // todo: fix to be nullable
-						Address = i.Location.LocationVisibility.Address == Public ? i.Location.Address : string.Empty, // todo: fix to be nullable
+						Name = i.Location.LocationVisibility.Name == Public ? i.Location.Name : null,
+						Address = i.Location.LocationVisibility.Address == Public ? i.Location.Address : null,
 						Description = i.Location.LocationVisibility.Description == Public ? i.Location.Description : null,
 						Border = i.Location.LocationVisibility.Border == Public && i.Location.Border != null ? i.Location.Border.ToString() : null,
-						Country = i.Location.LocationVisibility.Country == Public ? i.Location.Country : string.Empty, // todo: fix to be nullable
+						Country = i.Location.LocationVisibility.Country == Public ? i.Location.Country : null,
 						GeoLocation =  i.Location.LocationVisibility.GeoLocation == Public && i.Location.GeoLocation != null ? i.Location.GeoLocation.ToString() : null,
 						Town = i.Location.LocationVisibility.Town == Public ? i.Location.Town : null,
 
@@ -929,7 +929,7 @@
 			bool result = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == itemId)
-				.AnyAsync(i => i.Quantity >= quantity);// todo: seller must have an option to restrict the quantity threshold!!!
+				.AnyAsync(i => i.Quantity >= quantity);// TODO: seller must have an option to restrict the quantity threshold!!!
 
 			return result;
 		}

@@ -94,7 +94,7 @@
 
 		[Required]
 		[ForeignKey(nameof(Location))]
-		public Guid LocationId { get; set; }// todo: remove location as place has only one location
+		public Guid LocationId { get; set; }// TODO: remove location as place has only one location
 
 		[Required]
 		public Location Location { get; set; } = null!;

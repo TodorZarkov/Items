@@ -7,7 +7,7 @@
 		public ItemFormVisibilityModel()
 		{
 			Description = AccessModifier.Public;
-			CurrentPrice = AccessModifier.Public;
+			
 
 			Location = AccessModifier.Private;
 			Offers = AccessModifier.Private;
@@ -25,8 +25,6 @@
 		public AccessModifier Description { get; set; }
 
 		public AccessModifier AcquiredPrice { get; set; }
-
-		public AccessModifier CurrentPrice { get; set; }
 
 		public AccessModifier AcquiredDate { get; set; }
 

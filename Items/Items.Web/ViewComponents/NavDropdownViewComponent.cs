@@ -26,7 +26,6 @@
 			{
 
 				string? userId = UserClaimsPrincipal.GetId();
-				//todo: can userId be null here???
 
 				categories["Mine"] = (await categoryService.GetMineAsync(new Guid(userId))).ToList();
 			}

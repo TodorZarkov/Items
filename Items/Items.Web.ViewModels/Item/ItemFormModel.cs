@@ -23,11 +23,11 @@
 
 		[Required]
 		public int PlaceId { get; set; }
-		public IEnumerable<ForSelectPlaceViewModel>? AvailablePlaces { get; set; } //todo: filter available places over client(ajax) or go supDropdown
+		public IEnumerable<ForSelectPlaceViewModel>? AvailablePlaces { get; set; } // todo: filter available places over client(ajax) or go supDropdown
 
 
 		//[Required]
-		////todo: asynchronous validation with db with model binding
+		//// todo: asynchronous validation with db 
 		//public Guid LocationId { get; set; }
 		//public IEnumerable<ForSelectLocationViewModel> AvailableLocations { get; set; } = null!;
 
@@ -50,9 +50,9 @@
 
 		[Required]
 		[Range(QuantityMinValue, QuantityMaxValue)]
-		//todo: add Display to  reduce view code (in <label asp-for)
-		//todo: custom decimal validation attribute (why the double doesn't fit well?)
-		//todo: see how it works with comma or point in the number as a string?
+		// todo: add Display to  reduce view code (in <label asp-for)
+		// todo: custom decimal validation attribute (why the double doesn't fit well?)
+		// todo: see how it works with comma or point in the number as a string?
 		//[Range(typeof(decimal), maximum:QuantityMaxValue, minimum:QuantityMinValue)]
 		public decimal Quantity { get; set; }
 
@@ -73,7 +73,7 @@
 
 
 
-		//todo: manage client picture files
+		// todo: manage client picture files
 		[Required]
 		[StringLength(UriMaxLength, MinimumLength = UriMinLength)]
 		public string MainPictureUri { get; set; } = null!;

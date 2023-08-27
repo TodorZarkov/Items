@@ -62,8 +62,8 @@
 			return items;
 		}
 
-		//todo: unite the query with categories, pagination, sorting
-		//todo: and remove get by category
+		// todo: unite the query with categories, pagination, sorting
+		// todo: and remove get by category
 		public async Task<IEnumerable<AllItemViewModel>> GetAllPublicAsync(string? searchTerm = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
@@ -166,8 +166,8 @@
 
 
 
-			//todo: now the required can be more than the returned. to  implement set equality!!!
-			//todo: prevent client side filtering!!!
+			// todo: now the required can be more than the returned. to  implement set equality!!!
+			// todo: prevent client side filtering!!!
 			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
 				.ToArray();
 		}
@@ -219,8 +219,8 @@
 				.ToArrayAsync();
 
 
-			//todo: now the required can be more than the returned. to  implement set equality!!!
-			//todo: prevent client side filtering!!!
+			// todo: now the required can be more than the returned. to  implement set equality!!!
+			// todo: prevent client side filtering!!!
 			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
 				.ToArray(); ;
 
@@ -274,14 +274,14 @@
 				.ToArrayAsync();
 
 
-			//todo: now the required can be more than the returned. to  implement set equality!!!
-			//todo: prevent client side filtering!!!
+			// todo: now the required can be more than the returned. to  implement set equality!!!
+			// todo: prevent client side filtering!!!
 			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
 				.ToArray(); ;
 		}
 
 
-		//todo: unite the query with categories, pagination, sorting
+		// todo: unite the query with categories, pagination, sorting
 		public async Task<IEnumerable<AllItemViewModel>> GetAllAsync(Guid userId, string? searchTerm = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
@@ -384,7 +384,7 @@
 				.AsNoTracking()
 				.Where(i =>  !i.Deleted)
 				.Where(i => i.OwnerId == userId)
-				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)) // todo: observe the equality when dealing with decimal!!!!!
+				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)) //  todo: observe the equality when dealing with decimal!!!!!
 				.Select(i => new ItemForBarterViewModel
 				{
 					Id = i.Id,
@@ -537,12 +537,11 @@
 					AcquiredPrice = model.ItemVisibility.AcquiredPrice,
 					AddedOn = model.ItemVisibility.AddedOn,
 					ModifiedOn = model.ItemVisibility.ModifiedOn,
-					CurrentPrice = model.ItemVisibility.CurrentPrice,
 					Description = model.ItemVisibility.Description,
 					Location = model.ItemVisibility.Location,
 					Offers = model.ItemVisibility.Offers,
 					Quantity = model.ItemVisibility.Quantity,
-					Owner = model.ItemVisibility.Owner
+					Owner = model.ItemVisibility.Owner,
 				}
 			};
 
@@ -566,8 +565,8 @@
 
 		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
 		{
-			//todo: instead of many queries, use Include! In all similar places.
-			//todo: implement auto mapper in all similar places!
+			// todo: instead of many queries, use Include! In all similar places.
+			// todo: implement auto mapper in all similar places!
 
 			Item item = await dbContext.Items
 				.Where(i => !i.Deleted)
@@ -606,7 +605,6 @@
 					AcquiredPrice = itemVisibility.AcquiredPrice,
 					AddedOn = itemVisibility.AddedOn,
 					ModifiedOn = itemVisibility.ModifiedOn,
-					CurrentPrice = itemVisibility.CurrentPrice,
 					Location = itemVisibility.Location,
 					Offers = itemVisibility.Offers,
 					Owner = itemVisibility.Owner,
@@ -658,7 +656,6 @@
 			itemVisibility.AcquiredPrice = model.ItemVisibility.AcquiredPrice;
 			itemVisibility.AddedOn = model.ItemVisibility.AddedOn;
 			itemVisibility.ModifiedOn = model.ItemVisibility.ModifiedOn;
-			itemVisibility.CurrentPrice = model.ItemVisibility.CurrentPrice;
 			itemVisibility.Description = model.ItemVisibility.Description;
 			itemVisibility.Location = model.ItemVisibility.Location;
 			itemVisibility.Offers = model.ItemVisibility.Offers;
@@ -704,7 +701,6 @@
 						i.AcquiredPrice != null?((decimal)i.AcquiredPrice).ToString("N2"):null : null,
 					AddedOn = i.ItemVisibility.AddedOn == Public ? i.AddedOn : null,
 					ModifiedOn = i.ItemVisibility.ModifiedOn == Public ? i.ModifiedOn : null,
-					//current price todo: remove
 					Quantity = i.ItemVisibility.Quantity == Public ? i.Quantity.ToString("N3") : null,
 					UnitName = i.Unit.Name,
 					UnitSymbol = i.Unit.Symbol,
@@ -721,7 +717,6 @@
 						AcquiredPrice = i.ItemVisibility.AcquiredPrice,
 						AddedOn = i.ItemVisibility.AddedOn,
 						ModifiedOn = i.ItemVisibility.ModifiedOn,
-						CurrentPrice = i.ItemVisibility.CurrentPrice,
 						Location = i.ItemVisibility.Location,
 						Offers = i.ItemVisibility.Offers,
 						Owner = i.ItemVisibility.Owner,
@@ -730,11 +725,11 @@
 
 					Location = i.ItemVisibility.Location == Public ? new AllLocationViewModel
 					{
-						Name = i.Location.LocationVisibility.Name == Public ? i.Location.Name : string.Empty, //todo: fix to be nullable
-						Address = i.Location.LocationVisibility.Address == Public ? i.Location.Address : string.Empty, //todo: fix to be nullable
+						Name = i.Location.LocationVisibility.Name == Public ? i.Location.Name : string.Empty, // todo: fix to be nullable
+						Address = i.Location.LocationVisibility.Address == Public ? i.Location.Address : string.Empty, // todo: fix to be nullable
 						Description = i.Location.LocationVisibility.Description == Public ? i.Location.Description : null,
 						Border = i.Location.LocationVisibility.Border == Public && i.Location.Border != null ? i.Location.Border.ToString() : null,
-						Country = i.Location.LocationVisibility.Country == Public ? i.Location.Country : string.Empty, //todo: fix to be nullable
+						Country = i.Location.LocationVisibility.Country == Public ? i.Location.Country : string.Empty, // todo: fix to be nullable
 						GeoLocation =  i.Location.LocationVisibility.GeoLocation == Public && i.Location.GeoLocation != null ? i.Location.GeoLocation.ToString() : null,
 						Town = i.Location.LocationVisibility.Town == Public ? i.Location.Town : null,
 
@@ -808,7 +803,6 @@
 						AcquiredPrice = i.ItemVisibility.AcquiredPrice,
 						AddedOn = i.ItemVisibility.AddedOn,
 						ModifiedOn = i.ItemVisibility.ModifiedOn,
-						CurrentPrice = i.ItemVisibility.CurrentPrice,
 						Location = i.ItemVisibility.Location,
 						Offers = i.ItemVisibility.Offers,
 						Owner = i.ItemVisibility.Owner,
@@ -935,7 +929,7 @@
 			bool result = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == itemId)
-				.AnyAsync(i => i.Quantity >= quantity);//todo: seller must have an option to restrict the quantity threshold!!!
+				.AnyAsync(i => i.Quantity >= quantity);// todo: seller must have an option to restrict the quantity threshold!!!
 
 			return result;
 		}

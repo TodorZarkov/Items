@@ -7,7 +7,7 @@
 		//default public
 		public Guid Id { get; set; }
 		public string Name { get; set; } = null!;
-		public string? CurrentPrice { get; set; } //todo: delete it from ItemVisibilities table
+		public string? CurrentPrice { get; set; } // todo: delete it from ItemVisibilities table
 		public string? CurrencySymbol { get; set; } = null!;
 		public string? CurrencyIsoCode { get; set; } = null!;
 		public DateTime? StartSell { get; set; }
@@ -39,14 +39,14 @@
 		public string? UnitName { get; set; } = null!;
 		public string? Description { get; set; }
 		public DateTime? AddedOn { get; set; }
-		public DateTime? ModifiedOn { get; set; }//todo: add it to ItemVisibilities table
+		public DateTime? ModifiedOn { get; set; }// todo: add it to ItemVisibilities table
 		public string? AcquiredPrice { get; set; }
 		public DateTime? AcquiredDate { get; set; }
 
 		//public Document? AcquireDocument { get; set; }
 
-		//public ICollection<Picture>? Pictures { get; set; }//todo: add it to ItemVisibilities table
-		public int? OffersCount { get; set; } //todo: fix it in according to visibility on AllItems
+		//public ICollection<Picture>? Pictures { get; set; }// todo: add it to ItemVisibilities table
+		public int? OffersCount { get; set; } // todo: fix it in according to visibility on AllItems
         public AllLocationViewModel? Location { get; set; }
 
     }

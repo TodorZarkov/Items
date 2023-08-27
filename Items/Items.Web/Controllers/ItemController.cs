@@ -30,7 +30,7 @@
 		}
 
 
-		//todo: when with query not to forget [FromQuery] because we pass whole model.
+		// todo: when with query not to forget [FromQuery] because we pass whole model.
 		[HttpGet]
 		[AllowAnonymous]
 		public async Task<IActionResult> All(string? searchTerm = null)

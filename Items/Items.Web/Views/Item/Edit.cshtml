@@ -8,7 +8,7 @@
 	ViewData["Title"] = "Edit Item";
 	ViewBag.ActiveLink = "MineItem";
 }
-@*todo: add form partial*@
+@* todo: add form partial*@
 <form asp-area="" asp-controller="Item" asp-action="Edit" method="post">
 	<div asp-validation-summary="ModelOnly" class="text-warning"></div>
 	<div class="accordion" id="accordionPanelsStayOpenExample">
@@ -212,10 +212,7 @@
 								 name="_AccessRadio"
 								 model="@new string[] {nameof(Model.ItemVisibility.ModifiedOn)
 													,Model.ItemVisibility.ModifiedOn.ToString()}" />
-						<partial class="col-xs"
-								 name="_AccessRadio"
-								 model="@new string[] {nameof(Model.ItemVisibility.CurrentPrice)
-													,Model.ItemVisibility.CurrentPrice.ToString()}" />
+						
 						<partial class="col-xs"
 								 name="_AccessRadio"
 								 model="@new string[] {nameof(Model.ItemVisibility.Description)

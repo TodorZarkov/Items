@@ -99,11 +99,11 @@
 					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
 					SendDue = dateTimeProvider.GetCurrentDate()
 						.AddDays(SendDueDateDaysAfterNow),
-					DeliverDue = dateTimeProvider.GetCurrentDate()//todo: automatize according to buyer distance
+					DeliverDue = dateTimeProvider.GetCurrentDate()// todo: automatize according to buyer distance
 						.AddDays(SendDueDateDaysAfterNow)
 						.AddDays(DeliverDueDateDaysAfterSend),
 					SellerComment = SellerDefaultComment,
-					//DeliveryAddress = ... todo: get address from new user property Address (if set)
+					//DeliveryAddress = ...  todo: get address from new user property Address (if set)
 
 				})
 				.SingleAsync();
@@ -161,7 +161,7 @@
 
 			decimal itemQuantity = item.Quantity;
 
-			item.Quantity = itemQuantity - previewModel.Quantity; //todo: extract to different service
+			item.Quantity = itemQuantity - previewModel.Quantity; // todo: extract to different service
 
 			Contract contract = new Contract
 			{
@@ -180,8 +180,8 @@
 
 				ItemId = itemId,
 				Price = previewModel.Price,
-				CurrencyId = (int)item.CurrencyId!,// todo: observe the risk of changing model currency in the interval between the model check and the save changes!
-				UnitId = item.UnitId,// todo: observe the risk of changing model currency in the interval between the model check and the save changes!
+				CurrencyId = (int)item.CurrencyId!,//  todo: observe the risk of changing model currency in the interval between the model check and the save changes!
+				UnitId = item.UnitId,//  todo: observe the risk of changing model currency in the interval between the model check and the save changes!
 				ItemName = previewModel.ItemName,
 				ItemPictureUri = previewModel.ItemPictureUri,
 				ItemDescription = previewModel.ItemDescription,
@@ -312,7 +312,7 @@
 			deal.BuyerOk = false;
 			deal.SellerOk = false;
 
-			//todo: move this block to separate service method!
+			// todo: move this block to separate service method!
 			try
 			{
 				Item item = await dbContext.Items
@@ -327,7 +327,7 @@
 			}
 			catch (Exception e)
 			{
-				//todo: message to  the seller and/or add to  log
+				// todo: message to  the seller and/or add to  log
 			}
 
 			await dbContext.SaveChangesAsync();

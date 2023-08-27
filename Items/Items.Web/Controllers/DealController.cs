@@ -230,7 +230,7 @@
 				{
 					if (!ModelState.IsValid)
 					{
-						return View(model); //todo: test it
+						return View(model); // todo: test it
 					}
 
 					await contractService.UpdateAsync(id, model);
@@ -308,7 +308,7 @@
 				bool canComplainAndReceive = await contractService.CanComplainAsync(id, userId);
 				if (canComplainAndReceive)
 				{
-					//todo: Implement complain
+					// todo: Implement complain
 					TempData[InformationMessage] = "Complain Sent!";
 
 				}

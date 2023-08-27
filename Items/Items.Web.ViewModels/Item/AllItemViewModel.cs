@@ -1,6 +1,6 @@
 ﻿namespace Items.Web.ViewModels.Item
 {
-	//todo: reuse some of the models by inheritance 
+	// todo: reuse some of the models by inheritance 
 	public class AllItemViewModel
 	{
 		public Guid Id { get; set; }

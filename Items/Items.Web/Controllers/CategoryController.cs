@@ -44,7 +44,6 @@
 			
 			if (User.Identity?.IsAuthenticated ?? false)
 			{
-				//todo: can userId be null here???
 				Guid userId = Guid.Parse(User.GetId());
 
 				if (!await categoryService

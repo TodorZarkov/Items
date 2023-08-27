@@ -52,8 +52,8 @@
 						HighestBid = o.Item.Offers.Max(io => io.Value).ToString("N2"),
 						BarterOffers = o.Item.Offers.Count(io => io.BarterItemId != null),
 						Country = o.Item.Location.Country,
-						Town = o.Item.Location.Town!, //todo: in create you must  set town
-						StartPrice = ((decimal)o.Item.CurrentPrice!).ToString("N2"),//todo: in create you must  set the CurrentPrice
+						Town = o.Item.Location.Town!, // todo: in create you must  set town
+						StartPrice = ((decimal)o.Item.CurrentPrice!).ToString("N2"),// todo: in create you must  set the CurrentPrice
 						Unit = o.Item.Unit.Symbol,
 						CurrencySymbol = o.Currency.Symbol,
 						QuantityLeft = o.Item.ItemVisibility.Quantity == AccessModifier.Public?

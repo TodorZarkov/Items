@@ -3,14 +3,15 @@
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Bid;
+	using Items.Web.ViewModels.Item;
+	using Items.Common.Enums;
 	using static Items.Common.FormatConstants.DateAndTime;
 
 	using Microsoft.EntityFrameworkCore;
+
 	using System;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
-	using Items.Web.ViewModels.Item;
-	using Items.Common.Enums;
 
 	public class OfferService : IOfferService
 	{
@@ -21,7 +22,7 @@
 			this.dbContext = dbContext;
 		}
 
-		public async Task<IEnumerable<AllBidViewModel>> AllMine(Guid userId)
+		public async Task<IEnumerable<AllBidViewModel>> AllMineAsync(Guid userId)
 		{
 			IEnumerable<AllBidViewModel> bids = await dbContext.Offers
 				.Where(o => o.BuyerId == userId)

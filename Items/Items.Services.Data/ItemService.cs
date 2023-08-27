@@ -377,7 +377,7 @@
 			return items;
 		}
 
-		public async Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarter(Guid userId)
+		public async Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarterAsync(Guid userId)
 		{
 			IEnumerable<ItemForBarterViewModel> allItemsForBarter =
 				await dbContext.Items

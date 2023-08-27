@@ -4,6 +4,7 @@
 	using Items.Web.Infrastructure.Extensions;
 	using Items.Web.ViewModels.Bid;
 	using Items.Web.ViewModels.Item;
+
 	using Microsoft.AspNetCore.Mvc;
 
 	public class BidController : BaseController
@@ -20,21 +21,29 @@
 		[HttpGet]
 		public async Task<IActionResult> All()
 		{
-			Guid userId = Guid.Parse(User.GetId());
-
-			IEnumerable<AllBidViewModel> myBids =
-				await offerService.AllMine(userId);
-
-			IEnumerable<ItemForBarterViewModel> itemsFitForBarter =
-				await itemService.MyAvailableForBarter(userId);
-
-			var model = new DataBidViewModel
+			try
 			{
-				Bids = myBids,
-				ItemsFitForBarter = itemsFitForBarter
-			};
+				Guid userId = Guid.Parse(User.GetId());
 
-			return View(model);
+				IEnumerable<AllBidViewModel> myBids =
+					await offerService.AllMineAsync(userId);
+
+				IEnumerable<ItemForBarterViewModel> itemsFitForBarter =
+					await itemService.MyAvailableForBarterAsync(userId);
+
+				var model = new DataBidViewModel
+				{
+					Bids = myBids,
+					ItemsFitForBarter = itemsFitForBarter
+				};
+
+				return View(model);
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
+			
 		}
 
 		[HttpPost]

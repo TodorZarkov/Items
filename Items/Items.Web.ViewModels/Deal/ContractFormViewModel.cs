@@ -54,7 +54,6 @@
 
 		[Required]
 		[Range(QuantityMinValue, QuantityMaxValue)]
-		//todo: asynchronous quantity check with the remaining quantity of the item
 		public decimal Quantity { get; set; }
 
 

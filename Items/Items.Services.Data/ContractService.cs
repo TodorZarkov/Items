@@ -161,7 +161,7 @@
 
 			decimal itemQuantity = item.Quantity;
 
-			item.Quantity = itemQuantity - previewModel.Quantity;
+			item.Quantity = itemQuantity - previewModel.Quantity; //todo: extract to different service
 
 			Contract contract = new Contract
 			{
@@ -249,7 +249,7 @@
 		{
 			bool result = await dbContext.Contracts
 				.AnyAsync(c => 
-					(c.Id == id && c.SellerId == userId || c.BuyerId == userId) &&
+					(c.Id == id && (c.SellerId == userId || c.BuyerId == userId)) &&
 					((c.SellerOk && !c.BuyerOk && c.BuyerId == userId) || 
 					(!c.SellerOk && c.BuyerOk && c.SellerId == userId)));
 
@@ -312,16 +312,23 @@
 			deal.BuyerOk = false;
 			deal.SellerOk = false;
 
-			Item item = await dbContext.Items
+			//todo: move this block to separate service method!
+			try
+			{
+				Item item = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == (Guid)deal.ItemId!)
 				.SingleAsync();
-			decimal currentItemQuantity = item.Quantity;
+				decimal currentItemQuantity = item.Quantity;
 
-			item.Quantity = currentItemQuantity + deal.Quantity;
+				item.Quantity = currentItemQuantity + deal.Quantity;
 
-			//todo: Revise Quantity behaviour according to Seller and Signing
-			deal.ItemId = null;
+				deal.ItemId = null;
+			}
+			catch (Exception e)
+			{
+				//todo: message to  the seller and/or add to  log
+			}
 
 			await dbContext.SaveChangesAsync();
 		}
@@ -347,12 +354,15 @@
 			contract.SendDue = model.SendDue;
 			contract.DeliveryAddress = model.DeliveryAddress;
 
+			bool isBuyerReviser = !contract.BuyerOk;
 
-			if ((contract.BuyerComment??string.Empty).Trim() != (model.BuyerComment??string.Empty).Trim())
+			if (isBuyerReviser && (contract.BuyerComment??string.Empty).Trim() != (model.BuyerComment??string.Empty).Trim())
 			{
 				contract.BuyerComment = model.BuyerComment;
 			}
-			else if ((contract.SellerComment ?? string.Empty).Trim() != (model.SellerComment ?? string.Empty).Trim())
+			else if (
+				!isBuyerReviser && 
+				(contract.SellerComment ?? string.Empty).Trim() != (model.SellerComment ?? string.Empty).Trim())
 			{
 				contract.SellerComment = model.SellerComment;
 			}
@@ -397,7 +407,7 @@
 			await dbContext.SaveChangesAsync();
 		}
 
-		public async Task<bool> CanComplainAndReceiveAsync(Guid id, Guid userId)
+		public async Task<bool> CanComplainAsync(Guid id, Guid userId)
 		{
 			bool result = await dbContext.Contracts
 				.AnyAsync(c => c.Id == id &&

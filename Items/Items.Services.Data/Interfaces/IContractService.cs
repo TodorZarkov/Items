@@ -6,7 +6,7 @@
 	{
 		public Task<IEnumerable<ContractAllViewModel>> AllAsync(Guid userId);
 		Task CancelAsync(Guid id, Guid userId);
-		Task<bool> CanComplainAndReceiveAsync(Guid id, Guid userId);
+		Task<bool> CanComplainAsync(Guid id, Guid userId);
 		Task<bool> CanReviseAsync(Guid id, Guid userId);
 		Task ChangeReviserAsync(Guid id);
 		Task CompleteAsync(Guid id, Guid userId);

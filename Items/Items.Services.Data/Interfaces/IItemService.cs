@@ -26,7 +26,7 @@
 		Task<IEnumerable<MyItemViewModel>> GetMineAsync(Guid userId);
 
 
-		Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarter(Guid userId);
+		Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarterAsync(Guid userId);
 
 		Task<IEnumerable<AllSellViewModel>> MyAllOnMarketAsync(Guid userId);
 

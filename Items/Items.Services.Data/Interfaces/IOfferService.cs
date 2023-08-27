@@ -4,6 +4,6 @@
 
 	public interface IOfferService
 	{
-		Task<IEnumerable<AllBidViewModel>> AllMine(Guid userId);
+		Task<IEnumerable<AllBidViewModel>> AllMineAsync(Guid userId);
 	}
 }

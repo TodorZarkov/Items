@@ -2,6 +2,8 @@
 {
 	using Items.Services.Data.Interfaces;
 	using Items.Web.Infrastructure.Extensions;
+	using Items.Web.ViewModels.Location;
+
 	using Microsoft.AspNetCore.Mvc;
 
 	public class LocationController : BaseController
@@ -15,10 +17,17 @@
 
 		public async Task<IActionResult> All()
 		{
-			var userId = User.GetId();
-			var locations = await locationService.AllAsync(Guid.Parse(userId));
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				IEnumerable<AllLocationViewModel> locations = await locationService.GetAllAsync(userId);
 
-			return View(locations);
+				return View(locations);
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 		}
 	}
 }

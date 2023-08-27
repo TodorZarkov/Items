@@ -4,7 +4,7 @@
 
 	public interface ILocationService
 	{
-		Task<IEnumerable<AllLocationViewModel>> AllAsync(Guid userId);
+		Task<IEnumerable<AllLocationViewModel>> GetAllAsync(Guid userId);
 
 		Task<IEnumerable<ForSelectLocationViewModel>> AllForSelectAsync(Guid userId);
 

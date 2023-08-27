@@ -14,7 +14,7 @@
         {
             this.dbContext = dbContext;
         }
-        public async Task<IEnumerable<AllLocationViewModel>> AllAsync(Guid userId)
+        public async Task<IEnumerable<AllLocationViewModel>> GetAllAsync(Guid userId)
         {
             var locations = await dbContext.Locations
                 .Where(l => l.UserId == userId)

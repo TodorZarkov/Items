@@ -23,7 +23,24 @@
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
-					<p class="p-0 mb-0 me-2">@bid.Item.Country, @bid.Item.Town</p>
+						@if (bid.Item.Country == null && bid.Item.Town == null)
+						{
+						<p class="p-0 mb-0 me-2">
+							<partial name="_AccessSign" , model="@AccessModifier.Private" />
+						</p>
+						}
+						else if (bid.Item.Country == null && bid.Item.Town != null)
+						{
+						<p class="p-0 mb-0 me-2">@bid.Item.Town</p>
+						}
+						else if (bid.Item.Country != null && bid.Item.Town == null)
+						{
+						<p class="p-0 mb-0 me-2">@bid.Item.Country</p>
+						}
+						else
+						{
+						<p class="p-0 mb-0 me-2">@bid.Item.Country, @bid.Item.Town</p>
+						}
 				</div>
 			</td>
 

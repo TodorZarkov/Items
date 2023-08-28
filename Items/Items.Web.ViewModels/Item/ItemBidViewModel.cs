@@ -12,9 +12,9 @@
 		public int? BarterOffers { get; set; }
 
 
-        public string Country { get; set; } = null!;
+        public string? Country { get; set; }
 
-		public string Town { get; set; } = null!;
+		public string? Town { get; set; }
 
 		public string StartPrice { get; set; } = null!;
 

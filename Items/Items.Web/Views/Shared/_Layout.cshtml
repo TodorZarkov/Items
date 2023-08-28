@@ -107,15 +107,27 @@
 						
 					</ul>
 
+					
 
-
-					<form asp-action="All" asp-controller="Item" method="get" class="d-flex">
+					<form method="get" class="d-flex">
 						<input class="form-control me-2"
 							   type="search"
-							   placeholder="Search Items"
+							   placeholder="Search in @(Context.Request.RouteValues["controller"]?.ToString()?.EndsWith("y") != null && (bool)(Context.Request.RouteValues["controller"]?.ToString()?.EndsWith("y"))! ? Context.Request.RouteValues["controller"]?.ToString()?.Remove((int)Context.Request.RouteValues["controller"]?.ToString()?.Length!-2)+"ie":Context.Request.RouteValues["controller"]?.ToString())s"
 							   aria-label="Search"
 							   name="searchTerm"
-						>
+							   value="@(Context.Request.Query["searchTerm"])">
+						@foreach (var kvp in Context.Request.Query)
+						{
+							if (kvp.Key == "searchTerm")
+							{
+								continue;
+							}
+
+							string value = kvp.Value;
+							value = value == "true,false" ? "true" : value;
+							<input name="@kvp.Key" value="@value" type="hidden" />
+						}
+
 						<button class="btn btn-outline-success" type="submit">Search</button>
 					</form>
 

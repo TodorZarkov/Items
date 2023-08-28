@@ -6,6 +6,7 @@
 	using Items.Web.ViewModels.Item;
 
 	using Microsoft.AspNetCore.Authorization;
+	using Microsoft.AspNetCore.Http.Extensions;
 	using Microsoft.AspNetCore.Mvc;
 
 	public class CategoryController : BaseController
@@ -79,7 +80,8 @@
 				items = await itemService
 					.GetByCategoriesOnSaleItemsAsync(categoryIds.ToArray(), null);
 			}
-			 
+
+
 			return View(items);
 		}
 	}

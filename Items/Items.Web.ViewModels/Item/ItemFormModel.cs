@@ -51,9 +51,6 @@
 		[Required]
 		[Range(QuantityMinValue, QuantityMaxValue)]
 		// TODO: add Display to  reduce view code (in <label asp-for)
-		// TODO: custom decimal validation attribute (why the double doesn't fit well?)
-		// TODO: see how it works with comma or point in the number as a string?
-		//[Range(typeof(decimal), maximum:QuantityMaxValue, minimum:QuantityMinValue)]
 		public decimal Quantity { get; set; }
 
 

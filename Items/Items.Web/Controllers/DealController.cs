@@ -230,7 +230,8 @@
 				{
 					if (!ModelState.IsValid)
 					{
-						return View(model); // TODO: test it
+						model = await contractService.GetForRevise(id, userId);
+						return View(model); 
 					}
 
 					await contractService.UpdateAsync(id, model);

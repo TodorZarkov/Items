@@ -4,7 +4,7 @@
 
 	@foreach (MyItemViewModel item in Model)
 	{
-		<div class="card border-primary " style="width: 18rem;">
+		<div class="card border-primary @(item.IsOnMarket?" border-danger border-3":string.Empty)" style="width: 18rem;">
 			<img src="@item.MainPictureUri" class="card-img-top" alt="...">
 			<div class="card-body">
 				<h5 class="card-title">@item.Name</h5>
@@ -13,11 +13,11 @@
 				{
 					if (item.IsAuction ?? false)
 					{
-						<p class="card-text">@($"On Auction, {(item.Offers != 0 ? item.Offers : "no")} offers so far.")</p>
+						<p class="card-text fw-bolder text-danger">@($"On Auction, {(item.Offers != 0 ? item.Offers : "no")} offers so far.")</p>
 					}
 					else
 					{
-						<p class="card-text">@($"On Sale.")</p>
+						<p class="card-text fw-bolder text-danger">@($"On Sale.")</p>
 					}
 				}
 				<p class="card-text">@($"Quantity: {item.Quantity} {item.Unit}")</p>

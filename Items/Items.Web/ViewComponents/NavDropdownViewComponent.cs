@@ -29,7 +29,7 @@
 
 				categories["Mine"] = (await categoryService.GetMineAsync(new Guid(userId))).ToList();
 			}
-
+			
 			return View(categories);
 
 		}

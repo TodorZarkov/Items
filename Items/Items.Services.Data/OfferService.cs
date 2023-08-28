@@ -4,7 +4,7 @@
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Bid;
 	using Items.Web.ViewModels.Item;
-	using Items.Common.Enums;
+	using static Items.Common.Enums.AccessModifier;
 	using static Items.Common.FormatConstants.DateAndTime;
 
 	using Microsoft.EntityFrameworkCore;
@@ -41,7 +41,7 @@
 					BarterUnit = o.BarterItem != null ? o.BarterItem.Unit.Symbol : null,
 					BarterName = o.BarterItem != null ? o.BarterItem.Name : null,
 					BarterPictureUri = o.BarterItem != null ? o.BarterItem.MainPictureUri : null,
-					
+
 
 					ItemId = o.ItemId,
 
@@ -51,18 +51,20 @@
 						MainPictureUri = o.Item.MainPictureUri,
 						HighestBid = o.Item.Offers.Max(io => io.Value).ToString("N2"),
 						BarterOffers = o.Item.Offers.Count(io => io.BarterItemId != null),
-						Country = o.Item.Location.Country,
-						Town = o.Item.Location.Town!, // TODO: in create you must  set town
-						StartPrice = ((decimal)o.Item.CurrentPrice!).ToString("N2"),// TODO: in create you must  set the CurrentPrice
+						Country = o.Item.ItemVisibility.Location == Public &&
+								  o.Item.Location.LocationVisibility.Country == Public ? o.Item.Location.Country : null,
+						Town = o.Item.ItemVisibility.Location == Public &&
+								  o.Item.Location.LocationVisibility.Town == Public ? o.Item.Location.Town : null,
+						StartPrice = ((decimal)o.Item.CurrentPrice!).ToString("N2"),
 						Unit = o.Item.Unit.Symbol,
 						CurrencySymbol = o.Currency.Symbol,
-						QuantityLeft = o.Item.ItemVisibility.Quantity == AccessModifier.Public?
+						QuantityLeft = o.Item.ItemVisibility.Quantity == Public ?
 										o.Item.Quantity : null
 					},
 
 				})
 				.ToArrayAsync();
-			
+
 
 			return bids;
 		}

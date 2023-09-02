@@ -3,6 +3,14 @@
 	using Interfaces;
 	using Items.Common.Enums;
 
+
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Metrics;
+	using System.Reflection;
+	using System.Runtime.CompilerServices;
+	using System.Xml.Linq;
+
 	public class Helper : IHelper
 	{
 		public Colors GetDealRowColor(bool sellerOk, bool buyerOk, bool sellerReceived, bool buyerReceived, bool isSeller)
@@ -88,7 +96,7 @@
 					return DealStatus.Off;
 				}
 			}
-			else 
+			else
 			{
 				if (!sellerReceived && !buyerReceived)
 				{
@@ -109,6 +117,29 @@
 			}
 		}
 
+		public string? Pluralize(string? name, string language = "en")
+		{
+			if (language != "en")
+			{
+				throw new NotImplementedException();
+			}
+
+
+			if (string.IsNullOrEmpty(name))
+			{
+				return null;
+			}
+
+			if (name.EndsWith("y"))
+			{
+				name = name.Remove(name.Length - 1) + "ie";
+			}
+
+			name += "s";
+
+			return name;
+		}
+
 		public HashSet<int> GetRandNUniqueOfM(int n, int m)
 		{
 			if (n > m)
@@ -123,6 +154,70 @@
 			}
 
 			return rands;
+		}
+
+		public IEnumerable<Criteria> GetAllowedCriteria(bool isAuthenticated, string? controllerName)
+		{
+			List<Criteria> result = new List<Criteria>();
+
+
+			if (controllerName == "Item" || controllerName == "Category")
+			{
+				result.AddRange(new[] { Criteria.Auctions, Criteria.OnSale });
+			}
+
+			if (isAuthenticated)
+			{
+
+				if (controllerName == "Item" || controllerName == "Category")
+				{
+					result.AddRange(new[] { Criteria.Mine, Criteria.NotMine });
+				}
+				else if (controllerName == "Sell" || controllerName == "Deal")
+				{
+					result.AddRange(new[] { Criteria.Auctions, Criteria.OnSale });
+				}
+			}
+
+			return result;
+		}
+
+		public IEnumerable<Sorting> GetAllowedSorting(bool isAuthenticated, string? controllerName)
+		{
+			List<Sorting> result = new List<Sorting>();
+
+
+			if (controllerName == "Item" || controllerName == "Category")
+			{
+				result.AddRange(new[] { Sorting.Name, Sorting.PriceDec, Sorting.PriceAsc, Sorting.Latest });
+			}
+
+			if (isAuthenticated)
+			{
+				if (controllerName == "Location" || controllerName == "Place")
+				{
+					result.AddRange(new[] { Sorting.Name, Sorting.Country, Sorting.Town });
+				}
+				else if (controllerName == "Bid" || controllerName == "Sell" || controllerName == "Deal")
+				{
+					result.AddRange(new[] { Sorting.Name, Sorting.PriceDec, Sorting.PriceAsc });
+				}
+
+				if (controllerName == "Bid")
+				{
+					result.AddRange(new[] { Sorting.Latest, Sorting.EndDate, Sorting.StartDate });
+				}
+				else if (controllerName == "Sell")
+				{
+					result.AddRange(new[] { Sorting.Latest, Sorting.Type, Sorting.EndDate, Sorting.StartDate });
+				}
+				else if (controllerName == "Deal")
+				{
+					result.AddRange(new[] { Sorting.Latest, Sorting.Status, Sorting.SendDate, Sorting.DeliveryDate, });
+				}
+			}
+
+			return result;
 		}
 	}
 }

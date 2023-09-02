@@ -16,5 +16,8 @@
 
 		Task<bool> IsAllowedIdsAsync(int[] ids, Guid userId);
 		Task<bool> IsAllowedPublicIdsAsync(int[] ids);
+
+
+		Task<IEnumerable<ForSelectCategoryViewModel>> GetForSelectAsync(Guid? userId = null);
 	}
 }

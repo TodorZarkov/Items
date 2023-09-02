@@ -1,0 +1,144 @@
+﻿@model QueryFilterViewModel
+
+
+@if (Model.LastPage > 1)
+{
+	int barCapacity = 5;
+
+	int count = barCapacity - 2;
+	int startCount = Model.CurrentPage - count / 2;
+
+	@if (Model.LastPage <= barCapacity + 2)
+	{
+		count = Model.LastPage - 2;
+		startCount = 2;
+	}
+	else if (Model.CurrentPage <= barCapacity)
+	{
+		count = barCapacity - 1;
+		startCount = 2;
+	}
+	else if (Model.LastPage - Model.CurrentPage < barCapacity)
+	{
+		count = barCapacity - 1;
+		startCount = Model.LastPage - count;
+	}
+
+	<ul class="pagination pagination-sm mb-0 mx-auto">
+
+		<li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : string.Empty)">
+			<button type="submit"
+					class="page-link"
+					aria-label="Previous"
+					name="CurrentPage"
+					value="@(Model.CurrentPage <= 1 ? Model.LastPage : Model.CurrentPage - 1)"
+					id="left-pagin-nav">
+					
+				<span aria-hidden="true">&laquo;</span>
+			</button>
+		</li>
+
+		<li class="page-item @(Model.CurrentPage == 1 ? "active" : string.Empty)">
+			<button type="submit"
+					class="page-link"
+					aria-label="Go To Page 1"
+					name="CurrentPage"
+					value="1">
+				1
+			</button>
+		</li>
+
+		@if (Model.CurrentPage > barCapacity )
+		{
+			<li class="page-item">
+				<button type="submit"
+						class="page-link"
+						aria-label="Go To Page @(Model.CurrentPage - barCapacity + 2)"
+						name="CurrentPage"
+						value="@(Model.CurrentPage - barCapacity + 2)">
+					...
+				</button>
+			</li>
+		}
+
+
+		@for (int p = startCount; p < startCount + count; p++)
+		{
+			<li class="page-item @(Model.CurrentPage == p ? "active" : string.Empty)">
+				<button type="submit"
+						class="page-link"
+						aria-label="Go To Page @p"
+						name="CurrentPage"
+						value="@p">
+					@p
+				</button>
+			</li>
+		}
+
+
+		@if (Model.LastPage - Model.CurrentPage >= barCapacity)
+		{
+			<li class="page-item">
+				<button type="submit"
+						class="page-link"
+						name="CurrentPage"
+						aria-label="Go to page @(Model.CurrentPage + @barCapacity - 2)"
+						value="@(Model.CurrentPage + barCapacity - 2)">
+					...
+				</button>
+			</li>
+		}
+
+		<li class="page-item @(Model.CurrentPage == Model.LastPage ? "active" : string.Empty)">
+			<button type="submit"
+					class="page-link"
+					aria-label="Go To Page @(Model.LastPage) (Last)"
+					name="CurrentPage"
+					value="@(Model.LastPage)">
+				@(Model.LastPage)
+			</button>
+		</li>
+
+		<li class="page-item @(Model.CurrentPage >= Model.LastPage ? "disabled" : string.Empty)">
+			<button type="submit"
+					class="page-link"
+					aria-label="Next"
+					name="CurrentPage"
+					value="@(Model.CurrentPage >= Model.LastPage ? 1 : Model.CurrentPage + 1)"
+					id="right-pagin-nav">
+				<span aria-hidden="true">&raquo;</span>
+			</button>
+		</li>
+	</ul>
+
+}
+
+<script>
+	function lefArrowPressed() {
+		const submitBtn = document.getElementById("left-pagin-nav");
+		const queryFilterForm = document.getElementById("query-filter-form");
+		queryFilterForm.requestSubmit(submitBtn);
+	}
+
+	function rightArrowPressed() {
+		const submitBtn = document.getElementById("right-pagin-nav");
+		const queryFilterForm = document.getElementById("query-filter-form");
+		queryFilterForm.requestSubmit(submitBtn);
+	}
+
+	document.onkeydown = function(e) {
+		switch (e.keyCode) {
+			case 37:
+				lefArrowPressed();
+				break;
+			case 39:
+				rightArrowPressed();
+				break;
+		}
+	};
+
+</script>
+
+
+
+

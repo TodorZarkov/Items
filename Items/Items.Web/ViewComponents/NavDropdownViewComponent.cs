@@ -14,7 +14,7 @@
 		{
 			this.categoryService = categoryService;
 		}
-
+		
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
 			Dictionary<string, List<CategoryFilterViewModel>> categories =

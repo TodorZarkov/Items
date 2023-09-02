@@ -152,6 +152,47 @@
 			return ids.All(i => validIds.Contains(i));
 		}
 
-		
+		public async Task<IEnumerable<ForSelectCategoryViewModel>> GetForSelectAsync(Guid? userId = null)
+		{
+			if (userId == null)
+			{
+				var adminRoleId = await dbContext.Roles
+				.Where(r => r.NormalizedName == "ADMIN")
+				.Select(r => r.Id)
+				.ToArrayAsync();
+
+
+				var adminIds = await dbContext.UserRoles
+					.Where(ur => ur.RoleId == adminRoleId[0])
+					.Select(ur => ur.UserId)
+					.ToArrayAsync();
+
+
+				ICollection<ForSelectCategoryViewModel> categoryViewModels = await dbContext.Categories
+					.Where(c => adminIds.Contains(c.CreatorId))
+					.Select(c => new ForSelectCategoryViewModel
+					{
+						Id = c.Id,
+						Name = c.Name
+					})
+					.ToArrayAsync();
+
+				return categoryViewModels;
+			}
+			else
+			{
+				ICollection<ForSelectCategoryViewModel> categoryViewModels = await dbContext.Categories
+					.Where(c => c.CreatorId == userId)
+					.Select(c => new ForSelectCategoryViewModel
+					{
+						Id = c.Id,
+						Name = c.Name
+					})
+					.ToArrayAsync();
+
+				return categoryViewModels;
+			}
+			
+		}
 	}
 }

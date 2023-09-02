@@ -6,32 +6,7 @@
 }
 @if (Model.Bids.Any())
 {
-
-	<div class="btn-toolbar mb-1" role="toolbar" aria-label="Toolbar with button groups">
-
-		<div class="dropdown me-2">
-			<button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-				Order By
-			</button>
-			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-				<li><a class="dropdown-item" href="#">Action</a></li>
-				<li><a class="dropdown-item" href="#">Another action</a></li>
-				<li><a class="dropdown-item" href="#">Something else here</a></li>
-			</ul>
-		</div>
-		<div class="dropdown me-5 ">
-			<button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-				Group By
-			</button>
-			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-				<li><a class="dropdown-item" href="#">Action</a></li>
-				<li><a class="dropdown-item" href="#">Another action</a></li>
-				<li><a class="dropdown-item" href="#">Something else here</a></li>
-			</ul>
-		</div>
-
-
-	</div>
+	<vc:query-filter hits="85" />
 
 	<table class="table table-warning table-striped table-hover table-sm align-middle">
 		<thead>

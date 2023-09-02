@@ -1,0 +1,68 @@
+﻿
+@model QueryFilterViewModel
+
+<div class="input-group input-group-sm flex-nowrap align-self-end ms-auto" style="max-width:250px;">
+	<input type="search"
+		   class="form-control border-success border-end-0"
+		   placeholder="@Model.SearchPlaceHolder"
+		   value="@Model.SearchTerm"
+		   name="SearchTerm">
+
+	<button type="button" class="btn btn-outline-success dropdown-toggle dropdown-toggle-split border-end-0 px-2" data-bs-toggle="dropdown" aria-expanded="false">
+		<span class="visually-hidden">Toggle Dropdown</span>
+	</button>
+	<ul class="dropdown-menu dropdown-menu-end">
+		@if (User.Identity?.IsAuthenticated ?? false)
+		{
+			<li class="dropdown-item-text fw-bold">My Categories</li>
+
+			@foreach (var category in Model.MyAvailableCategories)
+			{
+				string isChecked = Model.CategoryIds.Contains(category.Id) ? "checked" : string.Empty;
+				<li class="dropdown-item">
+					<input class="form-check-input me-1"
+						   type="checkbox"
+						   value="@category.Id"
+						   name="CategoryIds"
+					@isChecked>
+					@(Html.DisplayFor(e => category.Name))
+				</li>
+			}
+			<li><a class="dropdown-item" href="#">Add Category</a></li>
+			<li><hr class="dropdown-divider"></li>
+			<li class="dropdown-item-text fw-bold">All Categories</li>
+		}
+
+
+		@foreach (var category in Model.AllAvailableCategories)
+		{
+			string isChecked = Model.CategoryIds.Contains(category.Id) ? "checked" : string.Empty;
+			<li class="dropdown-item">
+				<input class="form-check-input me-1"
+					   type="checkbox"
+					   value="@category.Id"
+					   name="CategoryIds"
+				@isChecked>
+				@(Html.DisplayFor(e => category.Name))
+			</li>
+		}
+
+		<li><hr class="dropdown-divider"></li>
+
+		<li class="dropdown-item-text fw-bold">Criteria</li>
+		@foreach (var criteria in Model.AvailableCriteria)
+		{
+			string isChecked = Model.Criteria.Contains(criteria.ToString()) ? "checked" : string.Empty;
+			<li class="dropdown-item">
+				<input class="form-check-input me-1"
+					   type="checkbox"
+					   value="@criteria"
+					   name="Criteria"
+				@isChecked>
+				@(Html.DisplayFor(e => criteria))
+			</li>
+		}
+	</ul>
+
+	<button type="submit" class="btn btn-outline-success"><i class="fas fa-search fa-sm"></i></button>
+</div>

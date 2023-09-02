@@ -5,6 +5,7 @@
 	ViewData["Title"] = "All Items";
 	ViewBag.ActiveLink = "AllItem";
 }
+<vc:query-filter hits="85"/>
 
 @if (Model.Any())
 {
@@ -13,6 +14,6 @@
 else
 {
 	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
-		<h3>No Items for Sale Yet!</h3>
+		<h3>No Items!</h3>
 	</div>
 }

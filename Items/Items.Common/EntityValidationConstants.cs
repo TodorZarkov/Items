@@ -132,7 +132,16 @@
 			public const int ItemDescriptionMaxLength = 1000;
 		}
         
-        
+        public static class QueryFilter
+        {
+            public const int SearchTermMin = 1;
+            public const int SearchTermMax = 1500;
+
+            public const int HitsPerPageMin = 1;
+            public const int HitsPerPageMax = 100;
+
+
+        }
 
         
     }

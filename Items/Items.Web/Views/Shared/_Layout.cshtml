@@ -15,8 +15,8 @@
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css" integrity="sha512-oe8OpYjBaDWPt2VmSFR+qYOdnTjeV9QPLJUeqZyprDEQvQLJ9C5PCFclxwNuvb/GQgQngdCXzKSFltuHD3eCxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body >
-	<partial name="_NotificationsPartial"/>
+<body>
+	<partial name="_NotificationsPartial" />
 	<header>
 		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
 			<div class="container-fluid">
@@ -63,9 +63,14 @@
 								   asp-action="Mine">My Items</a>
 							</li>
 						}
-							<vc:nav-dropdown />
+						<li class="nav-item ">
+							<a class="btn btn-sm btn-outline-primary mx-auto nav-link @(ViewBag.ActiveLink == "AddItem" ? "active" : string.Empty)"
+							   asp-controller="Item"
+							   asp-action="Add">Add Item</a>
 
-						
+						</li>
+
+
 						@if (User.Identity?.IsAuthenticated ?? false)
 						{
 							// TODO: Filter for active links
@@ -104,33 +109,8 @@
 								   asp-action="All">Deals</a>
 							</li>
 						}
-						
+
 					</ul>
-
-					
-
-					<form method="get" class="d-flex">
-						<input class="form-control me-2"
-							   type="search"
-							   placeholder="Search in @(Context.Request.RouteValues["controller"]?.ToString()?.EndsWith("y") != null && (bool)(Context.Request.RouteValues["controller"]?.ToString()?.EndsWith("y"))! ? Context.Request.RouteValues["controller"]?.ToString()?.Remove((int)Context.Request.RouteValues["controller"]?.ToString()?.Length!-2)+"ie":Context.Request.RouteValues["controller"]?.ToString())s"
-							   aria-label="Search"
-							   name="searchTerm"
-							   value="@(Context.Request.Query["searchTerm"])">
-						@foreach (var kvp in Context.Request.Query)
-						{
-							if (kvp.Key == "searchTerm")
-							{
-								continue;
-							}
-
-							string value = kvp.Value;
-							value = value == "true,false" ? "true" : value;
-							<input name="@kvp.Key" value="@value" type="hidden" />
-						}
-
-						<button class="btn btn-outline-success" type="submit">Search</button>
-					</form>
-
 
 
 					<partial name="_LoginPartial" />

@@ -8,6 +8,8 @@
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
+	using Items.Web.ViewModels.Base;
+	using Items.Services.Data.Models.Item;
 
 	public class ItemController : BaseController
 	{
@@ -29,23 +31,23 @@
 		}
 
 
-		// TODO: when with query not to forget [FromQuery] because we pass whole model.
+		
 		[HttpGet]
 		[AllowAnonymous]
-		public async Task<IActionResult> All(string? searchTerm = null)
+		public async Task<IActionResult> All([FromQuery] QueryFilterModel? queryModel = null)
 		{
 			try
 			{
-				IEnumerable<AllItemViewModel> model;
-
+				AllItemServiceModel model;
+				// TODO: check the queryModel
 				if (User.Identity?.IsAuthenticated ?? false)
 				{
 					Guid userId = Guid.Parse(User.GetId());
-					model = await itemService.GetAllAsync(userId, searchTerm);
+					model = await itemService.GetAllAsync(userId, queryModel);
 				}
 				else
 				{
-					model = await itemService.GetAllPublicAsync(searchTerm);
+					model = await itemService.GetAllAsync(null, queryModel);
 				}
 				return View(model);
 			}
@@ -57,12 +59,13 @@
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Mine()
+		public async Task<IActionResult> Mine([FromQuery] QueryFilterModel? queryModel = null)
 		{
 			Guid userId = Guid.Parse(User.GetId());
 			try
 			{
-				IEnumerable<MyItemViewModel> model = await itemService.GetMineAsync(userId);
+				// TODO: check the query model
+				MineItemServiceModel model = await itemService.GetMineAsync(userId, queryModel);
 
 				return View(model);
 			}

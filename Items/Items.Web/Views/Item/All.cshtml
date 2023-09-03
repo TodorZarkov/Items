@@ -1,15 +1,15 @@
-﻿
-@model IEnumerable<AllItemViewModel>
+﻿@using Items.Services.Data.Models.Item;
+@model AllItemServiceModel
 
 @{
 	ViewData["Title"] = "All Items";
 	ViewBag.ActiveLink = "AllItem";
 }
-<vc:query-filter hits="85"/>
+<vc:query-filter hits="Model.TotalItemsCount"/>
 
-@if (Model.Any())
+@if (Model.Items.Any())
 {
-	<partial name="_AllItemsPartial" />
+	<partial name="_AllItemsPartial" model="Model.Items"/>
 }
 else
 {

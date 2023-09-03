@@ -16,6 +16,8 @@
 	using Items.Services.Common.Interfaces;
 	using Items.Data.Models;
 	using Items.Web.ViewModels.Location;
+	using Items.Web.ViewModels.Base;
+	using Items.Services.Data.Models.Item;
 
 	public class ItemService : IItemService
 	{
@@ -122,175 +124,11 @@
 
 
 
-		// TODO: unite the query with categories, pagination, sorting
-		// TODO: and remove get by category
-		public async Task<IEnumerable<AllItemViewModel>> GetByCategoriesOnSaleItemsAsync(
-			int[] categories, Guid? userId = null)
-		{
-			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.AsNoTracking()
-				.Where(i => !i.Deleted)
-				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue) 
-				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
-				.OrderByDescending(i => i.StartSell)
-				.Select(i => new AllItemViewModel
-				{
-					Id = i.Id,
-					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
-
-					IsMine = userId == i.OwnerId,
-					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,
-					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
-
-					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2"),
-					CurrencySymbol =
-						!i.CurrentPrice.HasValue ||
-						i.Currency == null
-						? "" : i.Currency.Symbol,
-					IsAuction = i.IsAuction,
-
-					Categories = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Name)
-						.ToArray(),
-
-					CategoryIds = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Id)
-						.ToArray(),
-
-					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
-
-					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
-
-					IsOnMarket = true,
-					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
-
-				})
-				.ToArrayAsync();
-
-
-
-			// TODO: now the required can be more than the returned. to  implement set equality!!!
-			// TODO: prevent client side filtering!!!
-			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
-				.ToArray();
-		}
-
-		public async Task<IEnumerable<AllItemViewModel>> GetByCategoriesMineItemsAsync(
-			int[] categories, Guid userId)
-		{
-			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
-				.Where(i => i.OwnerId == userId)
-				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
-				.OrderByDescending(i => i.ModifiedOn)
-				.Select(i => new AllItemViewModel
-				{
-					Id = i.Id,
-					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
-
-					IsMine = userId == i.OwnerId,
-					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,
-					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
-
-					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2"),
-					CurrencySymbol =
-						!i.CurrentPrice.HasValue ||
-						i.Currency == null
-						? "" : i.Currency.Symbol,
-					IsAuction = i.IsAuction,
-
-					Categories = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Name)
-						.ToArray(),
-
-					CategoryIds = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Id)
-						.ToArray(),
-
-					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
-
-					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
-
-					IsOnMarket = i.EndSell >= dateTimeProvider.GetCurrentDateTime(),
-					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
-
-				})
-				.ToArrayAsync();
-
-
-			// TODO: now the required can be more than the returned. to  implement set equality!!!
-			// TODO: prevent client side filtering!!!
-			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
-				.ToArray(); ;
-
-		}
-
-		public async Task<IEnumerable<AllItemViewModel>> GetByCategoriesAllItemsAsync(
-			int[] categories, Guid userId)
-		{
-			IEnumerable<AllItemViewModel> items = await dbContext.Items
-				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
-				.Where(i => i.OwnerId == userId
-						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
-				.Where(i => i.ItemsCategories.Any(ic => categories.Contains(ic.CategoryId)))
-				.OrderByDescending(i => i.ModifiedOn)
-				.Select(i => new AllItemViewModel
-				{
-					Id = i.Id,
-					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
-
-					IsMine = userId == i.OwnerId,
-					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,
-					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
-
-					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2"),
-					CurrencySymbol =
-						!i.CurrentPrice.HasValue ||
-						i.Currency == null
-						? "" : i.Currency.Symbol,
-					IsAuction = i.IsAuction,
-
-					Categories = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Name)
-						.ToArray(),
-
-					CategoryIds = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Id)
-						.ToArray(),
-
-					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
-
-					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
-
-					IsOnMarket = i.EndSell >= dateTimeProvider.GetCurrentDateTime(),
-					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
-
-				})
-				.ToArrayAsync();
-
-
-			// TODO: now the required can be more than the returned. to  implement set equality!!!
-			// TODO: prevent client side filtering!!!
-			return items.Where(i => categories.All(cid => i.CategoryIds.Contains(cid)))
-				.ToArray(); ;
-		}
-
-
-		// TODO: unite the query with categories, pagination, sorting
-		public async Task<IEnumerable<AllItemViewModel>> GetAllAsync(Guid userId, string? searchTerm = null)
+		public async Task<AllItemServiceModel> GetAllAsync(Guid? userId = null, QueryFilterModel? queryModel = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
+
+			string? searchTerm = queryModel?.SearchTerm;
 			if (!string.IsNullOrEmpty(searchTerm))
 			{
 				itemsQuery = itemsQuery
@@ -300,11 +138,15 @@
 								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
 			}
 
-			var items = await itemsQuery
+
+			itemsQuery = itemsQuery
 				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
+				.Where(i => !i.Deleted)
 				.Where(i => i.OwnerId == userId
-						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
+						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue);
+
+
+			var items = await itemsQuery
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
 				{
@@ -341,14 +183,24 @@
 					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
 				})
 				.ToArrayAsync();
+			var totalItemsCount = itemsQuery.Count();
 
 
-			return items;
+			AllItemServiceModel result = new AllItemServiceModel()
+			{
+				Items = items,
+				TotalItemsCount = totalItemsCount
+			};
+
+
+			return result;
 		}
 
-		public async Task<IEnumerable<AllItemViewModel>> GetAllPublicAsync(string? searchTerm = null)
+		public async Task<MineItemServiceModel> GetMineAsync(Guid userId, QueryFilterModel? queryModel = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
+
+			string? searchTerm = queryModel?.SearchTerm;
 			if (!string.IsNullOrEmpty(searchTerm))
 			{
 				itemsQuery = itemsQuery
@@ -358,55 +210,12 @@
 								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
 			}
 
+			itemsQuery = itemsQuery
+				.AsNoTracking()
+				.Where(i => !i.Deleted)
+				.Where(i => i.OwnerId == userId);
+
 			var items = await itemsQuery
-				.AsNoTracking()
-				.Where(i => !i.Deleted)
-				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
-				.OrderByDescending(i => i.StartSell)
-				.Select(i => new AllItemViewModel
-				{
-					Id = i.Id,
-					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
-
-					IsMine = false,
-
-					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2"),
-					CurrencySymbol =
-						!i.CurrentPrice.HasValue ||
-						i.Currency == null
-						? "" : i.Currency.Symbol,
-					IsAuction = i.IsAuction,
-
-					Categories = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Name)
-						.ToArray(),
-
-					CategoryIds = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Id)
-						.ToArray(),
-
-					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
-
-					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
-
-					IsOnMarket = true,
-					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
-				})
-				.ToArrayAsync();
-
-			return items;
-		}
-
-
-		public async Task<IEnumerable<MyItemViewModel>> GetMineAsync(Guid userId)
-		{
-			IEnumerable<MyItemViewModel> items = await dbContext.Items
-				.AsNoTracking()
-				.Where(i => !i.Deleted)
-				.Where(i => i.OwnerId == userId)
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new MyItemViewModel
 				{
@@ -433,9 +242,17 @@
 					Place = i.Place.Name,
 				})
 				.ToArrayAsync();
+			var totalItemsCount = itemsQuery.Count();
 
 
-			return items;
+			MineItemServiceModel result = new MineItemServiceModel()
+			{
+				Items = items,
+				TotalItemsCount = totalItemsCount
+			};
+
+
+			return result;
 		}
 
 

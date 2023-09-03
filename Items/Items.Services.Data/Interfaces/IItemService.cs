@@ -1,5 +1,7 @@
 ﻿namespace Items.Services.Data.Interfaces
 {
+	using Items.Services.Data.Models.Item;
+	using Items.Web.ViewModels.Base;
 	using Items.Web.ViewModels.Home;
 	using Items.Web.ViewModels.Item;
 	using Items.Web.ViewModels.Sell;
@@ -9,21 +11,12 @@
 		Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems);
 
 
-		Task<IEnumerable<AllItemViewModel>> GetByCategoriesOnSaleItemsAsync(
-			int[] categories, Guid? userId);
+		
 
-		Task<IEnumerable<AllItemViewModel>> GetByCategoriesMineItemsAsync(
-			int[] categories, Guid userId);
-
-		Task<IEnumerable<AllItemViewModel>> GetByCategoriesAllItemsAsync(
-			int[] categories, Guid userId);
-
-		Task<IEnumerable<AllItemViewModel>> GetAllPublicAsync(string? searchTerm = null);
-
-		Task<IEnumerable<AllItemViewModel>> GetAllAsync(Guid userId, string? searchTerm = null);
+		Task<AllItemServiceModel> GetAllAsync(Guid? userId = null, QueryFilterModel? queryModel = null);
 
 
-		Task<IEnumerable<MyItemViewModel>> GetMineAsync(Guid userId);
+		Task<MineItemServiceModel> GetMineAsync(Guid userId, QueryFilterModel? queryModel = null);
 
 
 		Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarterAsync(Guid userId);

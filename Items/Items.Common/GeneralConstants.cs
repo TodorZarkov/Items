@@ -19,5 +19,10 @@
 		public const int DeliverDueDateDaysAfterSend = 7;
 
 		public const string SellerDefaultComment = "";
+
+
+		public const int DefaultCurrentPage = 1;
+		public const int DefaultHitsPerPage = 4;
+		public const int PaginationBarCapacity = 5;
 	}
 }

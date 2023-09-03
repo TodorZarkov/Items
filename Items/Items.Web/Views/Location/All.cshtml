@@ -4,15 +4,15 @@
 	ViewData["Title"] = "Locations";
 	ViewBag.ActiveLink = "AllLocation";
 }
+
+<div class="btn-group-sm ">
+	<button type="button" class="btn btn-sm btn-primary me-4 ">Add Location</button>
+
+	<vc:query-filter hits="85" />
+</div>
+
 @if (Model.Any())
 {
-
-	<div class="btn-group-sm ">
-		<button type="button" class="btn btn-sm btn-primary me-4 ">Add Location</button>
-
-		<vc:query-filter hits="85" />
-	</div>
-
 
 	<table class="table table-secondary table-striped table-hover align-middle">
 		<thead>

@@ -1,12 +1,14 @@
 ﻿
 @model QueryFilterViewModel
 
-<div class="input-group input-group-sm flex-nowrap align-self-end ms-auto" style="max-width:250px;">
+<div class="input-group input-group-sm flex-nowrap  ms-3 me-auto" style="max-width:250px;">
 	<input type="search"
 		   class="form-control border-success border-end-0"
 		   placeholder="@Model.SearchPlaceHolder"
 		   value="@Model.SearchTerm"
-		   name="SearchTerm">
+		   name="SearchTerm"
+		   onfocus="this.setSelectionRange(this.value.length, this.value.length);"
+		   autofocus>
 
 	<button type="button" class="btn btn-outline-success dropdown-toggle dropdown-toggle-split border-end-0 px-2" data-bs-toggle="dropdown" aria-expanded="false">
 		<span class="visually-hidden">Toggle Dropdown</span>

@@ -4,12 +4,12 @@
 	ViewData["Title"] = "My Sellings";
 	ViewBag.ActiveLink = "AllSell";
 }
+
+<vc:query-filter hits="85" />
+
+
 @if (Model.Any())
 {
-
-	<vc:query-filter hits="85" />
-
-
 	<table class="table table-warning table-striped table-hover table-sm align-middle">
 		<thead>
 			<tr>

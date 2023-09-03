@@ -6,11 +6,10 @@
 	ViewBag.ActiveLink = "MineItem";
 }
 
+<vc:query-filter hits="Model.TotalItemsCount" />
 
 @if (Model.Items.Any())
 {
-	<vc:query-filter hits="Model.TotalItemsCount" />
-
 	<partial name="_MyItemsPartial" model="Model.Items" />
 }
 else

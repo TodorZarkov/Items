@@ -8,6 +8,7 @@
 	using static Items.Common.FormatConstants.DateAndTime;
 	using static Items.Common.Enums.AccessModifier;
 	using static Items.Common.EntityValidationConstants.Item;
+	using static Items.Common.GeneralConstants;
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Home;
@@ -18,6 +19,7 @@
 	using Items.Web.ViewModels.Location;
 	using Items.Web.ViewModels.Base;
 	using Items.Services.Data.Models.Item;
+	using Items.Common.Enums;
 
 	public class ItemService : IItemService
 	{
@@ -38,7 +40,7 @@
 		{
 			IndexViewModel[] items = await dbContext.Items
 				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
+				.Where(i => !i.Deleted)
 				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
 				.OrderByDescending(i => i.StartSell)
 				.Take(numberOfItems)
@@ -127,27 +129,139 @@
 		public async Task<AllItemServiceModel> GetAllAsync(Guid? userId = null, QueryFilterModel? queryModel = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
+			itemsQuery = itemsQuery
+				.Where(i => !i.Deleted)
+				.AsNoTracking();
 
 			string? searchTerm = queryModel?.SearchTerm;
 			if (!string.IsNullOrEmpty(searchTerm))
 			{
 				itemsQuery = itemsQuery
 					.Where(i => i.Name.ToLower().Contains(searchTerm.ToLower()) ||
-								i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower()) ||
+								(i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower())) ||
 								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
 								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
 			}
 
+			int[]? categoryIds = queryModel?.CategoryIds;
+			if (categoryIds != null && categoryIds.Length != 0)
+			{
+				itemsQuery = itemsQuery
+					.Where(i => i.ItemsCategories.Any(ic => categoryIds.Contains(ic.CategoryId)));
+			}
 
-			itemsQuery = itemsQuery
-				.AsNoTracking()
-				.Where(i => !i.Deleted)
+			Criteria[]? criteria = queryModel?.Criteria;
+			if (criteria == null || criteria.Length == 0)
+			{
+				itemsQuery = itemsQuery
 				.Where(i => i.OwnerId == userId
 						|| i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue);
+			}
+			else
+			{
+				if (criteria.Contains(Criteria.Mine) && !criteria.Contains(Criteria.NotMine))
+				{
+					itemsQuery = itemsQuery
+					.Where(i => i.OwnerId == userId);
+				}
 
+				if (criteria.Contains(Criteria.NotMine) && !criteria.Contains(Criteria.Mine))
+				{
+					itemsQuery = itemsQuery
+						.Where(i => i.OwnerId != userId &&
+									i.EndSell != null &&
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue);
+				}
+
+				if (criteria.Contains(Criteria.NotMine) && criteria.Contains(Criteria.Mine))
+				{
+					itemsQuery = itemsQuery
+						.Where(i => i.OwnerId == userId ||
+									i.EndSell != null &&
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue);
+				}
+
+
+
+				if (criteria.Contains(Criteria.OnSale) && !criteria.Contains(Criteria.Auctions))
+				{
+					itemsQuery = itemsQuery
+						.Where(i => (
+									i.EndSell != null &&
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue) &&
+									!(i.IsAuction != null && (bool)i.IsAuction!));
+				}
+
+				if (criteria.Contains(Criteria.OnSale) && criteria.Contains(Criteria.Auctions))
+				{
+					itemsQuery = itemsQuery
+						.Where(i => (
+									i.EndSell != null &&
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue));
+				}
+
+				if (!criteria.Contains(Criteria.OnSale) && criteria.Contains(Criteria.Auctions))
+				{
+					itemsQuery = itemsQuery
+						.Where(i => (
+									i.EndSell != null &&
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue) &&
+									(i.IsAuction != null && (bool)i.IsAuction!));
+				}
+
+
+
+			}
+
+			Sorting? sorting = queryModel?.SortBy;
+			if (sorting != null)
+			{
+				if (sorting == Sorting.Name)
+				{
+					itemsQuery = itemsQuery
+						.OrderBy(i => i.Name.ToLower());
+				}
+				else if (sorting == Sorting.PriceDec)
+				{
+					itemsQuery = itemsQuery
+						.OrderByDescending(i => i.Offers.Max(o => o.Value))
+						.ThenByDescending(i => i.CurrentPrice)
+						.ThenByDescending(i => i.AcquiredPrice);
+				}
+				else if (sorting == Sorting.PriceAsc)
+				{
+					itemsQuery = itemsQuery
+						.OrderBy(i => i.Offers.Max(o => o.Value))
+						.ThenBy(i => i.CurrentPrice)
+						.ThenBy(i => i.AcquiredPrice);
+				}
+				else if (sorting == Sorting.Latest)
+				{
+					itemsQuery = itemsQuery
+						.OrderByDescending(i => i.ModifiedOn);
+				}
+
+			}
+
+			var totalItemsCount = itemsQuery.Count();
+
+
+			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;
+			int hitsPerPage = queryModel?.HitsPerPage ?? DefaultHitsPerPage;
+			//if ((currentPage - 1) * hitsPerPage >= totalItemsCount)
+			//{
+			//	currentPage = DefaultCurrentPage;
+			//}
+			itemsQuery = itemsQuery
+				.Skip((currentPage - 1) * hitsPerPage)
+				.Take(hitsPerPage);
 
 			var items = await itemsQuery
-				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new AllItemViewModel
 				{
 					Id = i.Id,
@@ -183,7 +297,6 @@
 					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
 				})
 				.ToArrayAsync();
-			var totalItemsCount = itemsQuery.Count();
 
 
 			AllItemServiceModel result = new AllItemServiceModel()
@@ -191,7 +304,6 @@
 				Items = items,
 				TotalItemsCount = totalItemsCount
 			};
-
 
 			return result;
 		}
@@ -262,7 +374,7 @@
 			IEnumerable<ItemForBarterViewModel> allItemsForBarter =
 				await dbContext.Items
 				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
+				.Where(i => !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)) //  TODO: observe the equality when dealing with decimal!!!!!
 				.Select(i => new ItemForBarterViewModel
@@ -286,7 +398,7 @@
 		{
 			AllSellViewModel[] itemsOnMarket = await dbContext.Items
 				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
+				.Where(i => !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.Where(i => i.EndSell.HasValue) //&& i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
 				.OrderByDescending(i => i.EndSell)

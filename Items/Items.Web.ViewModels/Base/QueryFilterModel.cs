@@ -3,12 +3,13 @@
 	using Items.Common.Enums;
 	using System.ComponentModel.DataAnnotations;
 	using static Common.EntityValidationConstants.QueryFilter;
+    using static Common.GeneralConstants;
 	public class QueryFilterModel
     {
         public QueryFilterModel()
         {
-            HitsPerPage = 6;
-            CurrentPage = 1;
+            HitsPerPage = DefaultHitsPerPage;
+            CurrentPage = DefaultCurrentPage;
 
         }
 

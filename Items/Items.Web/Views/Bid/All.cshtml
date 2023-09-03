@@ -4,9 +4,11 @@
 	ViewData["Title"] = "My Bids";
 	ViewBag.ActiveLink = "AllBid";
 }
+
+<vc:query-filter hits="85" />
+
 @if (Model.Bids.Any())
 {
-	<vc:query-filter hits="85" />
 
 	<table class="table table-warning table-striped table-hover table-sm align-middle">
 		<thead>

@@ -2,8 +2,7 @@
 {
 	using Items.Common.Enums;
 	using Items.Web.ViewModels.Category;
-
-	using System;
+	using static Common.GeneralConstants;
 
 	public class QueryFilterViewModel
 	{
@@ -18,8 +17,8 @@
 			CategoryIds = new List<int>();
 			Criteria = new List<string?>();
 
-			HitsPerPage = 6;
-			CurrentPage = 1;
+			HitsPerPage = DefaultHitsPerPage;
+			CurrentPage = DefaultCurrentPage;
 			LastPage = CurrentPage;
 		}
 		public int Hits { get; set; }

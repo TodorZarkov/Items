@@ -28,6 +28,7 @@
 
 			string? controllerName = Request.RouteValues["controller"]?.ToString();
 			string? controllerNamePlural = helper.Pluralize(controllerName);
+			string? actionName = Request.RouteValues["action"]?.ToString();
 
 			bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 
@@ -38,7 +39,7 @@
 			model.SearchPlaceHolder = $"Search in {controllerNamePlural}";
 
 			model.AvailableCriteria
-				.AddRange(helper.GetAllowedCriteria(isAuthenticated, controllerName));
+				.AddRange(helper.GetAllowedCriteria(isAuthenticated, controllerName, actionName));
 			model.AvailableSorting
 				.AddRange(helper.GetAllowedSorting(isAuthenticated, controllerName));
 

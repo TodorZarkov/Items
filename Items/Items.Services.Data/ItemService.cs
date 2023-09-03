@@ -30,6 +30,8 @@
 			this.dateTimeProvider = dateTimeProvider;
 		}
 
+
+
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IndexViewModel[] items = await dbContext.Items
@@ -62,62 +64,66 @@
 			return items;
 		}
 
-		// TODO: unite the query with categories, pagination, sorting
-		// TODO: and remove get by category
-		public async Task<IEnumerable<AllItemViewModel>> GetAllPublicAsync(string? searchTerm = null)
+		public async Task<IEnumerable<OnRotationViewModel>> GetDailyRotationsAsync(Guid userId)
 		{
-			var itemsQuery = dbContext.Items.AsQueryable();
-			if (!string.IsNullOrEmpty(searchTerm))
-			{
-				itemsQuery = itemsQuery
-					.Where(i => i.Name.ToLower().Contains(searchTerm.ToLower()) ||
-								i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower()) ||
-								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
-								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
-			}
-
-			var items = await itemsQuery
+			IEnumerable<OnRotationViewModel> currentItemRotation = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => !i.Deleted)
-				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
-				.OrderByDescending(i => i.StartSell)
-				.Select(i => new AllItemViewModel
+				.Where(i => i.OwnerId == userId)
+				.Where(i => i.OnRotation && i.OnRotationNow)
+				.Where(i => !i.EndSell.HasValue)
+				.Where(i => i.Quantity > 0)
+				.Select(i => new OnRotationViewModel
 				{
 					Id = i.Id,
-					Name = i.Name,
 					MainPictureUri = i.MainPictureUri,
-
-					IsMine = false,
-
-					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2"),
-					CurrencySymbol =
-						!i.CurrentPrice.HasValue ||
-						i.Currency == null
-						? "" : i.Currency.Symbol,
-					IsAuction = i.IsAuction,
-
-					Categories = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Name)
-						.ToArray(),
-
-					CategoryIds = i.ItemsCategories
-						.Where(ic => ic.ItemId == i.Id)
-						.Select(ic => ic.Category.Id)
-						.ToArray(),
-
-					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
-
-					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
-
-					IsOnMarket = true,
-					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
+					Name = i.Name,
+					Quantity = i.Quantity.ToString("N2"),
+					Unit = i.Unit.Symbol,
+					Categories = i.ItemsCategories.Select(ic => ic.Category.Name).ToArray(),
+					AddedOn = i.AddedOn.ToString(RotatedItemsDateTime),
+					Place = i.Place.Name,
+					Location = i.Location.Name
 				})
 				.ToArrayAsync();
 
-			return items;
+			return currentItemRotation;
 		}
 
+		public async Task SetDailyRotationsAsync(Guid userId, int numberOfItems)
+		{
+			var allItemRotation = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.OwnerId == userId)
+				.Where(i => i.OnRotation)
+				.Where(i => !i.EndSell.HasValue)
+				.Where(i => i.Quantity > 0)
+				.ToArrayAsync();
+
+
+			HashSet<int> rands = helper.GetRandNUniqueOfM(numberOfItems, allItemRotation.Length);
+			int index = 0;
+			for (int i = 0; i < allItemRotation.Length; i++)
+			{
+				if (rands.Contains(i))
+				{
+					allItemRotation[i].OnRotationNow = true;
+				}
+				else
+				{
+					allItemRotation[i].OnRotationNow = false;
+				}
+				index++;
+			}
+
+			await dbContext.SaveChangesAsync();
+		}
+
+
+
+
+		// TODO: unite the query with categories, pagination, sorting
+		// TODO: and remove get by category
 		public async Task<IEnumerable<AllItemViewModel>> GetByCategoriesOnSaleItemsAsync(
 			int[] categories, Guid? userId = null)
 		{
@@ -340,11 +346,66 @@
 			return items;
 		}
 
+		public async Task<IEnumerable<AllItemViewModel>> GetAllPublicAsync(string? searchTerm = null)
+		{
+			var itemsQuery = dbContext.Items.AsQueryable();
+			if (!string.IsNullOrEmpty(searchTerm))
+			{
+				itemsQuery = itemsQuery
+					.Where(i => i.Name.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
+			}
+
+			var items = await itemsQuery
+				.AsNoTracking()
+				.Where(i => !i.Deleted)
+				.Where(i => i.EndSell != null && i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
+				.OrderByDescending(i => i.StartSell)
+				.Select(i => new AllItemViewModel
+				{
+					Id = i.Id,
+					Name = i.Name,
+					MainPictureUri = i.MainPictureUri,
+
+					IsMine = false,
+
+					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2"),
+					CurrencySymbol =
+						!i.CurrentPrice.HasValue ||
+						i.Currency == null
+						? "" : i.Currency.Symbol,
+					IsAuction = i.IsAuction,
+
+					Categories = i.ItemsCategories
+						.Where(ic => ic.ItemId == i.Id)
+						.Select(ic => ic.Category.Name)
+						.ToArray(),
+
+					CategoryIds = i.ItemsCategories
+						.Where(ic => ic.ItemId == i.Id)
+						.Select(ic => ic.Category.Id)
+						.ToArray(),
+
+					EndSell = i.EndSell.HasValue ? i.EndSell.Value.ToString(BiddingLongUtcDateTime) : null,
+
+					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
+
+					IsOnMarket = true,
+					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
+				})
+				.ToArrayAsync();
+
+			return items;
+		}
+
+
 		public async Task<IEnumerable<MyItemViewModel>> GetMineAsync(Guid userId)
 		{
 			IEnumerable<MyItemViewModel> items = await dbContext.Items
 				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
+				.Where(i => !i.Deleted)
 				.Where(i => i.OwnerId == userId)
 				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new MyItemViewModel
@@ -376,6 +437,8 @@
 
 			return items;
 		}
+
+
 
 		public async Task<IEnumerable<ItemForBarterViewModel>> MyAvailableForBarterAsync(Guid userId)
 		{
@@ -444,59 +507,300 @@
 			return itemsOnMarket;
 		}
 
-		public async Task<IEnumerable<OnRotationViewModel>> GetDailyRotationsAsync(Guid userId)
+
+		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
 		{
-			IEnumerable<OnRotationViewModel> currentItemRotation = await dbContext.Items
+			// TODO: instead of many queries, use Include! In all similar places.
+			// TODO: implement auto mapper in all similar places!
+
+			Item item = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.SingleAsync(i => i.Id == itemId);
+
+			int[] categoryIds = await dbContext.ItemsCategories
+				.Where(ic => ic.ItemId == itemId)
+				.Select(ic => ic.CategoryId)
+				.ToArrayAsync();
+
+			ItemVisibility itemVisibility = await dbContext.ItemVisibilities
+				.SingleAsync(iv => iv.Item.Id == itemId);
+
+			ItemFormModel model = new ItemFormModel
+			{
+				Name = item.Name,
+				MainPictureUri = item.MainPictureUri,
+				Description = item.Description,
+				CurrencyId = item.CurrencyId,
+				CurrentPrice = item.CurrentPrice,
+				EndSell = item.EndSell,
+				AcquiredDate = item.AcquiredDate,
+				AcquiredPrice = item.AcquiredPrice,
+				IsAuction = item.IsAuction.HasValue && (bool)item.IsAuction,
+				OnRotation = item.OnRotation,
+				PlaceId = item.PlaceId,
+				Quantity = item.Quantity,
+				StartSell = item.StartSell,
+				UnitId = item.UnitId,
+				CategoryIds = categoryIds,
+				ItemVisibility = new ItemFormVisibilityModel
+				{
+					Description = itemVisibility.Description,
+					AcquiredDate = itemVisibility.AcquiredDate,
+					AcquireDocument = itemVisibility.AcquireDocument,
+					AcquiredPrice = itemVisibility.AcquiredPrice,
+					AddedOn = itemVisibility.AddedOn,
+					ModifiedOn = itemVisibility.ModifiedOn,
+					Location = itemVisibility.Location,
+					Offers = itemVisibility.Offers,
+					Owner = itemVisibility.Owner,
+					Quantity = itemVisibility.Quantity
+				}
+			};
+
+			return model;
+		}
+
+		public async Task<ItemViewModel> GetByIdForViewAsync(Guid itemId)
+		{
+			ItemViewModel model = await dbContext.Items
 				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
-				.Where(i => i.OwnerId == userId)
-				.Where(i => i.OnRotation && i.OnRotationNow)
-				.Where(i => !i.EndSell.HasValue)
-				.Where(i => i.Quantity > 0)
-				.Select(i => new OnRotationViewModel
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.Select(i => new ItemViewModel
 				{
 					Id = i.Id,
 					MainPictureUri = i.MainPictureUri,
 					Name = i.Name,
-					Quantity = i.Quantity.ToString("N2"),
-					Unit = i.Unit.Symbol,
-					Categories = i.ItemsCategories.Select(ic => ic.Category.Name).ToArray(),
-					AddedOn = i.AddedOn.ToString(RotatedItemsDateTime),
-					Place = i.Place.Name,
-					Location = i.Location.Name
-				})
-				.ToArrayAsync();
+					CurrentPrice = i.CurrentPrice != null ? ((decimal)i.CurrentPrice).ToString("N2") : null,
+					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,
+					CurrencyIsoCode = i.Currency != null ? i.Currency.IsoCode : null,
+					StartSell = i.StartSell,
+					EndSell = i.EndSell,
+					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name)),
+					IsAuction = i.IsAuction,
 
-			return currentItemRotation;
+
+					PlaceId = i.PlaceId,
+					PlaceName = i.Place.Name,
+					AsBarterForOffersCount = i.AsBarterForOffers.Count,
+					ContractsCount = i.Contracts.Count(),
+					OnRotation = i.OnRotation,
+					OnRotationNow = i.OnRotationNow,
+
+
+					Description = i.ItemVisibility.Description == Public ? i.Description : null,
+					AcquiredDate = i.ItemVisibility.AcquiredDate == Public ? i.AcquiredDate : null,
+					//document here
+					AcquiredPrice = i.ItemVisibility.AcquiredPrice == Public ?
+						i.AcquiredPrice != null ? ((decimal)i.AcquiredPrice).ToString("N2") : null : null,
+					AddedOn = i.ItemVisibility.AddedOn == Public ? i.AddedOn : null,
+					ModifiedOn = i.ItemVisibility.ModifiedOn == Public ? i.ModifiedOn : null,
+					Quantity = i.ItemVisibility.Quantity == Public ? i.Quantity.ToString("N3") : null,
+					UnitName = i.Unit.Name,
+					UnitSymbol = i.Unit.Symbol,
+					OffersCount = i.ItemVisibility.Offers == Public ? i.Offers.Count : null,
+					OwnerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
+					OwnerName = i.ItemVisibility.Owner == Public ? i.Owner.UserName : null,
+					OwnerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
+
+					ItemVisibility = new ItemFormVisibilityModel
+					{
+						Description = i.ItemVisibility.Description,
+						AcquiredDate = i.ItemVisibility.AcquiredDate,
+						AcquireDocument = i.ItemVisibility.AcquireDocument,
+						AcquiredPrice = i.ItemVisibility.AcquiredPrice,
+						AddedOn = i.ItemVisibility.AddedOn,
+						ModifiedOn = i.ItemVisibility.ModifiedOn,
+						Location = i.ItemVisibility.Location,
+						Offers = i.ItemVisibility.Offers,
+						Owner = i.ItemVisibility.Owner,
+						Quantity = i.ItemVisibility.Quantity
+					},
+
+					Location = i.ItemVisibility.Location == Public ? new AllLocationViewModel
+					{
+						Name = i.Location.LocationVisibility.Name == Public ? i.Location.Name : null,
+						Address = i.Location.LocationVisibility.Address == Public ? i.Location.Address : null,
+						Description = i.Location.LocationVisibility.Description == Public ? i.Location.Description : null,
+						Border = i.Location.LocationVisibility.Border == Public && i.Location.Border != null ? i.Location.Border.ToString() : null,
+						Country = i.Location.LocationVisibility.Country == Public ? i.Location.Country : null,
+						GeoLocation = i.Location.LocationVisibility.GeoLocation == Public && i.Location.GeoLocation != null ? i.Location.GeoLocation.ToString() : null,
+						Town = i.Location.LocationVisibility.Town == Public ? i.Location.Town : null,
+
+						Visibility = new LocationVisibilityViewModel
+						{
+							Name = i.Location.LocationVisibility.Name,
+							Description = i.Location.LocationVisibility.Description,
+							Country = i.Location.LocationVisibility.Country,
+							Town = i.Location.LocationVisibility.Town,
+							Address = i.Location.LocationVisibility.Address,
+							GeoLocation = i.Location.LocationVisibility.GeoLocation,
+							Border = i.Location.LocationVisibility.Border,
+						}
+
+					} : null
+
+
+				})
+				.SingleAsync();
+
+			return model;
 		}
 
-		public async Task SetDailyRotationsAsync(Guid userId, int numberOfItems)
+		public async Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId)
 		{
-			var allItemRotation = await dbContext.Items
+			ItemViewModel model = await dbContext.Items
+				.AsNoTracking()
 				.Where(i => !i.Deleted)
-				.Where(i => i.OwnerId == userId)
-				.Where(i => i.OnRotation)
-				.Where(i => !i.EndSell.HasValue)
-				.Where(i => i.Quantity > 0)
-				.ToArrayAsync();
-
-
-			HashSet<int> rands = helper.GetRandNUniqueOfM(numberOfItems, allItemRotation.Length);
-			int index = 0;
-			for (int i  = 0; i<allItemRotation.Length;  i++)
-			{
-				if (rands.Contains(i))
+				.Where(i => i.Id == itemId)
+				.Select(i => new ItemViewModel
 				{
-					allItemRotation[i].OnRotationNow = true;
-				}
-				else
-				{
-					allItemRotation[i].OnRotationNow = false;
-				}
-				index++;
-			}
+					Id = i.Id,
+					MainPictureUri = i.MainPictureUri,
+					Name = i.Name,
+					CurrentPrice = i.CurrentPrice != null ? ((decimal)i.CurrentPrice).ToString("N2") : null,
+					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,
+					CurrencyIsoCode = i.Currency != null ? i.Currency.IsoCode : null,
+					StartSell = i.StartSell,
+					EndSell = i.EndSell,
+					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name)),
+					IsAuction = i.IsAuction,
 
-			await dbContext.SaveChangesAsync();
+
+					PlaceId = i.PlaceId,
+					PlaceName = i.Place.Name,
+					LocationId = i.LocationId,
+					LocationName = i.Location.Name,
+					AsBarterForOffersCount = i.AsBarterForOffers.Count,
+					ContractsCount = i.Contracts.Count(),
+					OnRotation = i.OnRotation,
+					OnRotationNow = i.OnRotationNow,
+
+					Description = i.Description,
+					AcquiredDate = i.AcquiredDate,
+					AcquiredPrice = i.AcquiredPrice != null ? ((decimal)i.AcquiredPrice).ToString("N2") : null,
+					Quantity = i.Quantity.ToString("N3"),
+					UnitName = i.Unit.Name,
+					UnitSymbol = i.Unit.Symbol,
+					AddedOn = i.AddedOn,
+					ModifiedOn = i.ModifiedOn,
+					OffersCount = i.Offers.Count,
+					OwnerEmail = i.Owner.Email,
+					OwnerName = i.Owner.UserName,
+					OwnerPhone = i.Owner.PhoneNumber,
+
+					ItemVisibility = new ItemFormVisibilityModel
+					{
+						Description = i.ItemVisibility.Description,
+						AcquiredDate = i.ItemVisibility.AcquiredDate,
+						AcquireDocument = i.ItemVisibility.AcquireDocument,
+						AcquiredPrice = i.ItemVisibility.AcquiredPrice,
+						AddedOn = i.ItemVisibility.AddedOn,
+						ModifiedOn = i.ItemVisibility.ModifiedOn,
+						Location = i.ItemVisibility.Location,
+						Offers = i.ItemVisibility.Offers,
+						Owner = i.ItemVisibility.Owner,
+						Quantity = i.ItemVisibility.Quantity
+					}
+				})
+				.SingleAsync();
+
+			return model;
+		}
+
+		public async Task<PreDeleteItemViewModel> GetForDeleteByIdAsync(Guid id)
+		{
+			PreDeleteItemViewModel model = await dbContext.Items
+				.AsNoTracking()
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == id)
+				.Select(i => new PreDeleteItemViewModel
+				{
+					Name = i.Name,
+					MainPictureUri = i.MainPictureUri,
+					Quantity = i.Quantity.ToString("N3"),
+					Unit = i.Unit.Symbol,
+					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name))
+				})
+				.SingleAsync();
+
+			return model;
+		}
+
+		public async Task<AuctionFormModel> GetForAuctionUpdateAsync(Guid id)
+		{
+			AuctionFormModel model = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == id)
+				.Select(i => new AuctionFormModel
+				{
+					MainPictureUri = i.MainPictureUri,
+					Name = i.Name,
+					StartSell = (DateTime)i.StartSell!,
+					EndSell = (DateTime)i.EndSell!,
+
+				})
+				.SingleAsync();
+
+			return model;
+		}
+
+
+
+		public async Task<bool> ExistAsync(Guid id)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == id && !i.Deleted);
+
+			return result;
+		}
+
+		public async Task<bool> IsOwnerAsync(Guid itemId, Guid userId)
+		{
+			bool result = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId);
+
+			return result;
+		}
+
+		public async Task<bool> IsOnMarketAsync(Guid id)
+		{
+			bool result = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.AnyAsync(i =>
+				i.Id == id &&
+				i.EndSell != null &&
+				i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+				i.Quantity >= (decimal)QuantityMinValue);
+
+			return result;
+		}
+
+		public async Task<bool> IsAuctionAsync(Guid id)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == id && i.IsAuction != null && i.IsAuction == true);
+
+			return result;
+		}
+
+		public async Task<bool> HasQuantity(Guid id)
+		{
+			bool result = await dbContext.Items
+				.AnyAsync(i => i.Id == id && i.Quantity >= (decimal)QuantityMinValue && !i.Deleted);
+
+			return result;
+		}
+
+		public async Task<bool> SufficientQuantity(Guid itemId, decimal quantity)
+		{
+			bool result = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.AnyAsync(i => i.Quantity >= quantity);// TODO: seller must have an option to restrict the quantity threshold!!!
+
+			return result;
 		}
 
 
@@ -563,67 +867,6 @@
 			return item.Id;
 		}
 
-		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
-		{
-			// TODO: instead of many queries, use Include! In all similar places.
-			// TODO: implement auto mapper in all similar places!
-
-			Item item = await dbContext.Items
-				.Where(i => !i.Deleted)
-				.SingleAsync(i => i.Id == itemId);
-
-			int[] categoryIds = await dbContext.ItemsCategories
-				.Where(ic => ic.ItemId == itemId)
-				.Select(ic => ic.CategoryId)
-				.ToArrayAsync();
-
-			ItemVisibility itemVisibility = await dbContext.ItemVisibilities
-				.SingleAsync(iv => iv.Item.Id == itemId);
-
-			ItemFormModel model = new ItemFormModel
-			{
-				Name = item.Name,
-				MainPictureUri = item.MainPictureUri,
-				Description = item.Description,
-				CurrencyId = item.CurrencyId,
-				CurrentPrice = item.CurrentPrice,
-				EndSell = item.EndSell,
-				AcquiredDate = item.AcquiredDate,
-				AcquiredPrice = item.AcquiredPrice,
-				IsAuction = item.IsAuction.HasValue && (bool)item.IsAuction,
-				OnRotation = item.OnRotation,
-				PlaceId = item.PlaceId,
-				Quantity = item.Quantity,
-				StartSell = item.StartSell,
-				UnitId = item.UnitId,
-				CategoryIds = categoryIds,
-				ItemVisibility = new ItemFormVisibilityModel
-				{
-					Description = itemVisibility.Description,
-					AcquiredDate = itemVisibility.AcquiredDate,
-					AcquireDocument = itemVisibility.AcquireDocument,
-					AcquiredPrice = itemVisibility.AcquiredPrice,
-					AddedOn = itemVisibility.AddedOn,
-					ModifiedOn = itemVisibility.ModifiedOn,
-					Location = itemVisibility.Location,
-					Offers = itemVisibility.Offers,
-					Owner = itemVisibility.Owner,
-					Quantity = itemVisibility.Quantity
-				}
-			};
-
-			return model;
-		}
-
-		public async Task<bool> IsOwnerAsync(Guid itemId, Guid userId)
-		{
-			bool result = await dbContext.Items
-				.Where(i => !i.Deleted)
-				.AnyAsync(i => i.Id == itemId && i.OwnerId == userId);
-
-			return result;
-		}
-
 		public async Task UpdateItemAsync(ItemFormModel model, Guid itemId)
 		{
 			Item? item = await dbContext.Items
@@ -632,7 +875,7 @@
 
 			ItemVisibility? itemVisibility = await dbContext
 				.ItemVisibilities
-				.FindAsync(item.ItemVisibilityId) 
+				.FindAsync(item.ItemVisibilityId)
 				?? throw new ArgumentException(string.Format(ItemVisibilityNotPresentInDb, "", ""));
 
 			item.Name = model.Name;//1.2
@@ -665,187 +908,6 @@
 			await dbContext.SaveChangesAsync();
 		}
 
-
-		public async Task<ItemViewModel> GetByIdForViewAsync(Guid itemId)
-		{
-			ItemViewModel model = await dbContext.Items
-				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
-				.Where(i => i.Id == itemId)
-				.Select(i => new ItemViewModel
-				{
-					Id = i.Id,
-					MainPictureUri = i.MainPictureUri,
-					Name = i.Name,
-					CurrentPrice = i.CurrentPrice != null ? ((decimal)i.CurrentPrice).ToString("N2") : null,
-					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,
-					CurrencyIsoCode = i.Currency != null ? i.Currency.IsoCode : null,
-					StartSell = i.StartSell,
-					EndSell = i.EndSell,
-					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name)),
-					IsAuction = i.IsAuction,
-
-
-					PlaceId = i.PlaceId,
-					PlaceName = i.Place.Name,
-					AsBarterForOffersCount = i.AsBarterForOffers.Count,
-					ContractsCount = i.Contracts.Count(),
-					OnRotation = i.OnRotation,
-					OnRotationNow = i.OnRotationNow,
-
-
-					Description = i.ItemVisibility.Description == Public ? i.Description : null,
-					AcquiredDate = i.ItemVisibility.AcquiredDate == Public ? i.AcquiredDate : null,
-					//document here
-					AcquiredPrice = i.ItemVisibility.AcquiredPrice == Public ?
-						i.AcquiredPrice != null?((decimal)i.AcquiredPrice).ToString("N2"):null : null,
-					AddedOn = i.ItemVisibility.AddedOn == Public ? i.AddedOn : null,
-					ModifiedOn = i.ItemVisibility.ModifiedOn == Public ? i.ModifiedOn : null,
-					Quantity = i.ItemVisibility.Quantity == Public ? i.Quantity.ToString("N3") : null,
-					UnitName = i.Unit.Name,
-					UnitSymbol = i.Unit.Symbol,
-					OffersCount = i.ItemVisibility.Offers == Public ? i.Offers.Count : null,
-					OwnerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
-					OwnerName = i.ItemVisibility.Owner == Public ? i.Owner.UserName : null,
-					OwnerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
-
-					ItemVisibility = new ItemFormVisibilityModel
-					{
-						Description = i.ItemVisibility.Description,
-						AcquiredDate = i.ItemVisibility.AcquiredDate,
-						AcquireDocument = i.ItemVisibility.AcquireDocument,
-						AcquiredPrice = i.ItemVisibility.AcquiredPrice,
-						AddedOn = i.ItemVisibility.AddedOn,
-						ModifiedOn = i.ItemVisibility.ModifiedOn,
-						Location = i.ItemVisibility.Location,
-						Offers = i.ItemVisibility.Offers,
-						Owner = i.ItemVisibility.Owner,
-						Quantity = i.ItemVisibility.Quantity
-					},
-
-					Location = i.ItemVisibility.Location == Public ? new AllLocationViewModel
-					{
-						Name = i.Location.LocationVisibility.Name == Public ? i.Location.Name : null,
-						Address = i.Location.LocationVisibility.Address == Public ? i.Location.Address : null,
-						Description = i.Location.LocationVisibility.Description == Public ? i.Location.Description : null,
-						Border = i.Location.LocationVisibility.Border == Public && i.Location.Border != null ? i.Location.Border.ToString() : null,
-						Country = i.Location.LocationVisibility.Country == Public ? i.Location.Country : null,
-						GeoLocation =  i.Location.LocationVisibility.GeoLocation == Public && i.Location.GeoLocation != null ? i.Location.GeoLocation.ToString() : null,
-						Town = i.Location.LocationVisibility.Town == Public ? i.Location.Town : null,
-
-						Visibility = new LocationVisibilityViewModel
-						{
-							Name = i.Location.LocationVisibility.Name,
-							Description = i.Location.LocationVisibility.Description,
-							Country = i.Location.LocationVisibility.Country,
-							Town = i.Location.LocationVisibility.Town,
-							Address = i.Location.LocationVisibility.Address,
-							GeoLocation = i.Location.LocationVisibility.GeoLocation,
-							Border = i.Location.LocationVisibility.Border,
-						}
-
-					} : null
-
-					
-				})
-				.SingleAsync();
-
-			return model;
-		}
-
-		public async Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId)
-		{
-			ItemViewModel model = await dbContext.Items
-				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
-				.Where(i => i.Id == itemId)
-				.Select(i => new ItemViewModel
-				{
-					Id = i.Id,
-					MainPictureUri = i.MainPictureUri,
-					Name = i.Name,
-					CurrentPrice = i.CurrentPrice != null?((decimal)i.CurrentPrice).ToString("N2") : null,
-					CurrencySymbol = i.Currency != null?i.Currency.Symbol : null,
-					CurrencyIsoCode = i.Currency != null ? i.Currency.IsoCode : null,
-					StartSell = i.StartSell,
-					EndSell = i.EndSell,
-					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name)),
-					IsAuction = i.IsAuction,
-
-
-					PlaceId = i.PlaceId,
-					PlaceName = i.Place.Name,
-					LocationId = i.LocationId,
-					LocationName = i.Location.Name,
-					AsBarterForOffersCount = i.AsBarterForOffers.Count,
-					ContractsCount = i.Contracts.Count(),
-					OnRotation = i.OnRotation,
-					OnRotationNow = i.OnRotationNow,
-
-					Description = i.Description,
-					AcquiredDate = i.AcquiredDate,
-					AcquiredPrice = i.AcquiredPrice != null ? ((decimal)i.AcquiredPrice).ToString("N2") : null,
-					Quantity = i.Quantity.ToString("N3"),
-					UnitName = i.Unit.Name,
-					UnitSymbol = i.Unit.Symbol,
-					AddedOn = i.AddedOn,
-					ModifiedOn = i.ModifiedOn,
-					OffersCount = i.Offers.Count,
-					OwnerEmail = i.Owner.Email,
-					OwnerName = i.Owner.UserName,
-					OwnerPhone = i.Owner.PhoneNumber,
-
-					ItemVisibility = new ItemFormVisibilityModel
-					{
-						Description = i.ItemVisibility.Description,
-						AcquiredDate = i.ItemVisibility.AcquiredDate,
-						AcquireDocument = i.ItemVisibility.AcquireDocument,
-						AcquiredPrice = i.ItemVisibility.AcquiredPrice,
-						AddedOn = i.ItemVisibility.AddedOn,
-						ModifiedOn = i.ItemVisibility.ModifiedOn,
-						Location = i.ItemVisibility.Location,
-						Offers = i.ItemVisibility.Offers,
-						Owner = i.ItemVisibility.Owner,
-						Quantity = i.ItemVisibility.Quantity
-					}
-				})
-				.SingleAsync();
-
-			return model;
-		}
-
-		public async Task<bool> IsOnMarketAsync(Guid id)
-		{
-			bool result = await dbContext.Items
-				.Where(i => !i.Deleted)
-				.AnyAsync(i => 
-				i.Id == id && 
-				i.EndSell != null && 
-				i.EndSell > dateTimeProvider.GetCurrentDateTime() && 
-				i.Quantity >= (decimal)QuantityMinValue);
-
-			return result;
-		}
-
-		public async Task<PreDeleteItemViewModel> GetForDeleteByIdAsync(Guid id)
-		{
-			PreDeleteItemViewModel model = await dbContext.Items
-				.AsNoTracking()
-				.Where(i =>  !i.Deleted)
-				.Where(i => i.Id == id)
-				.Select(i => new PreDeleteItemViewModel
-				{
-					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
-					Quantity = i.Quantity.ToString("N3"),
-					Unit = i.Unit.Symbol,
-					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name))
-				})
-				.SingleAsync();
-
-			return model;
-		}
-
 		public async Task DeleteByIdAsync(Guid id)
 		{
 			Item item = await dbContext.Items
@@ -856,22 +918,6 @@
 			item.ModifiedOn = dateTimeProvider.GetCurrentDateTime();
 
 			await dbContext.SaveChangesAsync();
-		}
-
-		public async Task<bool> ExistAsync(Guid id)
-		{
-			bool result = await dbContext.Items
-				.AnyAsync(i => i.Id == id && !i.Deleted);
-
-			return result;
-		}
-
-		public async Task<bool> IsAuctionAsync(Guid id)
-		{
-			bool result = await dbContext.Items
-				.AnyAsync(i => i.Id == id && i.IsAuction != null && i.IsAuction == true);
-
-			return result;
 		}
 
 		public async Task StopSellByItemIdAsync(Guid id)
@@ -886,24 +932,6 @@
 			await dbContext.SaveChangesAsync();
 		}
 
-		public async Task<AuctionFormModel> GetForAuctionUpdateAsync(Guid id)
-		{
-			AuctionFormModel model = await dbContext.Items
-				.Where(i => !i.Deleted)
-				.Where(i => i.Id == id)
-				.Select(i => new AuctionFormModel
-				{
-					MainPictureUri = i.MainPictureUri,
-					Name = i.Name,
-					StartSell = (DateTime)i.StartSell!,
-					EndSell = (DateTime)i.EndSell!,
-
-				})
-				.SingleAsync();
-
-			return model;
-		}
-
 		public async Task AuctionUpdateAsync(AuctionFormModel model, Guid id)
 		{
 			Item item = await dbContext.Items
@@ -913,25 +941,6 @@
 
 			await dbContext.SaveChangesAsync();
 
-		}
-
-
-		public async Task<bool> HasQuantity(Guid id)
-		{
-			bool result = await dbContext.Items
-				.AnyAsync(i => i.Id == id && i.Quantity >= (decimal)QuantityMinValue && !i.Deleted);
-
-			return result;
-		}
-
-		public async Task<bool> SufficientQuantity(Guid itemId, decimal quantity)
-		{
-			bool result = await dbContext.Items
-				.Where(i => !i.Deleted)
-				.Where(i => i.Id == itemId)
-				.AnyAsync(i => i.Quantity >= quantity);// TODO: seller must have an option to restrict the quantity threshold!!!
-
-			return result;
 		}
 
 		public async Task<ItemFormModel> CopyFromContract(Guid id, Guid userId)

@@ -1,15 +1,13 @@
 ﻿namespace Items.Web.Controllers
 {
 	using Items.Services.Data.Interfaces;
-	using Items.Web.ViewModels.Item;
-	using Items.Web.ViewModels.Deal;
 	using Items.Web.Infrastructure.Extensions;
-	using static Common.NotificationMessages;
+	using Items.Web.ViewModels.Item;
 	using static Common.EntityValidationErrorMessages.General;
+	using static Common.NotificationMessages;
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.AspNetCore.Http.Extensions;
 
 	public class ItemController : BaseController
 	{

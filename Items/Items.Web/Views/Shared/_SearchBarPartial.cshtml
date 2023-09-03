@@ -33,7 +33,10 @@
 			<li class="dropdown-item-text fw-bold">All Categories</li>
 		}
 
-
+		@if (!(User.Identity?.IsAuthenticated ?? false))
+		{
+			<li class="dropdown-item-text fw-bold">Categories</li>
+		}
 		@foreach (var category in Model.AllAvailableCategories)
 		{
 			string isChecked = Model.CategoryIds.Contains(category.Id) ? "checked" : string.Empty;

@@ -156,12 +156,13 @@
 			return rands;
 		}
 
-		public IEnumerable<Criteria> GetAllowedCriteria(bool isAuthenticated, string? controllerName)
+		public IEnumerable<Criteria> GetAllowedCriteria(
+			bool isAuthenticated, string? controllerName, string? actionName = null)
 		{
 			List<Criteria> result = new List<Criteria>();
 
 
-			if (controllerName == "Item" || controllerName == "Category")
+			if (controllerName == "Item" )
 			{
 				result.AddRange(new[] { Criteria.Auctions, Criteria.OnSale });
 			}
@@ -169,7 +170,7 @@
 			if (isAuthenticated)
 			{
 
-				if (controllerName == "Item" || controllerName == "Category")
+				if (controllerName == "Item" && actionName == "All")
 				{
 					result.AddRange(new[] { Criteria.Mine, Criteria.NotMine });
 				}

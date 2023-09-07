@@ -19,8 +19,9 @@
 		private readonly ICurrencyService currencyService;
 		private readonly IUnitService unitService;
 		private readonly IContractService contractService;
+		private readonly ILocationService locationService;
 
-		public ItemController(IItemService itemService, ICategoryService categoryService, IPlaceService placeService, ICurrencyService currencyService, IUnitService unitService, IContractService contractService)
+		public ItemController(IItemService itemService, ICategoryService categoryService, IPlaceService placeService, ICurrencyService currencyService, IUnitService unitService, IContractService contractService, ILocationService locationService)
 		{
 			this.itemService = itemService;
 			this.categoryService = categoryService;
@@ -28,10 +29,9 @@
 			this.currencyService = currencyService;
 			this.unitService = unitService;
 			this.contractService = contractService;
+			this.locationService = locationService;
 		}
 
-
-		
 		[HttpGet]
 		[AllowAnonymous]
 		public async Task<IActionResult> All([FromQuery] QueryFilterModel? queryModel = null)
@@ -90,6 +90,7 @@
 					AvailableCurrencies = await currencyService.AllForSelectAsync(),
 					AvailableUnits = await unitService.AllForSelectAsync(),
 					AvailablePlaces = await placeService.AllForSelectAsync(userId),
+					AvailableLocations = await locationService.AllForSelectAsync(userId)
 				};
 				if (placeId.HasValue)
 				{

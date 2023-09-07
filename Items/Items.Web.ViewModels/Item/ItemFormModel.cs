@@ -10,6 +10,8 @@
 	using static Items.Common.EntityValidationErrorMessages.Item;
 
 	using System.ComponentModel.DataAnnotations;
+	using Items.Web.ViewModels.Location;
+
 	public class ItemFormModel //: IValidatableObject
 	{
 		[Required]
@@ -26,10 +28,10 @@
 		public IEnumerable<ForSelectPlaceViewModel>? AvailablePlaces { get; set; } // TODO: filter available places over client(ajax) or go supDropdown
 
 
-		//[Required]
 		//// TODO: asynchronous validation with db 
-		//public Guid LocationId { get; set; }
-		//public IEnumerable<ForSelectLocationViewModel> AvailableLocations { get; set; } = null!;
+		[Required]
+		public Guid LocationId { get; set; }
+		public IEnumerable<ForSelectLocationViewModel> AvailableLocations { get; set; } = null!;
 
 
 		public int? CurrencyId { get; set; }

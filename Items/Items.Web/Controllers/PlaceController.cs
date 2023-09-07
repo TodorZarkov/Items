@@ -14,6 +14,7 @@
 			this.placeService = placeService;
 		}
 
+		[HttpGet]
 		public async Task<IActionResult> All()
 		{
 			try
@@ -28,5 +29,27 @@
 				return GeneralError(e);
 			}
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> AllByLocation(Guid id)
+		{
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				IEnumerable<ForSelectPlaceViewModel> model = await placeService.AllForSelectAsync(userId,id);
+
+				if (!model.Any())
+				{
+					return BadRequest();
+				}
+
+				return Ok(model);
+			}
+			catch (Exception e)
+			{
+				return StatusCode(500);
+			}
+		}
+
 	}
 }

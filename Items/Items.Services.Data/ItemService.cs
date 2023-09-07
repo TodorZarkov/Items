@@ -253,10 +253,7 @@
 
 			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;
 			int hitsPerPage = queryModel?.HitsPerPage ?? DefaultHitsPerPage;
-			//if ((currentPage - 1) * hitsPerPage >= totalItemsCount)
-			//{
-			//	currentPage = DefaultCurrentPage;
-			//}
+			
 			itemsQuery = itemsQuery
 				.Skip((currentPage - 1) * hitsPerPage)
 				.Take(hitsPerPage);
@@ -311,24 +308,114 @@
 		public async Task<MineItemServiceModel> GetMineAsync(Guid userId, QueryFilterModel? queryModel = null)
 		{
 			var itemsQuery = dbContext.Items.AsQueryable();
+			itemsQuery = itemsQuery
+				.Where(i => !i.Deleted)
+				.AsNoTracking();
 
 			string? searchTerm = queryModel?.SearchTerm;
 			if (!string.IsNullOrEmpty(searchTerm))
 			{
 				itemsQuery = itemsQuery
 					.Where(i => i.Name.ToLower().Contains(searchTerm.ToLower()) ||
-								i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower()) ||
+								(i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower())) ||
 								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
 								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
 			}
 
-			itemsQuery = itemsQuery
-				.AsNoTracking()
-				.Where(i => !i.Deleted)
+			int[]? categoryIds = queryModel?.CategoryIds;
+			if (categoryIds != null && categoryIds.Length != 0)
+			{
+				itemsQuery = itemsQuery
+					.Where(i => i.ItemsCategories.Any(ic => categoryIds.Contains(ic.CategoryId)));
+			}
+
+			Criteria[]? criteria = queryModel?.Criteria;
+			if (criteria == null || criteria.Length == 0)
+			{
+				itemsQuery = itemsQuery
+				.Where(i => i.OwnerId == userId
+						|| (i.EndSell != null && 
+							i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+							i.Quantity > (decimal)QuantityMinValue));
+			}
+			else
+			{
+				itemsQuery = itemsQuery
 				.Where(i => i.OwnerId == userId);
+				if (criteria.Contains(Criteria.OnSale) && !criteria.Contains(Criteria.Auctions))
+				{
+					itemsQuery = itemsQuery
+						.Where(i => (
+									i.EndSell != null &&
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue) &&
+									!(i.IsAuction != null && (bool)i.IsAuction!));
+				}
+
+				if (criteria.Contains(Criteria.OnSale) && criteria.Contains(Criteria.Auctions))
+				{
+					itemsQuery = itemsQuery
+						.Where(i => (
+									i.EndSell != null &&
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue));
+				}
+
+				if (!criteria.Contains(Criteria.OnSale) && criteria.Contains(Criteria.Auctions))
+				{
+					itemsQuery = itemsQuery
+						.Where(i => (
+									i.EndSell != null &&
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue) &&
+									(i.IsAuction != null && (bool)i.IsAuction!));
+				}
+
+
+
+			}
+
+			Sorting? sorting = queryModel?.SortBy;
+			if (sorting != null)
+			{
+				if (sorting == Sorting.Name)
+				{
+					itemsQuery = itemsQuery
+						.OrderBy(i => i.Name.ToLower());
+				}
+				else if (sorting == Sorting.PriceDec)
+				{
+					itemsQuery = itemsQuery
+						.OrderByDescending(i => i.Offers.Max(o => o.Value))
+						.ThenByDescending(i => i.CurrentPrice)
+						.ThenByDescending(i => i.AcquiredPrice);
+				}
+				else if (sorting == Sorting.PriceAsc)
+				{
+					itemsQuery = itemsQuery
+						.OrderBy(i => i.Offers.Max(o => o.Value))
+						.ThenBy(i => i.CurrentPrice)
+						.ThenBy(i => i.AcquiredPrice);
+				}
+				else if (sorting == Sorting.Latest)
+				{
+					itemsQuery = itemsQuery
+						.OrderByDescending(i => i.ModifiedOn);
+				}
+
+			}
+
+			var totalItemsCount = itemsQuery.Count();
+
+
+			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;
+			int hitsPerPage = queryModel?.HitsPerPage ?? DefaultHitsPerPage;
+
+			itemsQuery = itemsQuery
+				.Skip((currentPage - 1) * hitsPerPage)
+				.Take(hitsPerPage);
 
 			var items = await itemsQuery
-				.OrderByDescending(i => i.ModifiedOn)
 				.Select(i => new MyItemViewModel
 				{
 					Id = i.Id,
@@ -354,7 +441,6 @@
 					Place = i.Place.Name,
 				})
 				.ToArrayAsync();
-			var totalItemsCount = itemsQuery.Count();
 
 
 			MineItemServiceModel result = new MineItemServiceModel()

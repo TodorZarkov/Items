@@ -70,7 +70,7 @@
 					<div class="form-check form-switch mb-3">
 						<input asp-for="@Model.OnRotation" class="form-check-input" type="checkbox" role="switch" checked>
 						<label class="form-check-label" asp-for="@Model.OnRotation">Is it going to be on the Daily Suggestion Rotations?</label>
-						
+
 					</div>
 
 					<div class="row g-3">
@@ -81,15 +81,30 @@
 							<span asp-validation-for="@Model.Description" class="text-danger text-sm-start"></span>
 						</div>
 
-						<div class="col-sm form-floating">
-							<select asp-for="@Model.PlaceId"
-									asp-items="@(new SelectList(Model.AvailablePlaces,
-												nameof(ForSelectPlaceViewModel.PlaceId),
-												nameof(ForSelectPlaceViewModel.ExtendedPlaceName),
-												Model.PlaceId))"
+						<div class="col-sm-3 form-floating">
+							<select asp-for="@Model.LocationId"
+									asp-items="@(new SelectList(Model.AvailableLocations,
+												nameof(ForSelectLocationViewModel.LocationId),
+												nameof(ForSelectLocationViewModel.LocationName),
+												Model.LocationId
+									))"
 									class="form-select">
 							</select>
-							<label asp-for="@Model.PlaceId">Chose right Place for your Item</label>
+							<label asp-for="@Model.LocationId">Chose Location for your Item</label>
+							<span asp-validation-for="@Model.LocationId" class="text-danger text-sm-start"></span>
+						</div>
+
+						<div class="col-sm-3 form-floating">
+							<select name="PlaceId"
+									id="PlaceId"
+									class="form-select">
+								@if (Model.AvailablePlaces?.Select(ap => ap.PlaceId).Contains(Model.PlaceId) ?? false)
+								{
+									<!option value="@Model.PlaceId">@Model.AvailablePlaces!.FirstOrDefault(ap => ap.PlaceId == Model.PlaceId)!.PlaceName</!option>
+								}
+							</select>
+							<label for="PlaceId">Chose right Place for your Item</label>
+							<span asp-validation-for="@Model.PlaceId" class="text-danger text-sm-start"></span>
 						</div>
 
 					</div>
@@ -115,7 +130,7 @@
 						</div>
 
 						<div class="col-sm input-group">
-							<input asp-for="@Model.AcquiredPrice" type="number"  min="@ValueFrontMinValue" max="@ValueFrontMaxValue" class="form-control w-75" placeholder="Acquired Price">
+							<input asp-for="@Model.AcquiredPrice" type="number" min="@ValueFrontMinValue" max="@ValueFrontMaxValue" class="form-control w-75" placeholder="Acquired Price">
 							<select class="form-select"
 									asp-for="@Model.CurrencyId"
 									asp-items="@(new SelectList(
@@ -164,7 +179,6 @@
 						<div class="col-sm input-group">
 							<input asp-for="@Model.CurrentPrice"
 								   type="number"
-								   
 								   min="@ValueFrontMinValue"
 								   max="@ValueFrontMaxValue"
 								   class="form-control w-75"
@@ -212,7 +226,7 @@
 								 name="_AccessRadio"
 								 model="@new string[] {nameof(Model.ItemVisibility.ModifiedOn)
 													,Model.ItemVisibility.ModifiedOn.ToString()}" />
-						
+
 						<partial class="col-xs"
 								 name="_AccessRadio"
 								 model="@new string[] {nameof(Model.ItemVisibility.Description)

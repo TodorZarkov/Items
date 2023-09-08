@@ -31,7 +31,7 @@
 		//// TODO: asynchronous validation with db 
 		[Required]
 		public Guid LocationId { get; set; }
-		public IEnumerable<ForSelectLocationViewModel> AvailableLocations { get; set; } = null!;
+		public IEnumerable<ForSelectLocationViewModel>? AvailableLocations { get; set; } = null!;
 
 
 		public int? CurrencyId { get; set; }

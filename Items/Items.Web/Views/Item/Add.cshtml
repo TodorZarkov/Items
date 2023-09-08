@@ -36,7 +36,7 @@
 
 
 						<div class="col-sm input-group">
-							<input asp-for="@Model.Quantity" type="number"  min="@QuantityFrontMinValue" max="@QuantityFrontMaxValue" class="form-control w-50" placeholder="Quantity">
+							<input asp-for="@Model.Quantity" type="number" min="@QuantityFrontMinValue" max="@QuantityFrontMaxValue" class="form-control w-50" placeholder="Quantity">
 							<select asp-for="@Model.UnitId" asp-items="@(new SelectList(Model.AvailableUnits,
 													nameof(ForSelectUnitViewModel.UnitId),
 													nameof(ForSelectUnitViewModel.UnitSymbol),
@@ -54,11 +54,10 @@
 								@foreach (CategoryFilterViewModel category in Model.AvailableCategories)
 								{
 									<li class="dropdown-item ">
-										<input 
-											class="form-check-input me-1" 
-											type="checkbox" 
-											name="@nameof(Model.CategoryIds)" 
-											value="@category.Id"
+										<input class="form-check-input me-1"
+											   type="checkbox"
+											   name="@nameof(Model.CategoryIds)"
+											   value="@category.Id"
 										@(Model.CategoryIds?.Contains(category.Id) ?? false ? "checked" : string.Empty) />
 
 										@category.Name
@@ -95,8 +94,13 @@
 						</div>
 
 						<div class="col-sm-3 form-floating">
-							<select id="PlaceId"
+							<select name="PlaceId"
+									id="PlaceId"
 									class="form-select">
+								@if (Model.AvailablePlaces?.Select(ap => ap.PlaceId).Contains(Model.PlaceId) ?? false)
+								{
+									<!option value="@Model.PlaceId">@Model.AvailablePlaces!.FirstOrDefault(ap => ap.PlaceId == Model.PlaceId)!.PlaceName</!option>
+								}
 							</select>
 							<label for="PlaceId">Chose right Place for your Item</label>
 						</div>
@@ -221,7 +225,7 @@
 								 name="_AccessRadio"
 								 model="@new string[] {nameof(Model.ItemVisibility.ModifiedOn)
 													,Model.ItemVisibility.ModifiedOn.ToString()}" />
-						
+
 						<partial class="col-xs"
 								 name="_AccessRadio"
 								 model="@new string[] {nameof(Model.ItemVisibility.Description)

@@ -113,7 +113,7 @@
 
 				bool isValidAsync = true;
 				bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
-				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
+				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId,model.LocationId, userId);
 				bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
 				bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
 				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
@@ -127,6 +127,7 @@
 					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 					model.AvailableUnits = await unitService.AllForSelectAsync();
 					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+					model.AvailableLocations = await locationService.AllForSelectAsync(userId);
 					return View(model);
 				}
 
@@ -172,6 +173,7 @@
 				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 				model.AvailableUnits = await unitService.AllForSelectAsync();
 				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+				model.AvailableLocations = await locationService.AllForSelectAsync(userId);
 
 				return View(model);
 			}
@@ -218,6 +220,7 @@
 					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 					model.AvailableUnits = await unitService.AllForSelectAsync();
 					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+					model.AvailableLocations = await locationService.AllForSelectAsync(userId);
 					return View(model);
 				}
 

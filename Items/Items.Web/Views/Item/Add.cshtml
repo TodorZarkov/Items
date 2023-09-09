@@ -260,6 +260,10 @@
 
 
 </form>
+@{
+	string baseHost = $"{Context.Request.Scheme}://{Context.Request.Host}";
+}
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
+	<script>cascadePlacesDropdown(`@baseHost`);</script>
 }

@@ -63,6 +63,7 @@ namespace Items.Web
 			builder.Services.AddControllersWithViews(opt =>
 				{
 					opt.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+					opt.ModelBinderProviders.Insert(0, new StringModelBinderProvider());
 				});
 
 			builder.Services.AddScoped<IItemService, ItemService>();

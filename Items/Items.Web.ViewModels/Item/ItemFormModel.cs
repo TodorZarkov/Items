@@ -25,10 +25,10 @@
 
 		[Required]
 		public int PlaceId { get; set; }
-		public IEnumerable<ForSelectPlaceViewModel>? AvailablePlaces { get; set; } // TODO: filter available places over client(ajax) or go supDropdown
+		public IEnumerable<ForSelectPlaceViewModel>? AvailablePlaces { get; set; } 
 
 
-		//// TODO: asynchronous validation with db 
+		
 		[Required]
 		public Guid LocationId { get; set; }
 		public IEnumerable<ForSelectLocationViewModel>? AvailableLocations { get; set; } = null!;

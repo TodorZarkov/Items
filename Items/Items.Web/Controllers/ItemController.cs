@@ -5,11 +5,11 @@
 	using Items.Web.ViewModels.Item;
 	using static Common.EntityValidationErrorMessages.General;
 	using static Common.NotificationMessages;
+	using Items.Web.ViewModels.Base;
+	using Items.Services.Data.Models.Item;
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
-	using Items.Web.ViewModels.Base;
-	using Items.Services.Data.Models.Item;
 
 	public class ItemController : BaseController
 	{
@@ -132,6 +132,7 @@
 				}
 
 				Guid itemId = await itemService.CreateItemAsync(model, userId);
+				// todo: replace all messages with constants from Common
 				TempData[SuccessMessage] = "Item successfully Created!";
 
 

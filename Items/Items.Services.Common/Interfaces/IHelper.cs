@@ -15,5 +15,7 @@
 		string? Pluralize(string? name, string language = "en");
 		IEnumerable<Criteria> GetAllowedCriteria(bool isAuthenticated, string? controllerName, string? actionName = null);
 		IEnumerable<Sorting> GetAllowedSorting(bool isAuthenticated, string? controllerName);
+
+		
 	}
 }

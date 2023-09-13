@@ -4,12 +4,9 @@
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Base;
 	using Items.Web.Infrastructure.Extensions;
-	using static Common.Enums.Criteria;
-	using static Common.Enums.Sorting;
 
 	using Microsoft.AspNetCore.Mvc;
 	using NuGet.Packaging;
-	using Items.Common.Enums;
 
 	public class QueryFilterViewComponent : ViewComponent
 	{
@@ -48,6 +45,22 @@
 				Guid userId = Guid.Parse(UserClaimsPrincipal.GetId());
 
 				model.MyAvailableCategories = await categoryService.GetForSelectAsync(userId);
+
+				if (Request.Query.ContainsKey("LocationId"))
+				{
+					if (Guid.TryParse(Request.Query["LocationId"], out Guid locationId))
+					{
+						model.LocationId = locationId;
+					}
+				}
+
+				if (Request.Query.ContainsKey("PlaceId"))
+				{
+					if (int.TryParse(Request.Query["PlaceId"], out int placeId))
+					{
+						model.PlaceId = placeId;
+					}
+				}
 			}
 
 
@@ -98,7 +111,7 @@
 				}
 			}
 
-
+			
 
 			model.Hits = hits;
 			if (model.Hits > 0)

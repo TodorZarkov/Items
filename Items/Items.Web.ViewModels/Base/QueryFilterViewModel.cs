@@ -42,5 +42,10 @@
 
         public int LastPage { get; set; }
 
-    }
+
+		public Guid? LocationId { get; set; }
+
+		public int? PlaceId { get; set; }
+
+	}
 }

@@ -4,6 +4,7 @@
 
 	using Microsoft.EntityFrameworkCore;
 
+
 	using static Items.Common.EntityDbErrorMessages.Item;
 	using static Items.Common.FormatConstants.DateAndTime;
 	using static Items.Common.Enums.AccessModifier;
@@ -20,21 +21,22 @@
 	using Items.Web.ViewModels.Base;
 	using Items.Services.Data.Models.Item;
 	using Items.Common.Enums;
+	using AutoMapper;
 
 	public class ItemService : IItemService
 	{
 		private readonly ItemsDbContext dbContext;
 		private readonly IHelper helper;
 		private readonly IDateTimeProvider dateTimeProvider;
+		private readonly IMapper mapper;
 
-		public ItemService(ItemsDbContext dbContext, IHelper helper, IDateTimeProvider dateTimeProvider)
+		public ItemService(ItemsDbContext dbContext, IHelper helper, IDateTimeProvider dateTimeProvider, IMapper mapper)
 		{
 			this.dbContext = dbContext;
 			this.helper = helper;
 			this.dateTimeProvider = dateTimeProvider;
+			this.mapper = mapper;
 		}
-
-
 
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
@@ -404,6 +406,21 @@
 				}
 
 			}
+
+			Guid? locationId = queryModel?.LocationId;
+			if (locationId is not null)
+			{
+				itemsQuery = itemsQuery
+					.Where(i => i.LocationId == locationId);
+			}
+
+			int? placeId = queryModel?.PlaceId;
+			if (placeId is not null)
+			{
+				itemsQuery = itemsQuery
+					.Where(i => i.PlaceId == placeId);
+			}
+
 
 			var totalItemsCount = await itemsQuery.CountAsync();
 
@@ -977,6 +994,8 @@
 
 			return model;
 		}
+
+		
 	}
 
 

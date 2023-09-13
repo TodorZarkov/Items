@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<AllLocationViewModel>
 
+
+
 <tbody>
 	@foreach (var location in Model)
 	{
@@ -67,7 +69,10 @@
 					}
 					else
 					{
-						<a class="link-dark" href="#">@location.Places</a>
+						<a asp-controller="Place"
+						   asp-action="All"
+						   asp-all-route-data="@(new Dictionary<string, string>{{ "LocationId", location.Id.ToString() }})"
+						   class="link-dark">@location.Places</a>
 					}
 				</div>
 			</td>
@@ -79,7 +84,10 @@
 					}
 					else
 					{
-						<a class="link-dark" href="#">@location.Items</a>
+						<a asp-controller="Item"
+						   asp-action="Mine"
+						   asp-all-route-data="@(new Dictionary<string, string>{{ "LocationId", location.Id.ToString() }})"
+						   class="link-dark">@location.Items</a>
 					}
 				</div>
 			</td>

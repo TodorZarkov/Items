@@ -30,5 +30,9 @@
 		public int CurrentPage { get; set; }
 
         public Sorting SortBy { get; set; }
+
+        public Guid? LocationId { get; set; }
+
+        public int? PlaceId { get; set; }
     }
 }

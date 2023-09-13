@@ -8,14 +8,17 @@
 	using static Items.Common.NotificationMessages;
 
 	using Microsoft.AspNetCore.Mvc;
+	using Items.Web.ViewModels.Item;
 
 	public class LocationController : BaseController
 	{
 		private readonly ILocationService locationService;
+		private readonly IItemService itemService;
 
-		public LocationController(ILocationService locationService)
+		public LocationController(ILocationService locationService, IItemService itemService)
 		{
 			this.locationService = locationService;
+			this.itemService = itemService;
 		}
 
 		public async Task<IActionResult> All([FromQuery] QueryFilterModel? queryModel = null)
@@ -143,5 +146,6 @@
 			}
 			
 		}
+
 	}
 }

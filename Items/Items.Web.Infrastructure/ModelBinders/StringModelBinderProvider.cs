@@ -20,7 +20,7 @@
 					throw new ArgumentNullException(nameof(encoder), "The DI container must contain HtmlEncoder.");
 				}
 
-				return new StringModelBinder(encoder);
+				return new StringHtmlModelBinder(encoder);
 			}
 
 			return null;

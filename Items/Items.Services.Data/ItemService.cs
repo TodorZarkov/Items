@@ -321,7 +321,7 @@
 								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
 								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
 			}
-
+			
 			int[]? categoryIds = queryModel?.CategoryIds;
 			if (categoryIds != null && categoryIds.Length != 0)
 			{
@@ -405,7 +405,7 @@
 
 			}
 
-			var totalItemsCount = itemsQuery.Count();
+			var totalItemsCount = await itemsQuery.CountAsync();
 
 
 			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;

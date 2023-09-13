@@ -4,11 +4,11 @@
 	using System.Text.Encodings.Web;
 	using System.Threading.Tasks;
 
-	public class StringModelBinder : IModelBinder
+	public class StringHtmlModelBinder : IModelBinder
 	{
 		private readonly HtmlEncoder htmlEncoder;
 
-		public StringModelBinder(HtmlEncoder htmlEncoder)
+		public StringHtmlModelBinder(HtmlEncoder htmlEncoder)
 		{
 			this.htmlEncoder = htmlEncoder;
 		}

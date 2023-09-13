@@ -1,0 +1,22 @@
+﻿@model LocationFormModel
+
+@{
+	ViewData["Title"] = "Add Location";
+	ViewBag.ActiveLink = "AllLocation";
+}
+
+
+<h3 class="text-center">Add Location</h3>
+<hr class="w-50 mx-auto" />
+
+<partial name="_LocationFormPartial" model="@Model" />
+
+
+<div class="  w-50 mx-auto mt-2">
+	<button 
+			form="LocationFormId"
+			type="submit"
+			class="btn btn-primary">
+		Create
+	</button>
+</div>

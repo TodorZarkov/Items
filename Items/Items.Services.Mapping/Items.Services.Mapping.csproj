@@ -11,11 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Items.Common\Items.Common.csproj" />
     <ProjectReference Include="..\Items.Data.Models\Items.Data.Models.csproj" />
-    <ProjectReference Include="..\Items.Data\Items.Data.csproj" />
-    <ProjectReference Include="..\Items.Services.Common\Items.Services.Common.csproj" />
-    <ProjectReference Include="..\Items.Services.Data.Models\Items.Services.Data.Models.csproj" />
     <ProjectReference Include="..\Items.Web.ViewModels\Items.Web.ViewModels.csproj" />
   </ItemGroup>
 

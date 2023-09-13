@@ -6,9 +6,14 @@ namespace Items.Web
 	using Items.Services.Common.Interfaces;
 	using Items.Services.Data;
 	using Items.Services.Data.Interfaces;
+	using Items.Services.Mapping;
 	using Items.Web.Infrastructure.ModelBinders;
+
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Configuration;
+	using Microsoft.Extensions.WebEncoders;
+
+	using System.Text.Unicode;
 
 	public class Program
 	{
@@ -59,6 +64,16 @@ namespace Items.Web
 			})
 				.AddEntityFrameworkStores<ItemsDbContext>();
 
+			builder.Services.AddAutoMapper(cfg =>
+			{
+				cfg.AddProfile<ItemsProfile>();
+			});
+
+			builder.Services.Configure<WebEncoderOptions>(options =>
+			{
+				options.TextEncoderSettings = new System.Text.Encodings.Web.TextEncoderSettings(UnicodeRanges.All);
+
+            });
 
 			builder.Services.AddControllersWithViews(opt =>
 				{

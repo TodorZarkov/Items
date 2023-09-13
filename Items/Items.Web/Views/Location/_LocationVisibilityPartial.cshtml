@@ -1,0 +1,34 @@
+﻿@model LocationVisibilityFormModel
+
+<h5>What to Show when on The Market:</h5>
+<div class="row g-5 row-cols-sm-2 border border-light">
+	<partial class="col-xs"
+			 name="_AccessRadio"
+			 model="@(new string[] {nameof(Model.Name) ,Model.Name.ToString(), "LocationVisibility"})" />
+
+	<partial class="col-xs"
+			 name="_AccessRadio"
+			 model="@(new string[] {nameof(Model.Description) ,Model.Description.ToString(), "LocationVisibility"})" />
+
+	<partial class="col-xs"
+			 name="_AccessRadio"
+			 model="@(new string[] {nameof(Model.GeoLocation) ,Model.GeoLocation.ToString(), "LocationVisibility"})" />
+
+	<partial class="col-xs"
+			 name="_AccessRadio"
+			 model="@(new string[] {nameof(Model.Border) ,Model.Border.ToString(), "LocationVisibility"})" />
+
+	<partial class="col-xs"
+			 name="_AccessRadio"
+			 model="@(new string[] {nameof(Model.Country) ,Model.Country.ToString(), "LocationVisibility"})" />
+
+	<partial class="col-xs"
+			 name="_AccessRadio"
+			 model="@(new string[] {nameof(Model.Town) ,Model.Town.ToString(), "LocationVisibility"})" />
+
+	<partial class="col-xs"
+			 name="_AccessRadio"
+			 model="@(new string[] {nameof(Model.Address) ,Model.Address.ToString(), "LocationVisibility"})" />
+	
+
+</div>

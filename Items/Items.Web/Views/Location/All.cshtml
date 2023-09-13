@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AllLocationViewModel>
+﻿@model Items.Services.Data.Models.Location.AllLocationServiceModel
 
 @{
 	ViewData["Title"] = "Locations";
@@ -6,12 +6,15 @@
 }
 
 <div class="btn-group-sm ">
-	<button type="button" class="btn btn-sm btn-primary me-4 ">Add Location</button>
+	<a asp-controller="Location"
+	   asp-action="Add"
+	   type="button"
+	   class="btn btn-sm btn-primary me-4 ">Add Location</a>
 
-	<vc:query-filter hits="85" />
+	<vc:query-filter hits="@Model.TotalLocationsCount" />
 </div>
 
-@if (Model.Any())
+@if (Model.Locations.Any())
 {
 
 	<table class="table table-secondary table-striped table-hover align-middle">
@@ -29,7 +32,7 @@
 				<th scope="col">Manage</th>
 			</tr>
 		</thead>
-		<partial name="_AllLocationsPartial" />
+		<partial name="_AllLocationsPartial" model="@Model.Locations" />
 
 	</table>
 
@@ -37,6 +40,6 @@
 else
 {
 	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
-		<h3>No Location Added Yet.</h3>
+		<h3>No Locations.</h3>
 	</div>
 }

@@ -4,13 +4,13 @@
 	string[] accessNames = Enum.GetNames(typeof(AccessModifier));
 }
 <div class="btn-group" role="group">
-	<btn type="button" disabled class="btn btn-secondary">@Model[0]</btn>
+	<btn type="button" disabled class="btn btn-secondary"><strong>@Model[0]</strong></btn>
 	@for (int i = 0; i < accessNames.Length; i++)
 	{
 
 		<input type="radio"
 			   class="btn-check"
-			   name="@("ItemVisibility."+Model[0])"
+			   name="@(Model[2] + "." + Model[0])"
 			   value="@accessNames[i]"
 			   id="@string.Join("",Model[0],"Id",i)"
 			   autocomplete="off"

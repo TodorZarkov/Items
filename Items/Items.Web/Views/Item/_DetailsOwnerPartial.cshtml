@@ -29,8 +29,19 @@
 					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Owner" /><strong>Owner Name: </strong>@Model.OwnerName</p>
 					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Owner" /><strong>Owner Phone: </strong>@Model.OwnerPhone</p>
 					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Owner" /><strong>Owner Email: </strong>@Model.OwnerEmail</p>
-					<p class="card-text"><partial name="_AccessSign" model="@Private" /><a asp-controller="Place" asp-action="All"><strong>Place: </strong>@Model.PlaceName</a></p>
-					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Location" /><a asp-controller="Location" asp-action="All"><strong>Location: </strong>@Model.LocationName</a></p>
+
+					<p class="card-text">
+						<partial name="_AccessSign" model="@Private" />
+						<a asp-controller="Place"
+						   asp-action="All"
+						   asp-all-route-data="@(new Dictionary<string, string>{{ "PlaceId", Model.PlaceId.ToString()! }})"><strong>Place: </strong>@Model.PlaceName</a>
+					</p>
+					<p class="card-text">
+						<partial name="_AccessSign" model="@Model.ItemVisibility.Location" />
+						<a asp-controller="Location"
+						   asp-action="All"
+						   asp-all-route-data="@(new Dictionary<string, string>{{ "LocationId", Model.LocationId.ToString()! }})"><strong>Location: </strong>@Model.LocationName</a>
+					</p>
 					<p class="card-text">
 						<small class="text-muted">
 							<partial name="_AccessSign" model="@Model.ItemVisibility.ModifiedOn" />Last Update:  @Model.ModifiedOn

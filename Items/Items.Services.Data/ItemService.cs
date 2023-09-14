@@ -276,7 +276,18 @@
 						!i.CurrentPrice.HasValue ||
 						i.Currency == null
 						? "" : i.Currency.Symbol,
-					IsAuction = i.IsAuction,
+
+					IsAuction =
+								i.IsAuction != null
+								&& (bool)i.IsAuction
+								&& i.EndSell.HasValue
+								&& i.EndSell > dateTimeProvider.GetCurrentDateTime()
+								&& i.Quantity > (decimal)QuantityMinValue,
+
+					IsOnMarket =
+								i.EndSell.HasValue
+								&& i.EndSell > dateTimeProvider.GetCurrentDateTime()
+								&& i.Quantity > (decimal)QuantityMinValue,
 
 					Categories = i.ItemsCategories
 						.Where(ic => ic.ItemId == i.Id)
@@ -292,7 +303,6 @@
 
 					HighestBid = i.Offers.Max(o => o.Value).ToString("N2"),
 
-					IsOnMarket = i.EndSell >= dateTimeProvider.GetCurrentDateTime(),
 					BarterOffers = i.Offers.Count(o => o.BarterItemId != null)
 				})
 				.ToArrayAsync();
@@ -312,6 +322,7 @@
 			var itemsQuery = dbContext.Items.AsQueryable();
 			itemsQuery = itemsQuery
 				.Where(i => !i.Deleted)
+				.Where(i => i.OwnerId == userId)
 				.AsNoTracking();
 
 			string? searchTerm = queryModel?.SearchTerm;
@@ -442,8 +453,17 @@
 					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,
 					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
 
-					IsAuction = i.IsAuction,
-					IsOnMarket = i.EndSell >= dateTimeProvider.GetCurrentDateTime(),
+					IsAuction = 
+								i.IsAuction != null 
+								&& (bool)i.IsAuction 
+								&& i.EndSell.HasValue 
+								&& i.EndSell > dateTimeProvider.GetCurrentDateTime() 
+								&& i.Quantity > (decimal)QuantityMinValue,
+
+					IsOnMarket = 
+								i.EndSell.HasValue 
+								&& i.EndSell > dateTimeProvider.GetCurrentDateTime() 
+								&& i.Quantity > (decimal)QuantityMinValue,
 
 
 					Categories = i.ItemsCategories

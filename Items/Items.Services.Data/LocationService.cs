@@ -80,6 +80,13 @@
 
 			}
 
+			Guid? locationId = queryModel?.LocationId;
+			if (locationId is not null)
+			{
+				locationQuery = locationQuery
+					.Where(l => l.Id == locationId);
+			}
+
 			var totalLocationsCount = await locationQuery.CountAsync();
 
 			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;

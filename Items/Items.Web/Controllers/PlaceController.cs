@@ -1,13 +1,14 @@
 ﻿namespace Items.Web.Controllers
 {
 	using Items.Services.Data.Interfaces;
+	using Items.Services.Data.Models.Place;
+
 	using Items.Web.Infrastructure.Extensions;
 	using Items.Web.ViewModels.Place;
-
 	using static Items.Common.NotificationMessages;
 
 	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+	using Items.Web.ViewModels.Base;
 
 	public class PlaceController : BaseController
 	{
@@ -21,12 +22,12 @@
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> All()
+		public async Task<IActionResult> All(QueryFilterModel? queryModel = null)
 		{
 			try
 			{
 				Guid userId = Guid.Parse(User.GetId());
-				IEnumerable<AllPlaceViewModel> model = await placeService.AllAsync(userId);
+				AllPlaceServiceModel model = await placeService.AllAsync(userId, queryModel);
 
 				return View(model);
 			}
@@ -35,6 +36,29 @@
 				return GeneralError(e);
 			}
 		}
+
+		//for ajax
+		[HttpGet]
+		public async Task<IActionResult> AllByLocation(Guid id)
+		{
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				IEnumerable<ForSelectPlaceViewModel> model = await placeService.AllForSelectAsync(userId, id);
+
+				if (!model.Any())
+				{
+					return BadRequest();
+				}
+
+				return Ok(model);
+			}
+			catch (Exception)
+			{
+				return StatusCode(500);
+			}
+		}
+
 
 		[HttpGet]
 		public async Task<IActionResult> Add(Guid? id)
@@ -167,28 +191,6 @@
 			}
 		}
 
-
-		//for ajax
-		[HttpGet]
-		public async Task<IActionResult> AllByLocation(Guid id)
-		{
-			try
-			{
-				Guid userId = Guid.Parse(User.GetId());
-				IEnumerable<ForSelectPlaceViewModel> model = await placeService.AllForSelectAsync(userId,id);
-
-				if (!model.Any())
-				{
-					return BadRequest();
-				}
-
-				return Ok(model);
-			}
-			catch (Exception)
-			{
-				return StatusCode(500);
-			}
-		}
 
 	}
 }

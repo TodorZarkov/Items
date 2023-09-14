@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AllPlaceViewModel>
+﻿@model Items.Services.Data.Models.Place.AllPlaceServiceModel
 
 @{
 	ViewData["Title"] = "Places";
@@ -9,11 +9,11 @@
 
 	<a asp-controller="Place" asp-action="Add" type="button" class="btn btn-sm btn-primary me-2">Add Place</a>
 
-	<vc:query-filter hits="85" />
+	<vc:query-filter hits="@Model.TotalPlacesCount" />
 
 </div>
 
-@if (Model.Any())
+@if (Model.Places.Any())
 {
 
 	<table class="table table-secondary table-striped table-hover align-middle">
@@ -26,7 +26,7 @@
 				<th scope="col">Manage</th>
 			</tr>
 		</thead>
-		<partial name="_AllPlacesPartial" />
+		<partial name="_AllPlacesPartial" model="Model.Places" />
 
 	</table>
 
@@ -34,6 +34,6 @@
 else
 {
 	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
-		<h3>No Place Added Yet.</h3>
+		<h3>No Placs.</h3>
 	</div>
 }

@@ -5,6 +5,7 @@
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Base;
 	using Items.Web.ViewModels.Place;
+	using static Items.Common.GeneralConstants;
 
 	using AutoMapper;
 
@@ -13,6 +14,9 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
+	using Items.Services.Data.Models.Place;
+	using Items.Common.Enums;
+	using Items.Services.Data.Models.Location;
 
 	public class PlaceService : IPlaceService
 	{
@@ -25,11 +29,68 @@
 			this.mapper = mapper;
 		}
 
-		public async Task<IEnumerable<AllPlaceViewModel>> AllAsync(Guid userId, QueryFilterModel? placeQuery = null)
+		public async Task<AllPlaceServiceModel> AllAsync(Guid userId, QueryFilterModel? queryModel = null)
 		{
-			IEnumerable<AllPlaceViewModel> places = await dbContext.Places
-				.Where(p => p.Location.UserId == userId)
-				.OrderBy(p => p.Name)
+			var placeQuery = dbContext.Places
+				.AsQueryable()
+				.AsNoTracking()
+				.Include(p => p.Location)
+				.Where(p => p.Location.UserId == userId);
+
+			string? searchTerm = queryModel?.SearchTerm;
+			if (!string.IsNullOrEmpty(searchTerm))
+			{
+				placeQuery = placeQuery
+
+					.Where(p => p.Name.ToLower().Contains(searchTerm.ToLower())
+							|| (p.Description != null && p.Description.ToLower().Contains(searchTerm.ToLower()))
+							|| p.Location.Name.ToLower().Contains(searchTerm.ToLower())
+					);
+			}
+
+			int[]? categoryIds = queryModel?.CategoryIds;
+			if (categoryIds != null && categoryIds.Length != 0)
+			{
+				placeQuery = placeQuery
+					.Where(p => p.Items
+									.Where(i => !i.Deleted)
+									.Any(i => i.ItemsCategories
+										.Any(ic => categoryIds.Contains(ic.CategoryId))));
+			}
+
+			Sorting? sorting = queryModel?.SortBy;
+			if (sorting != null)
+			{
+				if (sorting == Sorting.Name)
+				{
+					placeQuery = placeQuery
+						.OrderBy(p => p.Name.ToLower());
+				}
+				else if (sorting == Sorting.Country)
+				{
+					placeQuery = placeQuery
+						.OrderBy(p => p.Location.Country);
+				}
+				else if (sorting == Sorting.Town)
+				{
+					placeQuery = placeQuery
+						.OrderBy(p => p.Location.Town)
+						.ThenBy(p => p.Name);
+				}
+
+
+			}
+
+			var totalPlacesCount = await placeQuery.CountAsync();
+
+			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;
+			int hitsPerPage = queryModel?.HitsPerPage ?? DefaultHitsPerPage;
+
+			placeQuery = placeQuery
+				.Skip((currentPage - 1) * hitsPerPage)
+				.Take(hitsPerPage);
+
+			IEnumerable<AllPlaceViewModel> places = await placeQuery
 				.Select(p => new AllPlaceViewModel
 				{
 					Id = p.Id,
@@ -40,7 +101,16 @@
 				})
 				.ToArrayAsync();
 
-			return places;
+
+
+			AllPlaceServiceModel result = new AllPlaceServiceModel()
+			{
+				Places = places,
+				TotalPlacesCount = totalPlacesCount
+			};
+
+
+			return result;
 		}
 
 

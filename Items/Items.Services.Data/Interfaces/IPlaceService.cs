@@ -1,5 +1,6 @@
 ﻿namespace Items.Services.Data.Interfaces
 {
+	using Items.Services.Data.Models.Place;
 	using Items.Web.ViewModels.Base;
 	using Items.Web.ViewModels.Place;
 
@@ -11,7 +12,7 @@
 		/// </summary>
 		/// <param name="userId"></param>
 		/// <returns></returns>
-		Task<IEnumerable<AllPlaceViewModel>> AllAsync(Guid userId, QueryFilterModel? placeQuery = null);
+		Task<AllPlaceServiceModel> AllAsync(Guid userId, QueryFilterModel? placeQuery = null);
 
 		Task<IEnumerable<ForSelectPlaceViewModel>> AllForSelectAsync(Guid userId, Guid locationId);
 

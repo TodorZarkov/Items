@@ -3,6 +3,7 @@
 	using AutoMapper;
 	using Items.Data.Models;
 	using Items.Web.ViewModels.Location;
+	using Items.Web.ViewModels.Place;
 
 	public class ItemsProfile : Profile
 	{
@@ -23,6 +24,10 @@
                 .ForMember(d => d.GeoLocation,
                     cfg => cfg.Ignore());
             CreateMap<LocationVisibilityFormModel, LocationVisibility>();
+
+            //Place 
+            CreateMap<PlaceFormModel, Place>();
+            CreateMap<Place, PlaceFormModel>();
         }
     }
 }

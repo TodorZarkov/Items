@@ -1,0 +1,21 @@
+﻿@model PlaceFormModel
+
+@{
+	ViewData["Title"] = "Add Place";
+	ViewBag.ActiveLink = "AllPlace";
+}
+
+
+<h3 class="text-center">Add Place</h3>
+<hr class="w-50 mx-auto" />
+
+<partial name="_PlaceFormPartial" model="@Model" />
+
+
+<div class="  w-50 mx-auto mt-2">
+	<button form="PlaceFormId"
+			type="submit"
+			class="btn btn-primary">
+		Create
+	</button>
+</div>

@@ -90,7 +90,7 @@
 					AvailableCurrencies = await currencyService.AllForSelectAsync(),
 					AvailableUnits = await unitService.AllForSelectAsync(),
 					AvailablePlaces = await placeService.AllForSelectAsync(userId),
-					AvailableLocations = await locationService.AllForSelectAsync(userId)
+					AvailableLocations = await locationService.GetForSelectAsync(userId)
 				};
 				if (placeId.HasValue)
 				{
@@ -127,7 +127,7 @@
 					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 					model.AvailableUnits = await unitService.AllForSelectAsync();
 					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
-					model.AvailableLocations = await locationService.AllForSelectAsync(userId);
+					model.AvailableLocations = await locationService.GetForSelectAsync(userId);
 					return View(model);
 				}
 
@@ -174,7 +174,7 @@
 				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 				model.AvailableUnits = await unitService.AllForSelectAsync();
 				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
-				model.AvailableLocations = await locationService.AllForSelectAsync(userId);
+				model.AvailableLocations = await locationService.GetForSelectAsync(userId);
 
 				return View(model);
 			}
@@ -221,7 +221,7 @@
 					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 					model.AvailableUnits = await unitService.AllForSelectAsync();
 					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
-					model.AvailableLocations = await locationService.AllForSelectAsync(userId);
+					model.AvailableLocations = await locationService.GetForSelectAsync(userId);
 					return View(model);
 				}
 

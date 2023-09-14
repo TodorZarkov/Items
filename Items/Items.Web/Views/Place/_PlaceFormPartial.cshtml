@@ -1,0 +1,33 @@
+﻿@model PlaceFormModel
+
+<form method="post"
+	  class="w-50 mx-auto form-floating mb-3"
+	  id="PlaceFormId">
+
+	<div class="form-floating mb-3 ">
+		<input asp-for="@Model.Name" type="text" class="form-control form-control-sm" />
+		<label asp-for="@Model.Name"></label>
+		<span asp-validation-for="@Model.Name" class="text-danger text-sm-start"></span>
+	</div>
+
+	<div class="mb-3 ">
+		<label asp-for="@Model.Description"></label>
+		<textarea asp-for="@Model.Description" type="text" class="form-control form-control-sm " rows="3"></textarea>
+		<span asp-validation-for="@Model.Description" class="text-danger text-sm-start"></span>
+	</div>
+
+	<div class="form-floating mb-3 ">
+		<select asp-for="@Model.LocationId"
+				asp-items="@(new SelectList(
+											Model.AvailableLocations,
+											nameof(ForSelectLocationViewModel.LocationId),
+											nameof(ForSelectLocationViewModel.LocationName),
+											Model.LocationId))"
+				class="form-select form-select-sm" ></select>
+		<label asp-for="@Model.LocationId"></label>
+		<span asp-validation-for="@Model.LocationId" class="text-danger text-sm-start"></span>
+	</div>
+
+
+
+</form>

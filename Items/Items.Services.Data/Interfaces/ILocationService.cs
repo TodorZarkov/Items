@@ -10,7 +10,7 @@
 
 		Task<LocationFormModel> GetByIdAsync(Guid id);
 
-		Task<IEnumerable<ForSelectLocationViewModel>> AllForSelectAsync(Guid userId);
+		Task<IEnumerable<ForSelectLocationViewModel>> GetForSelectAsync(Guid userId);
 
 
 		Task<bool> IsAllowedIdAsync(Guid locationId, Guid userId);

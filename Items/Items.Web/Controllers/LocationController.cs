@@ -59,6 +59,7 @@
 			Guid userId = Guid.Parse(User.GetId());
 
 			Guid locationId = await locationService.CreateAsync(model, userId);
+			TempData[SuccessMessage] = "The Location is Created.";
 
 			return RedirectToAction("All", "Location");
 		}
@@ -129,6 +130,7 @@
 				}
 
 				bool isEmpty = await locationService.IsEmptyAsync(id);
+				// todo: to fix when it contains mark deleted items: either mark location as deleted or delete permanently items.
 				if (!isEmpty)
 				{
 					TempData[InformationMessage] = "You must remove Everything(Items and Places) from your location before delete it.";

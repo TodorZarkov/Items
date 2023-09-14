@@ -101,7 +101,7 @@
 					Town = l.Town,
 					Address = l.Address,
 					Places = l.Places.Count,
-					Items = l.Items.Count,
+					Items = l.Items.Count(i => !i.Deleted),
 					Visibility = new LocationVisibilityViewModel
 					{
 						Address = l.LocationVisibility.Address,
@@ -138,7 +138,7 @@
 			return model;
 		}
 
-		public async Task<IEnumerable<ForSelectLocationViewModel>> AllForSelectAsync(Guid userId)
+		public async Task<IEnumerable<ForSelectLocationViewModel>> GetForSelectAsync(Guid userId)
 		{
 			IEnumerable<ForSelectLocationViewModel> locations = await dbContext.Locations
 				.AsNoTracking()

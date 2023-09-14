@@ -28,7 +28,7 @@
 					<p class="p-0 mb-0 me-2">@place.Location</p>
 				</div>
 			</td>
-			
+
 			<td>
 				<div class="d-flex flex-nowrap align-items-center">
 					@if (place.Items == 0)
@@ -37,16 +37,19 @@
 					}
 					else
 					{
-						<a class="link-dark" href="#">@place.Items</a>
+						<a asp-controller="Item"
+						   asp-action="Mine"
+						   asp-all-route-data="@(new Dictionary<string, string>{{ "PlaceId", place.Id.ToString()}})"
+						   class="link-dark">@place.Items</a>
 					}
-					
+
 				</div>
 			</td>
 
 			<td>
 				<div class="d-flex flex-nowrap">
-					<a class="btn btn-sm btn-primary me-1">Edit</a>
-					<a class="btn btn-sm btn-danger me-auto">Delete</a>
+					<a asp-controller="Place" asp-action="Edit" asp-route-id="@place.Id" class="btn btn-sm btn-primary me-1">Edit</a>
+					<a asp-controller="Place" asp-action="Delete" asp-route-id="@place.Id" class="btn btn-sm btn-danger me-auto">Delete</a>
 					<a asp-controller="Item" asp-action="Add" asp-route-placeId="@place.Id" class="btn btn-sm btn-success">Add Items</a>
 				</div>
 			</td>

@@ -95,7 +95,8 @@
 			<td>
 				<div class="d-flex flex-nowrap">
 					<a asp-controller="Location" asp-action="Edit" asp-route-id="@location.Id" class="btn btn-sm btn-primary me-1">Edit</a>
-					<a asp-controller="Location" asp-action="Delete" asp-route-id="@location.Id" class="btn btn-sm btn-danger">Delete</a>
+					<a asp-controller="Location" asp-action="Delete" asp-route-id="@location.Id" class="btn btn-sm btn-danger me-2">Del</a>
+					<a asp-controller="Place" asp-action="Add" asp-route-id="@location.Id" class="btn btn-sm btn-success">Add Place</a>
 				</div>
 			</td>
 

@@ -81,6 +81,13 @@
 
 			}
 
+			Guid? locationId = queryModel?.LocationId;
+			if (locationId is not null)
+			{
+				placeQuery = placeQuery
+					.Where(p => p.LocationId == locationId);
+			}
+
 			var totalPlacesCount = await placeQuery.CountAsync();
 
 			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;

@@ -6,7 +6,7 @@
 <tbody>
 	@foreach (var bid in BidsModel)
 	{
-		<form asp-area="" asp-action="All" asp-controller="Bid" method="post">
+		<form asp-area="" asp-controller="Bid" asp-action="Edit" asp-route-id="@bid.OfferId" method="post">
 		<tr>
 
 			<td style="height: 60px">

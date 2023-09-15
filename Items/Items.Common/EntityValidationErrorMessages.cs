@@ -27,6 +27,12 @@
 			public const string CannotBeDeliveredBeforeSent = "Cannot Be Delivered Before Sent.";
 		}
 
+		public static class Offer
+		{
+			public const string BarterQuantityRequired = "Barter Quantity is required if barter Item is present!";
+			public const string BarterItemRequired = "Barter Item is required if barter Quantity is present!";
+		}
+
 		public static class General
 		{
 			public const string GeneralFormError = "Some of the Input Data is Invalid!";

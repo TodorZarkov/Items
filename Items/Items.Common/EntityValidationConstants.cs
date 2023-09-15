@@ -97,11 +97,18 @@
             public const int MessageMaxLength = 1000;
 
             public const int ValuePrecision = 18;
-            public const int ValueScale = 6;
+            public const int ValueScale = 2;
+			public const double ValueMinValue = 0.01;
+			public const double ValueMaxValue = 9999999999999999.99;
 
-            public const int QuantityPrecision = 18;
-            public const int QuantityScale = 6;
-        }
+			public const int QuantityPrecision = 18;
+            public const int QuantityScale = 3;
+			public const double QuantityMinValue = 0.001;
+			public const double QuantityMaxValue = 999999999999999.999;
+
+			public const double QuantityFrontMinValue = 0.001;
+			public const double QuantityFrontMaxValue = 999999999999.999;
+		}
         
         public static class Contract
         {

@@ -4,6 +4,7 @@
 	using Items.Web.Infrastructure.Extensions;
 	using Items.Web.ViewModels.Bid;
 	using Items.Web.ViewModels.Item;
+	using static Items.Common.NotificationMessages;
 
 	using Microsoft.AspNetCore.Mvc;
 
@@ -58,9 +59,24 @@
 		{
 			Guid userId = Guid.Parse(User.GetId());
 
-			// TODO: implement
+			bool isMyItem = await itemService.IsOwnerAsync(itemId, userId);
+			if (isMyItem)
+			{
+				TempData[ErrorMessage] = "Cannot Bid on your own Item!";
+				return RedirectToAction("All", "Item");
+			}
+			bool isOnMarket = await itemService.IsOnMarketAsync(itemId);
+			bool isAuction = await itemService.IsAuctionAsync(itemId);
+			if (!isOnMarket || !isAuction)
+			{
+				TempData[ErrorMessage] = "Cannot Bid on this Item!";
+				return RedirectToAction("All", "Item");
+			}
 
-			return RedirectToAction("All", "Bid");
+			BidFormModel model = new BidFormModel();
+
+
+			return View(model);
 		}
 	}
 }

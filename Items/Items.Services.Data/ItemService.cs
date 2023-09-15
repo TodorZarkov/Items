@@ -832,7 +832,12 @@
 		public async Task<bool> IsAuctionAsync(Guid id)
 		{
 			bool result = await dbContext.Items
-				.AnyAsync(i => i.Id == id && i.IsAuction != null && i.IsAuction == true);
+				.Where(i => !i.Deleted)
+				.AnyAsync(i => 
+				i.Id == id 
+				&& i.IsAuction != null 
+				&& i.IsAuction == true
+				);
 
 			return result;
 		}

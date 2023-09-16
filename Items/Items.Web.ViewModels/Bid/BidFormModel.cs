@@ -12,7 +12,7 @@
 
 	public class BidFormModel
 	{
-		[MaxLength(MessageMaxLength)]
+		[StringLength(MessageMaxLength, MinimumLength = MessageMinLength)]
 		public string? Message { get; set; }
 
 
@@ -30,7 +30,6 @@
 
 		[Required]
 		//async check if is les than default expiration days + end auction date
-		//async set to default expiration days + end auction date by default
 		public DateTime Expires { get; set; }
 
 
@@ -42,7 +41,7 @@
 
 		[Required]
 		//async check for available currencies
-		// the currency must be same as the item currency for now
+		//async check the currency must be same as the item currency for now
 		public int CurrencyId { get; set; }
 
 		public IEnumerable<ForSelectCurrencyViewModel>? AvailableCurrencies { get; set; }
@@ -52,7 +51,7 @@
 		//async check for barter availability: owner check, quantity, is for barter in another place ...
 		public Guid? BarterItemId { get; set; }
 
-		public IEnumerable<ItemForBarterViewModel>? BarterItem { get; set; }
+		public IEnumerable<ItemForBarterViewModel>? AvailableBarters { get; set; }
 
 
 		[RequiredIfPresent("BarterItemId", ErrorMessage = BarterQuantityRequired)]

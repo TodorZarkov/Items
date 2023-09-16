@@ -112,7 +112,7 @@
 						@if (bid.Item.QuantityLeft == null)
 						{
 						<div class="d-flex flex-nowrap align-items-center">
-							<input class="form-control form-control-sm" type="text" value="1" aria-label="Disabled input example" disabled readonly>
+							<input class="form-control form-control-sm" type="text" value="1" disabled readonly>
 							<p class="p-0 mb-0 me-0 ms-0 mt-0">@bid.Item.Unit</p>
 						</div>
 
@@ -120,7 +120,7 @@
 						else
 						{
 						<div class="d-flex flex-nowrap align-items-center">
-							<input class="form-control form-control-sm" type="text" value="@bid.Item.QuantityLeft" aria-label="Disabled input example">
+							<input class="form-control form-control-sm" type="text" value="@bid.Item.QuantityLeft">
 							<p class="p-0 mb-0 me-0 ms-0 mt-0">@bid.Item.Unit</p>
 						</div>
 						}
@@ -134,7 +134,7 @@
 				<div class="d-flex flex-nowrap align-items-center h-100">
 
 					<div class="d-flex flex-nowrap align-items-center">
-						<input class="form-control form-control-sm" type="text" value="@bid.ValuePerQuantity.ToString("N2")" aria-label="Disabled input example">
+						<input class="form-control form-control-sm" type="text" value="@bid.ValuePerQuantity.ToString("N2")" >
 						<p class="p-0 mb-0 me-0 ms-0 mt-0">@bid.Item.CurrencySymbol</p>
 					</div>
 

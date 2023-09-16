@@ -127,13 +127,13 @@
 
 
 
-				bool isQuantitySufficient = await itemService.SufficientQuantity(itemId, previewModel.Quantity);
-				if (!isQuantitySufficient)
+				decimal quantityLeft = await itemService.SufficientQuantity(itemId, previewModel.Quantity);
+				if (quantityLeft < 0)
 				{
-					ModelState.AddModelError("Quantity", InsufficientQuantity);
+					ModelState.AddModelError("Quantity", string.Format(InsufficientQuantity, quantityLeft + previewModel.Quantity));
 				}
 
-				if (!ModelState.IsValid || !isQuantitySufficient)
+				if (!ModelState.IsValid || quantityLeft < 0)
 				{
 					return View(previewModel);
 				}

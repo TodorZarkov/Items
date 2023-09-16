@@ -20,6 +20,8 @@
 
 		public const string SellerDefaultComment = "";
 
+		public const int DefaultOfferExpirationDays = 2;
+
 
 		public const int DefaultCurrentPage = 1;
 		public const int DefaultHitsPerPage = 4;

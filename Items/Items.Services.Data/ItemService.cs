@@ -797,6 +797,27 @@
 			return model;
 		}
 
+		public async Task<DateTime?> GetEndSellDateTime(Guid itemId)
+		{
+			DateTime? result = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.Select(i => i.EndSell)
+				.SingleAsync();
+
+			return result;
+		}
+
+		public async Task<int?> GetCurrencyIdAsync(Guid itemId)
+		{
+			int? result = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.Select(i => i.CurrencyId)
+				.SingleAsync();
+
+			return result;
+		}
 
 
 		public async Task<bool> ExistAsync(Guid id)
@@ -850,12 +871,35 @@
 			return result;
 		}
 
-		public async Task<bool> SufficientQuantity(Guid itemId, decimal quantity)
+		public async Task<decimal> SufficientQuantity(Guid itemId, decimal quantity)
 		{
-			bool result = await dbContext.Items
+			decimal itemQuantity = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == itemId)
-				.AnyAsync(i => i.Quantity >= quantity);// TODO: seller must have an option to restrict the quantity threshold!!!
+				.Select(i => i.Quantity)
+				.SingleAsync() ;// TODO: seller must have an option to restrict the quantity threshold!!!
+												  // todo: globally, quantity must be integer and the measurement units must be added
+
+			return itemQuantity - quantity;
+		}
+
+		public async Task<bool> IsValidBarterAsync(Guid? barterItemId, decimal? barterQuantity, Guid userId)
+		{
+			bool result = await dbContext.Items
+				.AsNoTracking()
+				.Where(i => !i.Deleted)
+				.Where(i => i.OwnerId == userId)
+				.Where(i => i.Quantity > i.AsBarterForOffers.Sum(bo => bo.BarterQuantity))
+				.Select(i => new
+				{
+					Id = i.Id,
+					QuantityCanBarter =
+										(i.Quantity -
+										(i.AsBarterForOffers.Sum(bo => bo.BarterQuantity).HasValue ?
+										(decimal)(i.AsBarterForOffers.Sum(bo => bo.BarterQuantity)!) : decimal.Zero)),
+				})
+				.Where(res => res.Id == barterItemId)
+				.AnyAsync(res => res.QuantityCanBarter >= barterQuantity);
 
 			return result;
 		}
@@ -1020,7 +1064,6 @@
 			return model;
 		}
 
-		
 	}
 
 

@@ -35,6 +35,9 @@
 
 		Task<ItemViewModel> GetByIdForViewAsync(Guid itemId);
 		Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId);
+		Task<DateTime?> GetEndSellDateTime(Guid itemId);
+		Task<int?> GetCurrencyIdAsync(Guid itemId);
+
 
 		Task<bool> IsOwnerAsync(Guid itemId, Guid userId);
 
@@ -50,7 +53,8 @@
 		Task AuctionUpdateAsync(AuctionFormModel model, Guid id);
 		
 		Task<bool> HasQuantity(Guid id);
-		Task<bool> SufficientQuantity(Guid itemId, decimal quantity);
+		Task<decimal> SufficientQuantity(Guid itemId, decimal quantity);
 		Task<ItemFormModel> CopyFromContract(Guid id, Guid userId);
+		Task<bool> IsValidBarterAsync(Guid? barterItemId, decimal? barterQuantity, Guid userId);
 	}
 }

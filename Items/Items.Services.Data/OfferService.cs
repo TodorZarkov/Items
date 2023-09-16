@@ -6,21 +6,28 @@
 	using Items.Web.ViewModels.Item;
 	using static Items.Common.Enums.AccessModifier;
 	using static Items.Common.FormatConstants.DateAndTime;
+	using static Items.Common.GeneralConstants;
 
 	using Microsoft.EntityFrameworkCore;
 
 	using System;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
+	using Items.Data.Models;
+	using AutoMapper;
 
 	public class OfferService : IOfferService
 	{
 		private readonly ItemsDbContext dbContext;
+		private readonly IMapper mapper;
 
-		public OfferService(ItemsDbContext dbContext)
+		public OfferService(ItemsDbContext dbContext, IMapper mapper)
 		{
 			this.dbContext = dbContext;
+			this.mapper = mapper;
 		}
+
+
 
 		public async Task<IEnumerable<AllBidViewModel>> AllMineAsync(Guid userId)
 		{
@@ -69,6 +76,53 @@
 			return bids;
 		}
 
+		public async Task<BidFormModel> GetForCreate(Guid itemId)
+		{
+			BidFormModel model = new BidFormModel();
+
+			Item item = await dbContext.Items
+				.SingleAsync(i => i.Id == itemId);
+
+			DateTime endSellDate = (DateTime)item.EndSell!;
+			model.Expires = endSellDate.AddDays(DefaultOfferExpirationDays);
+
+			model.CurrencyId = (int)item.CurrencyId!;
+
+
+			return model;
+		}
+
+		public async Task<decimal?> GetHighestBidByItemIdAsync(Guid itemId)
+		{
+			var result = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.Select(i => new {
+					HighestBid = i.Offers.Max(o => o.Value),
+					StartPrice = i.CurrentPrice
+				})
+				.SingleAsync();
+
+			if (result.HighestBid == 0)
+			{
+				return result.StartPrice;
+			}
+
+			return result.HighestBid;
+		}
+
+
+		public async Task<Guid> CreateAsync(BidFormModel model, Guid itemId, Guid userId)
+		{
+			Offer offer = mapper.Map<Offer>(model);
+			offer.ItemId = itemId;
+			offer.BuyerId = userId;
+
+			dbContext.Offers.Add(offer);
+			await dbContext.SaveChangesAsync();
+
+			return offer.Id;
+		}
 
 	}
 }

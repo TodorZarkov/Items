@@ -6,6 +6,11 @@
 		{
 			public const string InvalidUnitId = "Invalid Measurement Unit Id (Unit Id).";
 		}
+		
+		public static class Currency
+		{
+			public const string InvalidCurrencyId = "Invalid Currency Id.";
+		}
 
 		public static class Item
 		{
@@ -17,7 +22,7 @@
 
 			public const string CannotBeDeliveredBeforeSent = "Cannot Be Delivered Before Sent.";
 
-			public const string InsufficientQuantity = "Insufficient Item Quantity! Try reduce order Quantity.";
+			public const string InsufficientQuantity = "Insufficient Item Quantity! The Quantity must be less or equal than {0}.";
 
 
 		}
@@ -26,11 +31,22 @@
 		{
 			public const string CannotBeDeliveredBeforeSent = "Cannot Be Delivered Before Sent.";
 		}
+		
+		public static class Location
+		{
+			public const string InvalidLocationId = "Invalid Location Id!";
+		}
 
 		public static class Offer
 		{
 			public const string BarterQuantityRequired = "Barter Quantity is required if barter Item is present!";
 			public const string BarterItemRequired = "Barter Item is required if barter Quantity is present!";
+
+			public const string InvalidExpirationDate = "Invalid Expiration date. Date must not be before {0}!";
+
+			public const string InvalidBidValue = "The Bid Value must be greater than {0}, with step {1}!";
+
+			public const string InvalidBarterItemId = "Invalid Barter Item id!";
 		}
 
 		public static class General

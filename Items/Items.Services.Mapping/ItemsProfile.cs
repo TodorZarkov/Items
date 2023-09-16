@@ -2,6 +2,7 @@
 {
 	using AutoMapper;
 	using Items.Data.Models;
+	using Items.Web.ViewModels.Bid;
 	using Items.Web.ViewModels.Location;
 	using Items.Web.ViewModels.Place;
 
@@ -28,6 +29,9 @@
             //Place 
             CreateMap<PlaceFormModel, Place>();
             CreateMap<Place, PlaceFormModel>();
+
+            //Offer
+            CreateMap<BidFormModel, Offer>();
         }
     }
 }

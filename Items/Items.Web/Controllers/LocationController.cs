@@ -131,6 +131,7 @@
 
 				bool isEmpty = await locationService.IsEmptyAsync(id);
 				// todo: to fix when it contains mark deleted items: either mark location as deleted or delete permanently items.
+				// todo: check Offers because Offers also contains LocationId 
 				if (!isEmpty)
 				{
 					TempData[InformationMessage] = "You must remove Everything(Items and Places) from your location before delete it.";

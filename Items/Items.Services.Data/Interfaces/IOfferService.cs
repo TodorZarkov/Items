@@ -6,6 +6,7 @@
 	{
 		Task<IEnumerable<AllBidViewModel>> AllMineAsync(Guid userId);
 		Task<Guid> CreateAsync(BidFormModel model, Guid itemId, Guid userId);
+		Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId);
 		Task<BidFormModel> GetForCreate(Guid itemId);
 		Task<decimal?> GetHighestBidByItemIdAsync(Guid itemId);
 	}

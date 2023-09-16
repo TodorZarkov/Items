@@ -1,1 +1,24 @@
-﻿
+﻿@model BidFormModel
+
+@{
+	ViewData["Title"] = "Add Offer";
+	ViewBag.ActiveLink = "AllBid";
+}
+
+<div class="w-50 mx-auto">
+	<img class="me-auto d-inline-block" src="@Model.ItemPictureUri" style="width: 100px;" />
+	<h3 class="ms-auto d-inline-block">Add Offer</h3>
+</div>
+
+<hr class="w-50 mx-auto" />
+
+<partial name="_BidFormPartial" model="@Model" />
+
+
+<div class="  w-50 mx-auto mt-2">
+	<button form="BidFormId"
+			type="submit"
+			class="btn btn-primary">
+		Create
+	</button>
+</div>

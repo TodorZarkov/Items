@@ -82,6 +82,13 @@
 				return RedirectToAction("All", "Item");
 			}
 
+			bool offerExist = await offerService.ExistByItemIdUserId(itemId, userId);
+			if (offerExist)
+			{
+				TempData[InformationMessage] = "Update your Offer here!";
+				return RedirectToAction("All", "Bid");
+			}
+
 			BidFormModel model = await offerService.GetForCreate(itemId);
 			model.AvailableBarters =
 				await itemService.MyAvailableForBarterAsync(userId);
@@ -110,6 +117,13 @@
 			{
 				TempData[ErrorMessage] = "Cannot Bid on this Item!";
 				return RedirectToAction("All", "Item");
+			}
+
+			bool offerExist = await offerService.ExistByItemIdUserId(itemId, userId);
+			if (offerExist)
+			{
+				TempData[InformationMessage] = "Update your Offer here!";
+				return RedirectToAction("All", "Bid");
 			}
 
 			// todo: fix potential probing to review hidden quantity. Consider changing quantity to int and populating more measurement units approach...

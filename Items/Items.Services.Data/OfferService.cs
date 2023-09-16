@@ -15,16 +15,19 @@
 	using System.Threading.Tasks;
 	using Items.Data.Models;
 	using AutoMapper;
+	using Items.Services.Common.Interfaces;
 
 	public class OfferService : IOfferService
 	{
 		private readonly ItemsDbContext dbContext;
 		private readonly IMapper mapper;
+		private readonly IDateTimeProvider dateTimeProvider;
 
-		public OfferService(ItemsDbContext dbContext, IMapper mapper)
+		public OfferService(ItemsDbContext dbContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
 		{
 			this.dbContext = dbContext;
 			this.mapper = mapper;
+			this.dateTimeProvider = dateTimeProvider;
 		}
 
 
@@ -56,7 +59,7 @@
 					{
 						Name = o.Item.Name,
 						MainPictureUri = o.Item.MainPictureUri,
-						HighestBid = o.Item.Offers.Max(io => io.Value).ToString("N2"),
+						HighestBid = o.Item.Offers.Count != 0 ? o.Item.Offers.Max(io => io.Value).ToString("N2") : string.Empty,
 						BarterOffers = o.Item.Offers.Count(io => io.BarterItemId != null),
 						Country = o.Item.ItemVisibility.Location == Public &&
 								  o.Item.Location.LocationVisibility.Country == Public ? o.Item.Location.Country : null,
@@ -88,6 +91,8 @@
 
 			model.CurrencyId = (int)item.CurrencyId!;
 
+			model.ItemPictureUri = item.MainPictureUri;
+
 
 			return model;
 		}
@@ -98,7 +103,7 @@
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == itemId)
 				.Select(i => new {
-					HighestBid = i.Offers.Max(o => o.Value),
+					HighestBid = i.Offers.Count != 0 ? i.Offers.Max(o => o.Value) : 0,
 					StartPrice = i.CurrentPrice
 				})
 				.SingleAsync();
@@ -109,6 +114,19 @@
 			}
 
 			return result.HighestBid;
+		}
+
+
+		public async Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId)
+		{
+			//todo: consider deleted, expired and so on offers!!!
+			bool result = await dbContext.Offers
+				.AllAsync(o => 
+								o.Expires >= dateTimeProvider.GetCurrentDateTime() 
+								&& o.BuyerId == userId 
+								&& o.ItemId == itemId);
+
+			return result;
 		}
 
 

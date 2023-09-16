@@ -12,7 +12,10 @@
 
 	public class BidFormModel
 	{
-		[StringLength(MessageMaxLength, MinimumLength = MessageMinLength)]
+        public string? ItemPictureUri { get; set; }
+
+
+        [StringLength(MessageMaxLength, MinimumLength = MessageMinLength)]
 		public string? Message { get; set; }
 
 
@@ -27,18 +30,19 @@
 
 
 
-
 		[Required]
 		//async check if is les than default expiration days + end auction date
 		public DateTime Expires { get; set; }
 
 
+		[Display(Name = "Bid Value")]
 		[Required]
 		[Range(ValueMinValue, ValueMaxValue)]
 		//async check cannot be les than highest bid or the start price
 		public decimal Value { get; set; }
 
 
+		[Display(Name = "Currency")]
 		[Required]
 		//async check for available currencies
 		//async check the currency must be same as the item currency for now
@@ -47,6 +51,7 @@
 		public IEnumerable<ForSelectCurrencyViewModel>? AvailableCurrencies { get; set; }
 
 
+		[Display(Name = "Barter Item")]
 		[RequiredIfPresent("BarterQuantity", ErrorMessage = BarterItemRequired)]
 		//async check for barter availability: owner check, quantity, is for barter in another place ...
 		public Guid? BarterItemId { get; set; }
@@ -54,6 +59,7 @@
 		public IEnumerable<ItemForBarterViewModel>? AvailableBarters { get; set; }
 
 
+		[Display(Name = "Barter Quantity")]
 		[RequiredIfPresent("BarterItemId", ErrorMessage = BarterQuantityRequired)]
 		//async check for availability and if is as barter in another offer
 		public decimal? BarterQuantity { get; set; }
@@ -63,6 +69,7 @@
 
 
 		//async check location id
+		[Display(Name = "Your Location")]
 		public Guid? LocationId { get; set; }
 
 		public IEnumerable<ForSelectLocationViewModel>? AvailableLocations { get; set; }

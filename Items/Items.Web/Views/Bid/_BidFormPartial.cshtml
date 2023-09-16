@@ -1,0 +1,83 @@
+﻿@using Items.Web.ViewModels.Currency;
+@model BidFormModel
+
+<form method="post"
+	  class="w-50 mx-auto form-floating mb-3"
+	  id="BidFormId">
+
+	<div class="form-floating mb-3 ">
+		<textarea asp-for="@Model.Message" type="text" class="form-control form-control-sm"></textarea>
+		<label asp-for="@Model.Message"></label>
+		<span asp-validation-for="@Model.Message" class="text-danger text-sm-start"></span>
+	</div>
+
+
+	<div class="form-floating mb-3 ">
+		<input asp-for="@Model.Quantity" type="number" class="form-control form-control-sm" />
+		<label asp-for="@Model.Quantity"></label>
+		<span asp-validation-for="@Model.Quantity" class="text-danger text-sm-start"></span>
+	</div>
+
+
+	<div class="form-floating mb-3 ">
+		<input asp-for="@Model.Expires" type="date" class="form-control form-control-sm" />
+		<label asp-for="@Model.Expires"></label>
+		<span asp-validation-for="@Model.Expires" class="text-danger text-sm-start"></span>
+	</div>
+
+	<div class="form-floating mb-3 ">
+		<input asp-for="@Model.Value" type="number" class="form-control form-control-sm" />
+		<label asp-for="@Model.Value"></label>
+		<span asp-validation-for="@Model.Value" class="text-danger text-sm-start"></span>
+	</div>
+
+	<div class="form-floating mb-3 ">
+		<select asp-for="@Model.CurrencyId"
+				asp-items="@(new SelectList(
+										Model.AvailableCurrencies,
+										nameof(ForSelectCurrencyViewModel.CurrencyId),
+										nameof(ForSelectCurrencyViewModel.CurrencySymbol),
+										Model.CurrencyId))"
+				class="form-control form-control-sm">
+		</select>
+		<label asp-for="@Model.CurrencyId"></label>
+		<span asp-validation-for="@Model.CurrencyId" class="text-danger text-sm-start"></span>
+	</div>
+
+	<div class="form-floating mb-3 ">
+		<select 
+			asp-for="@Model.BarterItemId"
+				asp-items="@(new SelectList(
+										Model.AvailableBarters,
+										nameof(ItemForBarterViewModel.Id),
+										nameof(ItemForBarterViewModel.ExtendedName),
+										Model.BarterItemId))"
+			class="form-control form-control-sm" 
+		>
+		<option selected></option>
+	</select>
+		<label asp-for="@Model.BarterItemId"></label>
+		<span asp-validation-for="@Model.BarterItemId" class="text-danger text-sm-start"></span>
+	</div>
+
+	<div class="form-floating mb-3 ">
+		<input asp-for="@Model.BarterQuantity" type="number" class="form-control form-control-sm" />
+		<label asp-for="@Model.BarterQuantity"></label>
+		<span asp-validation-for="@Model.BarterQuantity" class="text-danger text-sm-start"></span>
+	</div>
+
+	<div class="form-floating mb-3 ">
+		<select asp-for="@Model.LocationId"
+				asp-items="@(new SelectList(
+										Model.AvailableLocations,
+										nameof(ForSelectLocationViewModel.LocationId),
+										nameof(ForSelectLocationViewModel.LocationName),
+										Model.LocationId))"
+				class="form-control form-control-sm">
+			<option selected></option>
+			</select>
+		<label asp-for="@Model.LocationId"></label>
+		<span asp-validation-for="@Model.LocationId" class="text-danger text-sm-start"></span>
+	</div>
+
+</form>

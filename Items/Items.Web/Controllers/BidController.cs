@@ -13,6 +13,7 @@
 	using static Items.Common.GeneralConstants;
 
 	using Microsoft.AspNetCore.Mvc;
+	using System.Reflection.Metadata.Ecma335;
 
 	public class BidController : BaseController
 	{
@@ -61,121 +62,34 @@
 		[HttpGet]
 		public async Task<IActionResult> Add(Guid itemId)
 		{
-			Guid userId = Guid.Parse(User.GetId());
-
-			bool isMyItem = await itemService.IsOwnerAsync(itemId, userId);
-			if (isMyItem)
+			try
 			{
-				TempData[ErrorMessage] = "Cannot Bid on your own Item!";
-				return RedirectToAction("All", "Item");
-			}
-			bool isOnMarket = await itemService.IsOnMarketAsync(itemId);
-			bool isAuction = await itemService.IsAuctionAsync(itemId);
-			if (!isOnMarket || !isAuction)
-			{
-				TempData[ErrorMessage] = "Cannot Bid on this Item!";
-				return RedirectToAction("All", "Item");
-			}
+				Guid userId = Guid.Parse(User.GetId());
 
-			bool offerExist = await offerService.ExistByItemIdUserId(itemId, userId);
-			if (offerExist)
-			{
-				TempData[InformationMessage] = "Update your Offer here!";
-				return RedirectToAction("All", "Bid");
-			}
-
-			AddBidFormModel model = await offerService.GetForCreate(itemId);
-			model.AvailableBarters =
-				await itemService.MyAvailableForBarterAsync(userId);
-			model.AvailableCurrencies =
-				await currencyService.AllForSelectAsync();
-			model.AvailableLocations =
-				await locationService.GetForSelectAsync(userId);
-
-			return View(model);
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> Add(Guid itemId, AddBidFormModel model)
-		{
-			Guid userId = Guid.Parse(User.GetId());
-
-			bool isMyItem = await itemService.IsOwnerAsync(itemId, userId);
-			if (isMyItem)
-			{
-				TempData[ErrorMessage] = "Cannot Bid on your own Item!";
-				return RedirectToAction("All", "Item");
-			}
-			bool isOnMarket = await itemService.IsOnMarketAsync(itemId);
-			bool isAuction = await itemService.IsAuctionAsync(itemId);
-			if (!isOnMarket || !isAuction)
-			{
-				TempData[ErrorMessage] = "Cannot Bid on this Item!";
-				return RedirectToAction("All", "Item");
-			}
-
-			bool offerExist = await offerService.ExistByItemIdUserId(itemId, userId);
-			if (offerExist)
-			{
-				TempData[InformationMessage] = "Update your Offer here!";
-				return RedirectToAction("All", "Bid");
-			}
-
-			// todo: fix potential probing to review hidden quantity. Consider changing quantity to int and populating more measurement units approach...
-			decimal quantityLeft = await itemService.SufficientQuantity(itemId, model.Quantity);
-			if (quantityLeft < 0m)
-			{
-				ModelState.AddModelError(nameof(model.Quantity), string.Format(InsufficientQuantity, quantityLeft + model.Quantity));
-			}
-
-			DateTime endAuction = (DateTime)(await itemService.GetEndSellDateTime(itemId));
-			bool isInvalidExpirationDate =
-				model.Expires < endAuction.AddDays(DefaultOfferExpirationDays);
-			if (isInvalidExpirationDate)
-			{
-				ModelState.AddModelError(nameof(model.Expires), string.Format(InvalidExpirationDate, endAuction.AddDays(DefaultOfferExpirationDays)));
-			}
-
-			decimal highestBid = (decimal)await offerService.GetHighestBidByItemIdAsync(itemId);
-			bool isValidBidValue = model.Value - highestBid >= (decimal)ValueMinValue;
-			if (!isValidBidValue)
-			{
-				ModelState.AddModelError(nameof(model.Value), string.Format(InvalidBidValue, highestBid, ValueMinValue));
-			}
-
-			bool isValidCurrency = await currencyService.ExistsByIdAsync(model.CurrencyId);
-			int itemCurrencyId = (int)await itemService.GetCurrencyIdAsync(itemId);
-			if (!isValidCurrency || itemCurrencyId != model.CurrencyId)
-			{
-				ModelState.AddModelError(nameof(model.CurrencyId), InvalidCurrencyId);
-			}
-
-			bool isValidBarterItem = true;
-			if (model.BarterItemId != null && model.BarterQuantity != null)
-			{
-				isValidBarterItem = await itemService.IsValidBarterAsync(model.BarterItemId, model.BarterQuantity, userId);
-				if (!isValidBarterItem)
+				bool isMyItem = await itemService.IsOwnerAsync(itemId, userId);
+				if (isMyItem)
 				{
-					ModelState.AddModelError(nameof(model.BarterItemId), InvalidBarterItemId);
+					TempData[ErrorMessage] = "Cannot Bid on your own Item!";
+					return RedirectToAction("All", "Item");
 				}
-			}
-
-			bool isValidLocation = true;
-			if (model.LocationId != null)
-			{
-				isValidLocation =
-					await locationService.IsAllowedIdAsync((Guid)model.LocationId, userId);
-				if (!isValidLocation)
+				bool isOnMarket = await itemService.IsOnMarketAsync(itemId);
+				bool isAuction = await itemService.IsAuctionAsync(itemId);
+				if (!isOnMarket || !isAuction)
 				{
-					ModelState.AddModelError(nameof(model.LocationId), InvalidLocationId);
+					TempData[ErrorMessage] = "Cannot Bid on this Item!";
+					return RedirectToAction("All", "Item");
 				}
-			}
 
+				bool offerExist = await offerService.ExistByItemIdUserId(itemId, userId);
+				if (offerExist)
+				{
+					TempData[InformationMessage] = "Update your Offer here!";
+					return RedirectToAction("All", "Bid");
+				}
 
-			if (!ModelState.IsValid || quantityLeft < 0m || !isInvalidExpirationDate || !isValidBidValue || !isValidCurrency || itemCurrencyId != model.CurrencyId || !isValidBarterItem || !isValidLocation)
-			{
+				AddBidFormModel model = await offerService.GetForCreate(itemId);
 				model.AvailableBarters =
-				await itemService.MyAvailableForBarterAsync(userId);
+					await itemService.MyAvailableForBarterAsync(userId);
 				model.AvailableCurrencies =
 					await currencyService.AllForSelectAsync();
 				model.AvailableLocations =
@@ -183,86 +97,199 @@
 
 				return View(model);
 			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
+			
+		}
 
-			Guid offerId = await offerService.CreateAsync(model, itemId, userId);
+		[HttpPost]
+		public async Task<IActionResult> Add(Guid itemId, AddBidFormModel model)
+		{
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
 
-			return RedirectToAction("All", "Bid");
+				bool isMyItem = await itemService.IsOwnerAsync(itemId, userId);
+				if (isMyItem)
+				{
+					TempData[ErrorMessage] = "Cannot Bid on your own Item!";
+					return RedirectToAction("All", "Item");
+				}
+				bool isOnMarket = await itemService.IsOnMarketAsync(itemId);
+				bool isAuction = await itemService.IsAuctionAsync(itemId);
+				if (!isOnMarket || !isAuction)
+				{
+					TempData[ErrorMessage] = "Cannot Bid on this Item!";
+					return RedirectToAction("All", "Item");
+				}
+
+				bool offerExist = await offerService.ExistByItemIdUserId(itemId, userId);
+				if (offerExist)
+				{
+					TempData[InformationMessage] = "Update your Offer here!";
+					return RedirectToAction("All", "Bid");
+				}
+
+				// todo: fix potential probing to review hidden quantity. Consider changing quantity to int and populating more measurement units approach...
+				decimal quantityLeft = await itemService.SufficientQuantity(itemId, model.Quantity);
+				if (quantityLeft < 0m)
+				{
+					ModelState.AddModelError(nameof(model.Quantity), string.Format(InsufficientQuantity, quantityLeft + model.Quantity));
+				}
+
+				DateTime endAuction = (DateTime)(await itemService.GetEndSellDateTime(itemId));
+				bool isInvalidExpirationDate =
+					model.Expires < endAuction.AddDays(DefaultOfferExpirationDays);
+				if (isInvalidExpirationDate)
+				{
+					ModelState.AddModelError(nameof(model.Expires), string.Format(InvalidExpirationDate, endAuction.AddDays(DefaultOfferExpirationDays)));
+				}
+
+				decimal highestBid = (decimal)await offerService.GetHighestBidByItemIdAsync(itemId);
+				bool isValidBidValue = model.Value - highestBid >= (decimal)ValueMinValue;
+				if (!isValidBidValue)
+				{
+					ModelState.AddModelError(nameof(model.Value), string.Format(InvalidBidValue, highestBid, ValueMinValue));
+				}
+
+				bool isValidCurrency = await currencyService.ExistsByIdAsync(model.CurrencyId);
+				int itemCurrencyId = (int)await itemService.GetCurrencyIdAsync(itemId);
+				if (!isValidCurrency || itemCurrencyId != model.CurrencyId)
+				{
+					ModelState.AddModelError(nameof(model.CurrencyId), InvalidCurrencyId);
+				}
+
+				bool isValidBarterItem = true;
+				if (model.BarterItemId != null && model.BarterQuantity != null)
+				{
+					isValidBarterItem = await itemService.IsValidBarterAsync(model.BarterItemId, model.BarterQuantity, userId);
+					if (!isValidBarterItem)
+					{
+						ModelState.AddModelError(nameof(model.BarterItemId), InvalidBarterItemId);
+					}
+				}
+
+				bool isValidLocation = true;
+				if (model.LocationId != null)
+				{
+					isValidLocation =
+						await locationService.IsAllowedIdAsync((Guid)model.LocationId, userId);
+					if (!isValidLocation)
+					{
+						ModelState.AddModelError(nameof(model.LocationId), InvalidLocationId);
+					}
+				}
+
+
+				if (!ModelState.IsValid || quantityLeft < 0m || !isInvalidExpirationDate || !isValidBidValue || !isValidCurrency || itemCurrencyId != model.CurrencyId || !isValidBarterItem || !isValidLocation)
+				{
+					model.AvailableBarters =
+					await itemService.MyAvailableForBarterAsync(userId);
+					model.AvailableCurrencies =
+						await currencyService.AllForSelectAsync();
+					model.AvailableLocations =
+						await locationService.GetForSelectAsync(userId);
+
+					return View(model);
+				}
+
+				Guid offerId = await offerService.CreateAsync(model, itemId, userId);
+				TempData[SuccessMessage] = "Offer Added Successfully!";
+
+				return RedirectToAction("All", "Bid");
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
+			
 		}
 
 
 		[HttpPost]
 		public async Task<IActionResult> Edit(Guid id, EditBidFormModel model)
 		{
-			Guid userId = Guid.Parse(User.GetId());
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
 
-			bool isMyItem = await offerService.IsOwnerAsync(id, userId);
-			if (!isMyItem)
-			{
-				TempData[ErrorMessage] = "Cannot Bid on your own Item!";
-				return RedirectToAction("All", "Item");
-			}
-			bool canUpdate = await offerService.CanUpdate(id);
-			if (!canUpdate)
-			{
-				TempData[InformationMessage] = "Cannot update this Offer. The Auction is Closed.";
-				return RedirectToAction("All", "Bid");
-			}
-
-			// todo: fix potential probing to review hidden quantity. Consider changing quantity to int and populating more measurement units approach...
-			decimal quantityLeft = await offerService.SufficientQuantity(id, model.Quantity);
-			if (quantityLeft < 0m)
-			{
-				ModelState.AddModelError("", $"{id} - {string.Format(InsufficientQuantity, quantityLeft + model.Quantity)}");
-			}
-
-			decimal highestBid = (decimal)await offerService.GetHighestBidByOfferIdAsync(id);
-			bool isValidBidValue = model.Value - highestBid >= (decimal)ValueMinValue;
-			if (!isValidBidValue)
-			{
-				ModelState.AddModelError("", $"{id} - {string.Format(InvalidBidValue, highestBid, ValueMinValue)}");
-			}
-
-			bool isValidBarterItem = true;
-			if (model.BarterItemId != null && model.BarterQuantity != null)
-			{
-				isValidBarterItem = await itemService.IsValidBarterAsync(model.BarterItemId, model.BarterQuantity, userId);
-				if (!isValidBarterItem)
+				bool isMyItem = await offerService.IsOwnerAsync(id, userId);
+				if (!isMyItem)
 				{
-					ModelState.AddModelError("", $"{id} - {InvalidBarterItemId} / Invalid Barter Quantity.");
+					TempData[ErrorMessage] = "Cannot Bid on your own Item!";
+					return RedirectToAction("All", "Item");
 				}
-			}
-
-			if (!ModelState.IsValid || quantityLeft < 0m || !isValidBidValue || !isValidBarterItem)
-			{
-				var errors = ModelState
-					.Where(m => m.Value != null 
-								&& m.Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid
-								&& !string.IsNullOrEmpty(m.Key))
-					.Select(m => new
-					{
-						m.Key,
-						m.Value!.Errors.First().ErrorMessage
-					});
-				if (errors != null)
+				bool canUpdate = await offerService.CanUpdate(id);
+				if (!canUpdate)
 				{
-					foreach (var error in errors)
+					TempData[InformationMessage] = "Cannot update this Offer. The Auction is Closed.";
+					return RedirectToAction("All", "Bid");
+				}
+
+				// todo: fix potential probing to review hidden quantity. Consider changing quantity to int and populating more measurement units approach...
+				decimal quantityLeft = await offerService.SufficientQuantity(id, model.Quantity);
+				if (quantityLeft < 0m)
+				{
+					ModelState.AddModelError("", $"{id} - {string.Format(InsufficientQuantity, quantityLeft + model.Quantity)}");
+				}
+
+				decimal highestBid = (decimal)await offerService.GetHighestBidByOfferIdAsync(id);
+				bool isValidBidValue = model.Value - highestBid >= (decimal)ValueMinValue;
+				if (!isValidBidValue)
+				{
+					ModelState.AddModelError("", $"{id} - {string.Format(InvalidBidValue, highestBid, ValueMinValue)}");
+				}
+
+				bool isValidBarterItem = true;
+				if (model.BarterItemId != null && model.BarterQuantity != null)
+				{
+					isValidBarterItem = await itemService.IsValidBarterAsync(model.BarterItemId, model.BarterQuantity, userId);
+					if (!isValidBarterItem)
 					{
-						ModelState.AddModelError("", $"{id} - {error.Key} - {error.ErrorMessage}");
+						ModelState.AddModelError("", $"{id} - {InvalidBarterItemId} / Invalid Barter Quantity.");
 					}
 				}
 
-				var allModel = new DataBidViewModel
+				if (!ModelState.IsValid || quantityLeft < 0m || !isValidBidValue || !isValidBarterItem)
 				{
-					Bids = await offerService.AllMineAsync(userId),
-					ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId)
-				};
+					var errors = ModelState
+						.Where(m => m.Value != null
+									&& m.Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid
+									&& !string.IsNullOrEmpty(m.Key))
+						.Select(m => new
+						{
+							m.Key,
+							m.Value!.Errors.First().ErrorMessage
+						});
+					if (errors != null)
+					{
+						foreach (var error in errors)
+						{
+							ModelState.AddModelError("", $"{id} - {error.Key} - {error.ErrorMessage}");
+						}
+					}
 
-				return View("All", allModel);
+					var allModel = new DataBidViewModel
+					{
+						Bids = await offerService.AllMineAsync(userId),
+						ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId)
+					};
+
+					return View("All", allModel);
+				}
+
+				await offerService.EditAsync(id, model);
+				TempData[SuccessMessage] = "Offer Updated Successfully!";
+
+				return RedirectToAction("All", "Bid");
 			}
-
-			//await offerService.EditAsync(id);
-
-			return RedirectToAction("All", "Bid");
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
+			
 		}
 	}
 }

@@ -141,7 +141,7 @@
 		{
 			//todo: consider deleted, expired and so on offers!!!
 			bool result = await dbContext.Offers
-				.AllAsync(o => 
+				.AnyAsync(o => 
 								o.Expires >= dateTimeProvider.GetCurrentDateTime() 
 								&& o.BuyerId == userId 
 								&& o.ItemId == itemId);
@@ -196,5 +196,19 @@
 			return offer.Id;
 		}
 
+		public async Task EditAsync(Guid id, EditBidFormModel model)
+		{
+			Offer? offer = await dbContext.Offers.FindAsync(id) ?? throw new ArgumentException($"Invalid offer id {id}");
+
+			offer.Quantity = model.Quantity;
+			offer.Value = model.Value;
+			if (model.BarterItemId != null && model.BarterQuantity != null)
+			{
+				offer.BarterItemId = model.BarterItemId;
+				offer.BarterQuantity = model.BarterQuantity;
+			}
+
+			await dbContext.SaveChangesAsync();
+		}
 	}
 }

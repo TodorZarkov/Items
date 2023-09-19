@@ -7,6 +7,7 @@
 	using static Items.Common.Enums.AccessModifier;
 	using static Items.Common.FormatConstants.DateAndTime;
 	using static Items.Common.GeneralConstants;
+	using static Items.Common.EntityValidationConstants.Item;
 
 	using Microsoft.EntityFrameworkCore;
 
@@ -69,7 +70,8 @@
 						Unit = o.Item.Unit.Symbol,
 						CurrencySymbol = o.Currency.Symbol,
 						QuantityLeft = o.Item.ItemVisibility.Quantity == Public ?
-										o.Item.Quantity : null
+										o.Item.Quantity : null,
+						EndSell = ((DateTime)o.Item.EndSell!).ToString(BiddingLongUtcDateTime)
 					},
 
 				})
@@ -79,9 +81,9 @@
 			return bids;
 		}
 
-		public async Task<BidFormModel> GetForCreate(Guid itemId)
+		public async Task<AddBidFormModel> GetForCreate(Guid itemId)
 		{
-			BidFormModel model = new BidFormModel();
+			AddBidFormModel model = new AddBidFormModel();
 
 			Item item = await dbContext.Items
 				.SingleAsync(i => i.Id == itemId);
@@ -116,6 +118,24 @@
 			return result.HighestBid;
 		}
 
+		public async Task<decimal?> GetHighestBidByOfferIdAsync(Guid id)
+		{
+			var result = await dbContext.Offers
+				.Where(o => o.Id == id)
+				.Where(o => !o.Item.Deleted)
+				.Select(o => new {
+					HighestBid = o.Item.Offers.Count != 0 ? o.Item.Offers.Max(o => o.Value) : 0,
+					StartPrice = o.Item.CurrentPrice
+				})
+				.SingleAsync();
+
+			if (result.HighestBid == 0)
+			{
+				return result.StartPrice;
+			}
+
+			return result.HighestBid;
+		}
 
 		public async Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId)
 		{
@@ -129,8 +149,42 @@
 			return result;
 		}
 
+		public async Task<bool> IsOwnerAsync(Guid id, Guid userId)
+		{
+			bool result = await dbContext.Offers
+				.AnyAsync(o => o.Id == id && o.BuyerId == userId);
 
-		public async Task<Guid> CreateAsync(BidFormModel model, Guid itemId, Guid userId)
+			return result;
+		}
+
+		public async Task<bool> CanUpdate(Guid id)
+		{
+			bool result = await dbContext.Offers.AnyAsync(o => o.Id == id &&
+														  !o.Item.Deleted &&
+														  o.Item.EndSell != null &&
+														  o.Item.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+														  o.Item.Quantity >= (decimal)QuantityMinValue &&
+														  o.Item.IsAuction != null &&
+														  o.Item.IsAuction == true);
+
+			return result;
+		}
+
+		public async Task<decimal> SufficientQuantity(Guid id, decimal quantity)
+		{
+			decimal itemQuantity = await dbContext.Offers
+				.Where(o => o.Id == id)
+				.Where(o => !o.Item.Deleted)
+				.Select(o => o.Item.Quantity)
+				.SingleAsync();// TODO: seller must have an option to restrict the quantity threshold!!!
+							   // todo: globally, quantity must be integer and the measurement units must be added
+
+			return itemQuantity - quantity;
+		}
+
+
+
+		public async Task<Guid> CreateAsync(AddBidFormModel model, Guid itemId, Guid userId)
 		{
 			Offer offer = mapper.Map<Offer>(model);
 			offer.ItemId = itemId;

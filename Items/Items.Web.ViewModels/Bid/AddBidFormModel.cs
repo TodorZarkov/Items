@@ -10,7 +10,7 @@
 	using static Items.Common.EntityValidationConstants.Offer;
 	using static Items.Common.EntityValidationErrorMessages.Offer;
 
-	public class BidFormModel
+	public class AddBidFormModel
 	{
         public string? ItemPictureUri { get; set; }
 

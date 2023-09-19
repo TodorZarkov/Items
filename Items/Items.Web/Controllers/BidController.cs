@@ -40,16 +40,11 @@
 			{
 				Guid userId = Guid.Parse(User.GetId());
 
-				IEnumerable<AllBidViewModel> myBids =
-					await offerService.AllMineAsync(userId);
-
-				IEnumerable<ItemForBarterViewModel> itemsFitForBarter =
-					await itemService.MyAvailableForBarterAsync(userId);
 
 				var model = new DataBidViewModel
 				{
-					Bids = myBids,
-					ItemsFitForBarter = itemsFitForBarter
+					Bids = await offerService.AllMineAsync(userId),
+					ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId)
 				};
 
 				return View(model);
@@ -61,7 +56,7 @@
 
 		}
 
-		
+
 
 		[HttpGet]
 		public async Task<IActionResult> Add(Guid itemId)
@@ -89,7 +84,7 @@
 				return RedirectToAction("All", "Bid");
 			}
 
-			BidFormModel model = await offerService.GetForCreate(itemId);
+			AddBidFormModel model = await offerService.GetForCreate(itemId);
 			model.AvailableBarters =
 				await itemService.MyAvailableForBarterAsync(userId);
 			model.AvailableCurrencies =
@@ -101,7 +96,7 @@
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Add(Guid itemId, BidFormModel model)
+		public async Task<IActionResult> Add(Guid itemId, AddBidFormModel model)
 		{
 			Guid userId = Guid.Parse(User.GetId());
 
@@ -133,7 +128,7 @@
 				ModelState.AddModelError(nameof(model.Quantity), string.Format(InsufficientQuantity, quantityLeft + model.Quantity));
 			}
 
-			DateTime endAuction =(DateTime)(await itemService.GetEndSellDateTime(itemId));
+			DateTime endAuction = (DateTime)(await itemService.GetEndSellDateTime(itemId));
 			bool isInvalidExpirationDate =
 				model.Expires < endAuction.AddDays(DefaultOfferExpirationDays);
 			if (isInvalidExpirationDate)
@@ -168,7 +163,7 @@
 			bool isValidLocation = true;
 			if (model.LocationId != null)
 			{
-				isValidLocation = 
+				isValidLocation =
 					await locationService.IsAllowedIdAsync((Guid)model.LocationId, userId);
 				if (!isValidLocation)
 				{
@@ -177,7 +172,7 @@
 			}
 
 
-			if (!ModelState.IsValid || quantityLeft < 0m || isInvalidExpirationDate || !isValidBidValue || !isValidCurrency || itemCurrencyId != model.CurrencyId || !isValidBarterItem || !isValidLocation)
+			if (!ModelState.IsValid || quantityLeft < 0m || !isInvalidExpirationDate || !isValidBidValue || !isValidCurrency || itemCurrencyId != model.CurrencyId || !isValidBarterItem || !isValidLocation)
 			{
 				model.AvailableBarters =
 				await itemService.MyAvailableForBarterAsync(userId);
@@ -190,6 +185,82 @@
 			}
 
 			Guid offerId = await offerService.CreateAsync(model, itemId, userId);
+
+			return RedirectToAction("All", "Bid");
+		}
+
+
+		[HttpPost]
+		public async Task<IActionResult> Edit(Guid id, EditBidFormModel model)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+
+			bool isMyItem = await offerService.IsOwnerAsync(id, userId);
+			if (!isMyItem)
+			{
+				TempData[ErrorMessage] = "Cannot Bid on your own Item!";
+				return RedirectToAction("All", "Item");
+			}
+			bool canUpdate = await offerService.CanUpdate(id);
+			if (!canUpdate)
+			{
+				TempData[InformationMessage] = "Cannot update this Offer. The Auction is Closed.";
+				return RedirectToAction("All", "Bid");
+			}
+
+			// todo: fix potential probing to review hidden quantity. Consider changing quantity to int and populating more measurement units approach...
+			decimal quantityLeft = await offerService.SufficientQuantity(id, model.Quantity);
+			if (quantityLeft < 0m)
+			{
+				ModelState.AddModelError("", $"{id} - {string.Format(InsufficientQuantity, quantityLeft + model.Quantity)}");
+			}
+
+			decimal highestBid = (decimal)await offerService.GetHighestBidByOfferIdAsync(id);
+			bool isValidBidValue = model.Value - highestBid >= (decimal)ValueMinValue;
+			if (!isValidBidValue)
+			{
+				ModelState.AddModelError("", $"{id} - {string.Format(InvalidBidValue, highestBid, ValueMinValue)}");
+			}
+
+			bool isValidBarterItem = true;
+			if (model.BarterItemId != null && model.BarterQuantity != null)
+			{
+				isValidBarterItem = await itemService.IsValidBarterAsync(model.BarterItemId, model.BarterQuantity, userId);
+				if (!isValidBarterItem)
+				{
+					ModelState.AddModelError("", $"{id} - {InvalidBarterItemId} / Invalid Barter Quantity.");
+				}
+			}
+
+			if (!ModelState.IsValid || quantityLeft < 0m || !isValidBidValue || !isValidBarterItem)
+			{
+				var errors = ModelState
+					.Where(m => m.Value != null 
+								&& m.Value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid
+								&& !string.IsNullOrEmpty(m.Key))
+					.Select(m => new
+					{
+						m.Key,
+						m.Value!.Errors.First().ErrorMessage
+					});
+				if (errors != null)
+				{
+					foreach (var error in errors)
+					{
+						ModelState.AddModelError("", $"{id} - {error.Key} - {error.ErrorMessage}");
+					}
+				}
+
+				var allModel = new DataBidViewModel
+				{
+					Bids = await offerService.AllMineAsync(userId),
+					ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId)
+				};
+
+				return View("All", allModel);
+			}
+
+			//await offerService.EditAsync(id);
 
 			return RedirectToAction("All", "Bid");
 		}

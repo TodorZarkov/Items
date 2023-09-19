@@ -24,5 +24,7 @@
 		public decimal? QuantityLeft { get; set; }
 
 		public string Unit { get; set; } = null!;
-	}
+
+		public string EndSell { get; set; } = null!;
+    }
 }

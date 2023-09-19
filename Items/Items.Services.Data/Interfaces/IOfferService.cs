@@ -5,9 +5,13 @@
 	public interface IOfferService
 	{
 		Task<IEnumerable<AllBidViewModel>> AllMineAsync(Guid userId);
-		Task<Guid> CreateAsync(BidFormModel model, Guid itemId, Guid userId);
+		Task<bool> CanUpdate(Guid id);
+		Task<Guid> CreateAsync(AddBidFormModel model, Guid itemId, Guid userId);
 		Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId);
-		Task<BidFormModel> GetForCreate(Guid itemId);
+		Task<AddBidFormModel> GetForCreate(Guid itemId);
 		Task<decimal?> GetHighestBidByItemIdAsync(Guid itemId);
+		Task<decimal?> GetHighestBidByOfferIdAsync(Guid id);
+		Task<bool> IsOwnerAsync(Guid id, Guid userId);
+		Task<decimal> SufficientQuantity(Guid id, decimal quantity);
 	}
 }

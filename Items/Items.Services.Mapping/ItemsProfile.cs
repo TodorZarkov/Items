@@ -31,7 +31,7 @@
             CreateMap<Place, PlaceFormModel>();
 
             //Offer
-            CreateMap<BidFormModel, Offer>();
+            CreateMap<AddBidFormModel, Offer>();
         }
     }
 }

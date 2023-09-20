@@ -5,10 +5,9 @@
 
 	public class AuctionFormModel
 	{
+		//async validation after or equal old end sell
         public DateTime EndSell { get; set; }
 
-		[AfterOrEqualCurrentDate(ErrorMessage = StartSellCannotBeInThePast)]
-		[DateBefore("EndSell", ErrorMessage = StartSellAfterEndSell)]
 		public DateTime StartSell { get; set; }
 
 		public string Name { get; set; } = null!;

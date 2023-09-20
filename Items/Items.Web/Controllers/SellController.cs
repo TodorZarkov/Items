@@ -3,6 +3,7 @@
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Sell;
 	using static Common.NotificationMessages;
+	using static Common.EntityValidationErrorMessages.Auction;
 
 	using Microsoft.AspNetCore.Mvc;
 	using Items.Web.Infrastructure.Extensions;
@@ -98,6 +99,12 @@
 				{
 					TempData[InformationMessage] = "Is Not An Auction, You Can Edit Regular.";
 					return RedirectToAction("Edit", "Item", new { id });
+				}
+
+				AuctionFormModel oldModel = await itemService.GetForAuctionUpdateAsync(id);
+				if (model.EndSell.Date < oldModel.EndSell.Date)
+				{
+					ModelState.AddModelError(nameof(model.EndSell), string.Format(InvalidEndAuctionDate, oldModel.EndSell));
 				}
 
 				if (!ModelState.IsValid)

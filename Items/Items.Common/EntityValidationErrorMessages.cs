@@ -51,6 +51,11 @@
 			public const string BidValueRequired = "The Bid per unit value is required if barter item is not present!";
 		}
 
+		public static class Auction
+		{
+			public const string InvalidEndAuctionDate = "Invalid End Auction Date. Must be after or on {0}!";
+		}
+
 		public static class General
 		{
 			public const string GeneralFormError = "Some of the Input Data is Invalid!";

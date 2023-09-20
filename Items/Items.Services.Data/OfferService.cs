@@ -99,14 +99,6 @@
 
 			}
 
-			//Guid? offerId = queryModel?.OfferId;
-			//if (offerId is not null)
-			//{
-			//	offerQuery = offerQuery
-			//		.Where(o => o.Id == offerId);
-			//}
-
-
 
 			var totalOffersCount = await offerQuery.CountAsync();
 

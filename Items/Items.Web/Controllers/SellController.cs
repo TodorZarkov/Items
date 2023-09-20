@@ -6,6 +6,8 @@
 
 	using Microsoft.AspNetCore.Mvc;
 	using Items.Web.Infrastructure.Extensions;
+	using Items.Web.ViewModels.Base;
+	using Items.Services.Data.Models.Item;
 
 	public class SellController : BaseController
 	{
@@ -16,13 +18,12 @@
 			this.itemService = itemService;
 		}
 
-		public async Task<IActionResult> All()
+		public async Task<IActionResult> All(QueryFilterModel? queryModel = null)
 		{
 			try
 			{
 				Guid userId = Guid.Parse(User.GetId());
-				IEnumerable<AllSellViewModel> model = 
-					await itemService.MyAllOnMarketAsync(userId);
+				AllSellServiceModel model = await itemService.MyAllOnMarketAsync(userId, queryModel);
 
 				return View(model);
 			}

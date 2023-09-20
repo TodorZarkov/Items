@@ -517,14 +517,118 @@
 			return allItemsForBarter;
 		}
 
-		public async Task<IEnumerable<AllSellViewModel>> MyAllOnMarketAsync(Guid userId)
+		public async Task<AllSellServiceModel> MyAllOnMarketAsync(Guid userId, QueryFilterModel? queryModel = null)
 		{
-			AllSellViewModel[] itemsOnMarket = await dbContext.Items
+			var sellsQuery = dbContext.Items.AsQueryable();
+			sellsQuery = sellsQuery
 				.AsNoTracking()
 				.Where(i => !i.Deleted)
 				.Where(i => i.OwnerId == userId)
-				.Where(i => i.EndSell.HasValue) //&& i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
-				.OrderByDescending(i => i.EndSell)
+				.Where(i => i.EndSell.HasValue); //&& i.EndSell > dateTimeProvider.GetCurrentDateTime() && i.Quantity > (decimal)QuantityMinValue)
+
+
+
+			string? searchTerm = queryModel?.SearchTerm;
+			if (!string.IsNullOrEmpty(searchTerm))
+			{
+				sellsQuery = sellsQuery
+					.Where(i => i.Name.ToLower().Contains(searchTerm.ToLower()) ||
+								(i.Description != null && i.Description.ToLower().Contains(searchTerm.ToLower())) ||
+								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
+								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
+			}
+
+			int[]? categoryIds = queryModel?.CategoryIds;
+			if (categoryIds != null && categoryIds.Length != 0)
+			{
+				sellsQuery = sellsQuery
+					.Where(i => i.ItemsCategories.Any(ic => categoryIds.Contains(ic.CategoryId)));
+			}
+
+			Criteria[]? criteria = queryModel?.Criteria;
+			if (criteria != null && criteria.Length != 0)
+			{
+				if (criteria.Contains(Criteria.OnSale) && !criteria.Contains(Criteria.Auctions))
+				{
+					sellsQuery = sellsQuery
+						.Where(i => (
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue) &&
+									!(i.IsAuction != null && (bool)i.IsAuction!));
+				}
+				else if (criteria.Contains(Criteria.OnSale) && criteria.Contains(Criteria.Auctions))
+				{
+					sellsQuery = sellsQuery
+						.Where(i => (
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue));
+				}
+				else if (!criteria.Contains(Criteria.OnSale) && criteria.Contains(Criteria.Auctions))
+				{
+					sellsQuery = sellsQuery
+						.Where(i => (
+									i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+									i.Quantity > (decimal)QuantityMinValue) &&
+									(i.IsAuction != null && (bool)i.IsAuction!));
+				}
+
+			}
+
+			Sorting? sorting = queryModel?.SortBy;
+			if (sorting != null)
+			{
+				if (sorting == Sorting.Name)
+				{
+					sellsQuery = sellsQuery
+						.OrderBy(i => i.Name.ToLower());
+				}
+				else if (sorting == Sorting.PriceDec)
+				{
+					sellsQuery = sellsQuery
+						.OrderByDescending(i => i.CurrentPrice);
+				}
+				else if (sorting == Sorting.PriceAsc)
+				{
+					sellsQuery = sellsQuery
+						.OrderBy(i => i.CurrentPrice);
+				}
+				else if (sorting == Sorting.Latest)
+				{
+					sellsQuery = sellsQuery
+						.OrderByDescending(i => i.ModifiedOn);
+				}
+				else if (sorting == Sorting.Type)
+				{
+					sellsQuery = sellsQuery
+						.OrderByDescending(i => i.IsAuction != null && (bool)i.IsAuction);
+				}
+				else if (sorting == Sorting.EndDate)
+				{
+					sellsQuery = sellsQuery
+						.OrderByDescending(i => i.EndSell);
+				}
+				else if (sorting == Sorting.StartDate)
+				{
+					sellsQuery = sellsQuery
+						.OrderByDescending(i => i.StartSell);
+				}
+
+			}
+
+			
+			var totalSellsCount = await sellsQuery.CountAsync();
+
+
+			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;
+			int hitsPerPage = queryModel?.HitsPerPage ?? DefaultHitsPerPage;
+
+			sellsQuery = sellsQuery
+				.Skip((currentPage - 1) * hitsPerPage)
+				.Take(hitsPerPage);
+
+
+
+			var sells = await sellsQuery
 				.Select(i => new AllSellViewModel
 				{
 					ItemId = i.Id,
@@ -556,7 +660,13 @@
 				})
 				.ToArrayAsync();
 
-			return itemsOnMarket;
+			var result = new AllSellServiceModel()
+			{
+				Sells = sells,
+				TotalSellsCount = totalSellsCount
+			};
+
+			return result;
 		}
 
 

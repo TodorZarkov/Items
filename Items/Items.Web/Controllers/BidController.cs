@@ -14,7 +14,6 @@
 	using static Items.Common.GeneralConstants;
 
 	using Microsoft.AspNetCore.Mvc;
-	using MessagePack;
 
 	public class BidController : BaseController
 	{

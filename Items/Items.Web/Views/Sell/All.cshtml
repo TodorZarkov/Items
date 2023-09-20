@@ -1,14 +1,14 @@
-﻿@model IEnumerable<AllSellViewModel>
+﻿@model Items.Services.Data.Models.Item.AllSellServiceModel
 
 @{
 	ViewData["Title"] = "My Sellings";
 	ViewBag.ActiveLink = "AllSell";
 }
 
-<vc:query-filter hits="85" />
+<vc:query-filter hits="@Model.TotalSellsCount" />
 
 
-@if (Model.Any())
+@if (Model.Sells.Any())
 {
 	<table class="table table-warning table-striped table-hover table-sm align-middle">
 		<thead>
@@ -30,7 +30,7 @@
 			</tr>
 		</thead>
 
-		<partial name="_AllSellsPartial" />
+		<partial name="_AllSellsPartial" model="@Model.Sells" />
 
 	</table>
 
@@ -38,7 +38,7 @@
 else
 {
 	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
-		<h3>You Haven't Put Anything on the Market Yet.</h3>
+		<h3>No Sells.</h3>
 	</div>
 }
 

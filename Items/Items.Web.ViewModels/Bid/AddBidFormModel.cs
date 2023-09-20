@@ -36,10 +36,10 @@
 
 
 		[Display(Name = "Bid Value")]
-		[Required]
+		[RequiredIfNotPresent("BarterItemId", "BarterQuantity", ErrorMessage = BidValueRequired)]
 		[Range(ValueMinValue, ValueMaxValue)]
 		//async check cannot be les than highest bid or the start price
-		public decimal Value { get; set; }
+		public decimal? Value { get; set; }
 
 
 		[Display(Name = "Currency")]

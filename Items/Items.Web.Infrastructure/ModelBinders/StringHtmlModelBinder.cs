@@ -21,9 +21,13 @@
 
 			string? stringValue = valueResult.FirstValue;
 
-			if (!string.IsNullOrEmpty(stringValue))
+			if (stringValue != null && !string.IsNullOrEmpty(stringValue))
 			{
 				stringValue = htmlEncoder.Encode(stringValue);
+			}
+			if (string.IsNullOrEmpty(stringValue))
+			{
+				stringValue = null;
 			}
 
 			bindingContext.Result = ModelBindingResult.Success(stringValue);

@@ -148,7 +148,7 @@
 				}
 
 				decimal highestBid = (decimal)await offerService.GetHighestBidByItemIdAsync(itemId);
-				bool isValidBidValue = model.Value - highestBid >= (decimal)ValueMinValue;
+				bool isValidBidValue = ((model.Value ?? 0) - highestBid >= (decimal)ValueMinValue) || (model.BarterItemId.HasValue && model.BarterQuantity.HasValue);
 				if (!isValidBidValue)
 				{
 					ModelState.AddModelError(nameof(model.Value), string.Format(InvalidBidValue, highestBid, ValueMinValue));
@@ -183,7 +183,7 @@
 				}
 
 
-				if (!ModelState.IsValid || quantityLeft < 0m || !isInvalidExpirationDate || !isValidBidValue || !isValidCurrency || itemCurrencyId != model.CurrencyId || !isValidBarterItem || !isValidLocation)
+				if (!ModelState.IsValid || quantityLeft < 0m || isInvalidExpirationDate || !isValidBidValue || !isValidCurrency || itemCurrencyId != model.CurrencyId || !isValidBarterItem || !isValidLocation)
 				{
 					model.AvailableBarters =
 					await itemService.MyAvailableForBarterAsync(userId);
@@ -236,7 +236,7 @@
 				}
 
 				decimal highestBid = (decimal)await offerService.GetHighestBidByOfferIdAsync(id);
-				bool isValidBidValue = model.Value - highestBid >= (decimal)ValueMinValue;
+				bool isValidBidValue = ((model.Value ?? 0) - highestBid >= (decimal)ValueMinValue) || (model.BarterItemId.HasValue && model.BarterQuantity.HasValue);
 				if (!isValidBidValue)
 				{
 					ModelState.AddModelError("", $"{id} - {string.Format(InvalidBidValue, highestBid, ValueMinValue)}");

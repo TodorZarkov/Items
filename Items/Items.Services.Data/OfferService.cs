@@ -201,8 +201,13 @@
 			Offer? offer = await dbContext.Offers.FindAsync(id) ?? throw new ArgumentException($"Invalid offer id {id}");
 
 			offer.Quantity = model.Quantity;
-			offer.Value = model.Value;
-			if (model.BarterItemId != null && model.BarterQuantity != null)
+			offer.Value = model.Value ?? 0;
+			if (model.BarterItemId == null || model.BarterQuantity == null)
+			{
+				offer.BarterItemId = null;
+				offer.BarterQuantity = null;
+			}
+			else
 			{
 				offer.BarterItemId = model.BarterItemId;
 				offer.BarterQuantity = model.BarterQuantity;

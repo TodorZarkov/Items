@@ -3,6 +3,8 @@
 	IEnumerable<ItemForBarterViewModel> ForBarterModel = Model.ItemsFitForBarter;
 }
 
+@inject Items.Services.Data.Interfaces.IItemService itemService;
+
 <tbody>
 	@foreach (AllBidViewModel bid in BidsModel)
 	{
@@ -132,11 +134,25 @@
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100">
 					<select name="BarterItemId" class="form-select form-select-sm m-0">
-						<!option selected > </!option>
+						<!option></!option>
+							@{
+								ItemViewModel? selectedBarterItem = null;
+								if (bid.BarterItemId.HasValue)
+								{
+									selectedBarterItem = await itemService.GetByIdForViewAsync((Guid)bid.BarterItemId!);
+								} 
+								string extendedItemName = $"{selectedBarterItem?.Name} (you have 0 left!)";
+							}
 							@foreach (var available in ForBarterModel)
 							{
-							<!option value="@available.Id">@available.Name (You have: @available.QuantityCanBarter @available.Unit left!)</!option>
+							<!option @(available.Id == bid.BarterItemId ? "selected" : string.Empty) value="@available.Id">@available.Name (You have: @available.QuantityCanBarter @available.Unit left!)</!option>
 							}
+							@if (bid.BarterItemId.HasValue && !ForBarterModel.Any(b => b.Id == bid.BarterItemId))
+							{
+								
+							<!option selected value="@bid.BarterItemId">@extendedItemName</!option>
+							}
+
 					</select>
 				</div>
 			</td>
@@ -144,6 +160,7 @@
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100">
 					<input class="form-control form-control-sm" type="text" name="BarterQuantity" value="@bid.BarterQuantity">
+					<p class="mb-0">@(!string.IsNullOrEmpty(bid.BarterQuantity)?selectedBarterItem.UnitSymbol:string.Empty)</p>
 				</div>
 
 			</td>
@@ -158,7 +175,7 @@
 			</td>
 
 		</tr>
-			@if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.First().ErrorMessage.StartsWith(bid.OfferId.ToString())))
+			@if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any() && v.Errors.First().ErrorMessage.StartsWith(bid.OfferId.ToString())))
 			{
 			<tr>
 				<td colspan="13">

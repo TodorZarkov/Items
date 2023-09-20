@@ -13,10 +13,10 @@
 		public decimal Quantity { get; set; }
 
 
-		[Required]
-		[Range(ValueMinValue, ValueMaxValue)]
+		[RequiredIfNotPresent("BarterItemId", "BarterQuantity", ErrorMessage = BidValueRequired)]
+		[Range(0, ValueMaxValue)]
 		//async check cannot be les than highest bid or the start price
-		public decimal Value { get; set; }
+		public decimal? Value { get; set; }
 
 
 		[RequiredIfPresent("BarterQuantity", ErrorMessage = BarterItemRequired)]
@@ -25,6 +25,7 @@
 
 
 		[RequiredIfPresent("BarterItemId", ErrorMessage = BarterQuantityRequired)]
+		[Range(QuantityMinValue, QuantityMaxValue)]
 		//async check for availability and if is as barter in another offer
 		public decimal? BarterQuantity { get; set; }
 	}

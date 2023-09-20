@@ -878,7 +878,7 @@
 				.Where(i => i.Id == itemId)
 				.Select(i => i.Quantity)
 				.SingleAsync() ;// TODO: seller must have an option to restrict the quantity threshold!!!
-												  // todo: globally, quantity must be integer and the measurement units must be added
+												  // todo: globally, quantity must be integer and the measurement units must be supplemented
 
 			return itemQuantity - quantity;
 		}

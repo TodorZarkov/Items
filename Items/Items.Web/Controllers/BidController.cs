@@ -148,10 +148,10 @@
 				}
 
 				decimal highestBid = (decimal)await offerService.GetHighestBidByItemIdAsync(itemId);
-				bool isValidBidValue = ((model.Value ?? 0) - highestBid >= (decimal)ValueMinValue) || (model.BarterItemId.HasValue && model.BarterQuantity.HasValue);
+				bool isValidBidValue = ((model.Value ?? 0) - highestBid >= (decimal)ValueMinStep) || (model.BarterItemId.HasValue && model.BarterQuantity.HasValue);
 				if (!isValidBidValue)
 				{
-					ModelState.AddModelError(nameof(model.Value), string.Format(InvalidBidValue, highestBid, ValueMinValue));
+					ModelState.AddModelError(nameof(model.Value), string.Format(InvalidBidValue, highestBid, ValueMinStep));
 				}
 
 				bool isValidCurrency = await currencyService.ExistsByIdAsync(model.CurrencyId);
@@ -215,11 +215,11 @@
 			{
 				Guid userId = Guid.Parse(User.GetId());
 
-				bool isMyItem = await offerService.IsOwnerAsync(id, userId);
-				if (!isMyItem)
+				bool isMyOffer = await offerService.IsOwnerAsync(id, userId);
+				if (!isMyOffer)
 				{
-					TempData[ErrorMessage] = "Cannot Bid on your own Item!";
-					return RedirectToAction("All", "Item");
+					TempData[ErrorMessage] = "Cannot Edit this Offer!";
+					return RedirectToAction("All", "Bid");
 				}
 				bool canUpdate = await offerService.CanUpdate(id);
 				if (!canUpdate)
@@ -236,10 +236,10 @@
 				}
 
 				decimal highestBid = (decimal)await offerService.GetHighestBidByOfferIdAsync(id);
-				bool isValidBidValue = ((model.Value ?? 0) - highestBid >= (decimal)ValueMinValue) || (model.BarterItemId.HasValue && model.BarterQuantity.HasValue);
+				bool isValidBidValue = ((model.Value ?? 0) - highestBid >= (decimal)ValueMinStep) || (model.BarterItemId.HasValue && model.BarterQuantity.HasValue);
 				if (!isValidBidValue)
 				{
-					ModelState.AddModelError("", $"{id} - {string.Format(InvalidBidValue, highestBid, ValueMinValue)}");
+					ModelState.AddModelError("", $"{id} - {string.Format(InvalidBidValue, highestBid, ValueMinStep)}");
 				}
 
 				bool isValidBarterItem = true;
@@ -248,7 +248,7 @@
 					isValidBarterItem = await itemService.IsValidBarterAsync(model.BarterItemId, model.BarterQuantity, userId);
 					if (!isValidBarterItem)
 					{
-						ModelState.AddModelError("", $"{id} - {InvalidBarterItemId} / Invalid Barter Quantity.");
+						ModelState.AddModelError("", $"{id} - {InvalidBarterItemId}");
 					}
 				}
 
@@ -280,6 +280,7 @@
 					return View("All", allModel);
 				}
 
+
 				await offerService.EditAsync(id, model);
 				TempData[SuccessMessage] = "Offer Updated Successfully!";
 
@@ -290,6 +291,41 @@
 				return GeneralError(e);
 			}
 			
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> Delete(Guid id)
+		{
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+
+				bool isMyOffer = await offerService.IsOwnerAsync(id, userId);
+				if (!isMyOffer)
+				{
+					TempData[ErrorMessage] = "Cannot Cancel this Offer!";
+					return RedirectToAction("All", "Bid");
+				}
+				bool canUpdate = await offerService.CanUpdate(id);
+				if (!canUpdate)
+				{
+					TempData[InformationMessage] = "Cannot Cancel this Offer. The Auction is Closed.";
+					return RedirectToAction("All", "Bid");
+				}
+
+				
+
+
+				await offerService.DeleteAsync(id);
+				TempData[SuccessMessage] = "Offer Canceled Successfully!";
+
+				return RedirectToAction("All", "Bid");
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 		}
 	}
 }

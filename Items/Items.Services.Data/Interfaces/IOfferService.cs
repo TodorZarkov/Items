@@ -7,6 +7,7 @@
 		Task<IEnumerable<AllBidViewModel>> AllMineAsync(Guid userId);
 		Task<bool> CanUpdate(Guid id);
 		Task<Guid> CreateAsync(AddBidFormModel model, Guid itemId, Guid userId);
+		Task DeleteAsync(Guid id);
 		Task EditAsync(Guid id, EditBidFormModel model);
 		Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId);
 		Task<AddBidFormModel> GetForCreate(Guid itemId);

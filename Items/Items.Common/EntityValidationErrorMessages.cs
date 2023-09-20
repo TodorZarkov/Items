@@ -46,7 +46,7 @@
 
 			public const string InvalidBidValue = "The Bid Value must be greater than {0}, with step {1}!";
 
-			public const string InvalidBarterItemId = "Invalid Barter Item id!";
+			public const string InvalidBarterItemId = "Invalid Barter Item id!/Invalid Barter Quantity!";
 
 			public const string BidValueRequired = "The Bid per unit value is required if barter item is not present!";
 		}

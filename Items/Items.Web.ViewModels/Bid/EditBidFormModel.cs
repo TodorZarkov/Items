@@ -14,7 +14,7 @@
 
 
 		[RequiredIfNotPresent("BarterItemId", "BarterQuantity", ErrorMessage = BidValueRequired)]
-		[Range(0, ValueMaxValue)]
+		[Range(ValueMinValue, ValueMaxValue)]
 		//async check cannot be les than highest bid or the start price
 		public decimal? Value { get; set; }
 

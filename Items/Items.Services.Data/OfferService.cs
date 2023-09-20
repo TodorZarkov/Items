@@ -215,5 +215,18 @@
 
 			await dbContext.SaveChangesAsync();
 		}
+
+		public async Task DeleteAsync(Guid id)
+		{
+			Offer? offer = await dbContext.Offers.FindAsync(id);
+			if (offer == null)
+			{
+				return;
+			}
+
+			dbContext.Offers.Remove(offer);
+
+			await dbContext.SaveChangesAsync();
+		}
 	}
 }

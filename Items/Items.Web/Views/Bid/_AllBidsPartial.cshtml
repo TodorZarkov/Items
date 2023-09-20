@@ -170,7 +170,7 @@
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100">
 					<button type="submit" class="btn btn-sm btn-warning align-self-center me-1">Update Offer</button>
-					<a class="btn btn-sm btn-danger align-self-center">Cancel Offer</a>
+					<a asp-controller="Bid" asp-action="Delete" asp-route-id="@bid.OfferId" class="btn btn-sm btn-danger align-self-center">Cancel Offer</a>
 				</div>
 			</td>
 

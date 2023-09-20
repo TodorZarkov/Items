@@ -1,11 +1,11 @@
-﻿@model DataBidViewModel
+﻿@model Items.Services.Data.Models.Offer.AllOfferServiceModel;
 
 @{
 	ViewData["Title"] = "My Bids";
 	ViewBag.ActiveLink = "AllBid";
 }
 
-<vc:query-filter hits="85" />
+<vc:query-filter hits="@Model.TotalOffersCount" />
 
 @if (Model.Bids.Any())
 {
@@ -38,7 +38,7 @@
 else
 {
 	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
-		<h3>You Haven't Bid Yet.</h3>
+		<h3>No Bids.</h3>
 	</div>
 }
 

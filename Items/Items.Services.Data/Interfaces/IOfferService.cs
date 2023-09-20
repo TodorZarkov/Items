@@ -1,10 +1,12 @@
 ﻿namespace Items.Services.Data.Interfaces
 {
+	using Items.Services.Data.Models.Offer;
+	using Items.Web.ViewModels.Base;
 	using Items.Web.ViewModels.Bid;
 
 	public interface IOfferService
 	{
-		Task<IEnumerable<AllBidViewModel>> AllMineAsync(Guid userId);
+		Task<AllOfferServiceModel> AllMineAsync(Guid userId, QueryFilterModel? queryModel = null);
 		Task<bool> CanUpdate(Guid id);
 		Task<Guid> CreateAsync(AddBidFormModel model, Guid itemId, Guid userId);
 		Task DeleteAsync(Guid id);

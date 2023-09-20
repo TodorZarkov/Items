@@ -1,9 +1,10 @@
 ﻿namespace Items.Web.Controllers
 {
 	using Items.Services.Data.Interfaces;
+	using Items.Services.Data.Models.Offer;
 	using Items.Web.Infrastructure.Extensions;
 	using Items.Web.ViewModels.Bid;
-	using Items.Web.ViewModels.Item;
+	using Items.Web.ViewModels.Base;
 	using static Items.Common.NotificationMessages;
 	using static Items.Common.EntityValidationErrorMessages.Item;
 	using static Items.Common.EntityValidationErrorMessages.Offer;
@@ -13,7 +14,7 @@
 	using static Items.Common.GeneralConstants;
 
 	using Microsoft.AspNetCore.Mvc;
-	using System.Reflection.Metadata.Ecma335;
+	using MessagePack;
 
 	public class BidController : BaseController
 	{
@@ -35,18 +36,16 @@
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> All()
+		public async Task<IActionResult> All(QueryFilterModel? queryModel = null)
 		{
 			try
 			{
 				Guid userId = Guid.Parse(User.GetId());
 
+				AllOfferServiceModel model = await offerService.AllMineAsync(userId, queryModel);
 
-				var model = new DataBidViewModel
-				{
-					Bids = await offerService.AllMineAsync(userId),
-					ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId)
-				};
+				model.ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId);
+
 
 				return View(model);
 			}
@@ -101,7 +100,7 @@
 			{
 				return GeneralError(e);
 			}
-			
+
 		}
 
 		[HttpPost]
@@ -204,12 +203,12 @@
 			{
 				return GeneralError(e);
 			}
-			
+
 		}
 
 
 		[HttpPost]
-		public async Task<IActionResult> Edit(Guid id, EditBidFormModel model)
+		public async Task<IActionResult> Edit(Guid id, EditBidFormModel model, [FromQuery] QueryFilterModel? queryModel = null)
 		{
 			try
 			{
@@ -271,11 +270,10 @@
 						}
 					}
 
-					var allModel = new DataBidViewModel
-					{
-						Bids = await offerService.AllMineAsync(userId),
-						ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId)
-					};
+					
+					AllOfferServiceModel allModel = await offerService.AllMineAsync(userId, queryModel);
+
+					allModel.ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId);
 
 					return View("All", allModel);
 				}
@@ -284,13 +282,13 @@
 				await offerService.EditAsync(id, model);
 				TempData[SuccessMessage] = "Offer Updated Successfully!";
 
-				return RedirectToAction("All", "Bid");
+				return RedirectToAction("All", "Bid", new {queryModel});
 			}
 			catch (Exception e)
 			{
 				return GeneralError(e);
 			}
-			
+
 		}
 
 
@@ -314,7 +312,7 @@
 					return RedirectToAction("All", "Bid");
 				}
 
-				
+
 
 
 				await offerService.DeleteAsync(id);

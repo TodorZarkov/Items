@@ -2,13 +2,13 @@
 {
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Sell;
-	using static Common.NotificationMessages;
-	using static Common.EntityValidationErrorMessages.Auction;
-
-	using Microsoft.AspNetCore.Mvc;
 	using Items.Web.Infrastructure.Extensions;
 	using Items.Web.ViewModels.Base;
 	using Items.Services.Data.Models.Item;
+	using static Common.EntityValidationErrorMessages.Auction;
+	using static Common.NotificationMessages;
+
+	using Microsoft.AspNetCore.Mvc;
 
 	public class SellController : BaseController
 	{
@@ -121,6 +121,39 @@
 			{
 				return GeneralError(e);
 			}
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> Stop(Guid id)
+		{
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					return RedirectToAction("All", "Item");
+				}
+
+				bool exists = await itemService.ExistAsync(id);
+				if (!exists)
+				{
+					TempData[InformationMessage] = "Item has already been removed!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+				
+
+				await itemService.StopSellByItemIdAsync(id);
+				TempData[InformationMessage] = "Sell stopped successfully.";
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
+
+			return RedirectToAction("All", "Sell");
 		}
 	}
 }

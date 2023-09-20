@@ -6,6 +6,7 @@
 	public class AuctionFormModel
 	{
 		//async validation after or equal old end sell
+		[AfterOrEqualCurrentDate]
         public DateTime EndSell { get; set; }
 
 		public DateTime StartSell { get; set; }

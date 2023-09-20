@@ -1134,11 +1134,20 @@
 		public async Task StopSellByItemIdAsync(Guid id)
 		{
 			Item item = await dbContext.Items
-				.FindAsync(id) ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, id.ToString(), ""));
+				.Where(i => i.Id == id)
+				.Include(i => i.Offers)
+				.SingleAsync();
 
 			item.StartSell = null;
 			item.EndSell = null;
 			item.ModifiedOn = dateTimeProvider.GetCurrentDateTime();
+			item.IsAuction = false;
+
+			Offer[] offers = await dbContext.Offers
+				.Where(o => o.ItemId == id)
+				.ToArrayAsync();
+
+			dbContext.Offers.RemoveRange(offers);
 
 			await dbContext.SaveChangesAsync();
 		}

@@ -7,6 +7,7 @@
 
 	using Microsoft.AspNetCore.Mvc;
 	using NuGet.Packaging;
+	using Items.Web.ViewModels.Category;
 
 	public class QueryFilterViewComponent : ViewComponent
 	{
@@ -30,8 +31,14 @@
 			bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 
 
-
-			model.AllAvailableCategories = await categoryService.GetForSelectAsync();
+			if (controllerName != "Deal")
+			{
+				model.AllAvailableCategories = await categoryService.GetForSelectAsync();
+			}
+			else
+			{
+				model.AllAvailableCategories = new List<ForSelectCategoryViewModel>();
+			}
 
 			model.SearchPlaceHolder = $"Search in {controllerNamePlural}";
 
@@ -111,7 +118,7 @@
 				}
 			}
 
-			
+
 
 			model.Hits = hits;
 			if (model.Hits > 0)
@@ -119,7 +126,7 @@
 				model.LastPage =
 					model.Hits / model.HitsPerPage + (model.Hits % model.HitsPerPage == 0 ? 0 : 1);
 			}
-			
+
 
 			return View(model);
 		}

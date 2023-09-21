@@ -416,7 +416,7 @@
 				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 				model.AvailableUnits = await unitService.AllForSelectAsync();
-				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+				model.AvailableLocations = await locationService.GetForSelectAsync(userId);
 
 				return View("Add", model);
 			}

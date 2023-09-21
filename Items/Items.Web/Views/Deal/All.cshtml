@@ -1,13 +1,13 @@
-﻿@model IEnumerable<ContractAllViewModel>
+﻿@model Items.Services.Data.Models.Contract.AllContractServiceModel
 
 @{
 	ViewData["Title"] = "My Deals";
 	ViewBag.ActiveLink = "AllDeal";
 }
 
-<vc:query-filter hits="85" />
+<vc:query-filter hits="@Model.TotalContractsCount" />
 
-@if (Model.Any())
+@if (Model.Contracts.Any())
 {
 
 	<table class="table table-primary  table-hover table-sm align-middle">
@@ -28,7 +28,7 @@
 			</tr>
 		</thead>
 
-		<partial name="_AllDealPartial" />
+		<partial name="_AllDealPartial" model="Model.Contracts"/>
 
 	</table>
 
@@ -36,7 +36,7 @@
 else
 {
 	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
-		<h3>You Haven't Sell Or Bought Anything!</h3>
+		<h3>No Deals!</h3>
 	</div>
 }
 

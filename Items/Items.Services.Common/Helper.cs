@@ -6,10 +6,6 @@
 
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics.Metrics;
-	using System.Reflection;
-	using System.Runtime.CompilerServices;
-	using System.Xml.Linq;
 
 	public class Helper : IHelper
 	{
@@ -161,20 +157,27 @@
 		{
 			List<Criteria> result = new List<Criteria>();
 
+			
 
 			if (controllerName == "Item" )
 			{
 				result.AddRange(new[] { Criteria.Auctions, Criteria.OnSale });
 			}
 
+
+
 			if (isAuthenticated)
 			{
+				if (controllerName == "Deal")
+				{
+					return result;
+				}
 
 				if (controllerName == "Item" && actionName == "All")
 				{
 					result.AddRange(new[] { Criteria.Mine, Criteria.NotMine });
 				}
-				else if (controllerName == "Sell" || controllerName == "Deal")
+				else if (controllerName == "Sell")
 				{
 					result.AddRange(new[] { Criteria.Auctions, Criteria.OnSale });
 				}

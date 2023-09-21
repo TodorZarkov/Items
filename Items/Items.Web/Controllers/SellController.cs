@@ -61,6 +61,14 @@
 					return RedirectToAction("Edit", "Item", new { id });
 				}
 
+				bool isOnMarket = await itemService.IsOnMarketAsync(id);
+				if (!isOnMarket && isAuction)
+				{
+					TempData[ErrorMessage] = "Please, finish the Auction First.";
+					RedirectToAction("All", "Sell");
+				}
+
+
 				AuctionFormModel model = await itemService.GetForAuctionUpdateAsync(id);
 
 

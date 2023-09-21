@@ -17,25 +17,25 @@
 					<p class="p-0 mb-0 me-2">@sell.Name</p>
 				</div>
 			</th>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
 					<p class="p-0 mb-0 me-2 "><strong>@(sell.IsAuction ? "AUC." : "SELL")</strong></p>
 				</div>
 			</td>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
-					<p class="p-0 mb-0 me-2 ">@(string.Join(", ",sell.Categories))</p>
+					<p class="p-0 mb-0 me-2 ">@(string.Join(", ", sell.Categories))</p>
 				</div>
 			</td>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
 					<p class="p-0 mb-0 me-2">@sell.Location</p>
 				</div>
 			</td>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
 					<p class="p-0 mb-0 me-2">@sell.Place</p>
@@ -44,10 +44,10 @@
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100 ">
-						
-						<p class="p-0 mb-0 me-1">@sell.Quantity</p>
-						<p class="p-0 mb-0 me-2">@sell.Unit</p>
-						<partial name= "_AccessSign" model="@sell.Visibility.Quantity"></partial>
+
+					<p class="p-0 mb-0 me-1">@sell.Quantity</p>
+					<p class="p-0 mb-0 me-2">@sell.Unit</p>
+					<partial name="_AccessSign" model="@sell.Visibility.Quantity"></partial>
 
 				</div>
 			</td>
@@ -57,32 +57,32 @@
 					<p class="p-0 mb-0 me-2 ">@sell.HighestBid</p>
 				</div>
 			</td>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
 					<p class="p-0 mb-0 me-2 ">@sell.OffersCount</p>
 				</div>
 			</td>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
 					<p class="p-0 mb-0 me-2 ">@sell.BartersCount</p>
 				</div>
 			</td>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
 					<p class="p-0 mb-0 me-1 ">@sell.CurrentPrice</p>
 					<p class="p-0 mb-0 me-2 ">@sell.Currency</p>
 				</div>
 			</td>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
 					<p class="p-0 mb-0 me-2 ">@sell.StartSell</p>
 				</div>
 			</td>
-			
+
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
 					<p class="p-0 mb-0 me-2 ">@sell.EndSell.ToString(BiddingLongUtcDateTime)</p>
@@ -91,42 +91,40 @@
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100">
+					
+					<a asp-controller="Item"
+					   asp-action="Details"
+					   asp-route-id="@sell.ItemId" 
+					   class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center me-2"
+					   title="Details">
+						<i class="fas fa-info"></i>
+					</a>
+
+					<a asp-controller="Sell"
+					   asp-action="Edit"
+					   asp-route-id="@sell.ItemId"
+					   class="btn btn-sm btn-primary align-self-center me-2"
+					   title="Edit">
+						<i class="fas fa-pencil-alt"></i>
+					</a>
+
+					<a asp-controller="Sell"
+					   asp-action="Stop"
+					   asp-route-id="@sell.ItemId"
+					   class="btn btn-sm @(!sell.IsAuction && sell.EndSell.Date <= DateTime.UtcNow.Date?"btn-primary":"btn-danger") align-self-center d-flex flex-nowrap align-items-center me-2"
+					   title="Stop Sell/Auction!">
+						<i class="fas fa-times"></i>
+					</a>
+
 					@if (sell.IsAuction && sell.EndSell <= DateTime.UtcNow)
 					{
-						<button type="submit" class="btn btn-sm btn-warning align-self-center d-flex flex-nowrap align-items-center">
-							<p class="p-0 mb-0 me-1 ">Finish</p>
-							<p class="p-0 mb-0 me-0 ">Auction</p>
-						</button>
-
-					}
-					else if (!sell.IsAuction && sell.EndSell <= DateTime.UtcNow)
-					{
-						<a asp-controller="Sell" asp-action="Stop" asp-route-id="@sell.ItemId" class="btn btn-sm btn-danger align-self-center d-flex flex-nowrap align-items-center me-1">
-							<p class="p-0 mb-0 me-1 ">Remove</p>
-							<p class="p-0 mb-0 me-0 ">Sell</p>
-						</a>
-						<a asp-controller="Item" asp-action="Edit" asp-route-id="@sell.ItemId" class="btn btn-sm btn-primary align-self-center d-flex flex-nowrap align-items-center">
-							<p class="p-0 mb-0 me-1 ">Further</p>
-							<p class="p-0 mb-0 me-0 ">Sell</p>
-						</a>
-					}
-					else
-					{
-						<a asp-controller="Item" asp-action="Details" asp-route-id="@sell.ItemId" class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center">
-							<p class="p-0 mb-0 me-0 ">Details</p>
+						<a class="btn btn-sm btn-warning align-self-center d-flex flex-nowrap align-items-center "
+						   title="Finish Auction">
+							<i class="fas fa-step-forward"></i>
 						</a>
 
-						if (!sell.IsAuction)
-						{
-							<a asp-controller="Item" asp-action="Edit" asp-route-id="@sell.ItemId" class="btn btn-sm btn-primary align-self-center ms-2">Modify</a>
-						}
-						else
-						{
-							<a asp-controller="Sell" asp-action="Edit" asp-route-id="@sell.ItemId" class="btn btn-sm btn-primary align-self-center ms-2">Modify</a>
-						}
-
 					}
-					
+
 				</div>
 			</td>
 

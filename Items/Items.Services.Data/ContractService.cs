@@ -13,7 +13,10 @@
 
 	using System;
 	using System.Threading.Tasks;
-	
+
+	using Items.Web.ViewModels.Base;
+	using Items.Common.Enums;
+	using Items.Services.Data.Models.Contract;
 
 	public class ContractService : IContractService
 	{
@@ -29,13 +32,79 @@
 		}
 
 
-		public async Task<IEnumerable<ContractAllViewModel>> AllAsync(Guid userId)
+		public async Task<AllContractServiceModel> AllAsync(Guid userId, QueryFilterModel? queryModel = null)
 		{
-			ContractAllViewModel[] allDeals = await dbContext.Contracts
+			var dealsQuery = dbContext.Contracts
 				.AsNoTracking()
 				.Where(c => c.BuyerId == userId || c.SellerId == userId)
-				.OrderBy(c => c.BuyerId == userId)
-				.ThenByDescending(c => c.ContractDate)
+				.AsQueryable();
+
+			string? searchTerm = queryModel?.SearchTerm;
+			if (!string.IsNullOrEmpty(searchTerm))
+			{
+				dealsQuery = dealsQuery
+					.Where(c => c.ItemName.ToLower().Contains(searchTerm.ToLower()) ||
+								(c.ItemDescription != null && c.ItemDescription.ToLower().Contains(searchTerm.ToLower())) );
+			}
+
+			
+			Sorting? sorting = queryModel?.SortBy;
+			if (sorting != null)
+			{
+				if (sorting == Sorting.Name)
+				{
+					dealsQuery = dealsQuery
+						.OrderBy(c => c.ItemName.ToLower());
+				}
+				else if (sorting == Sorting.PriceDec)
+				{
+					dealsQuery = dealsQuery
+						.OrderByDescending(c => c.Price);
+				}
+				else if (sorting == Sorting.PriceAsc)
+				{
+					dealsQuery = dealsQuery
+						.OrderBy(c => c.Price);
+				}
+				else if (sorting == Sorting.Latest)
+				{
+					dealsQuery = dealsQuery
+						.OrderByDescending(c => c.CreatedOn);
+				}
+				// todo: Map  GetDealStatus or get another solution to sort by status
+				//else if (sorting == Sorting.Status)
+				//{
+				//	dealsQuery = dealsQuery
+				//		.OrderBy(c => helper.GetDealStatus(c.SellerOk, c.BuyerOk, c.SellerReceived, c.BuyerReceived));
+				//}
+				else if (sorting == Sorting.SendDate)
+				{
+					dealsQuery = dealsQuery
+						.OrderBy(c => c.SendDue);
+				}
+				else if (sorting == Sorting.DeliveryDate)
+				{
+					dealsQuery = dealsQuery
+						.OrderBy(c => c.DeliverDue);
+				}
+
+			}
+
+			var totalContractsCount = dealsQuery.Count();
+
+
+			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;
+			int hitsPerPage = queryModel?.HitsPerPage ?? DefaultHitsPerPage;
+
+			dealsQuery = dealsQuery
+				.Skip((currentPage - 1) * hitsPerPage)
+				.Take(hitsPerPage);
+
+			
+
+
+
+			ContractAllViewModel[] contracts = await dealsQuery
 				.Select(c => new ContractAllViewModel
 				{
 					Id = c.Id,
@@ -73,7 +142,15 @@
 				})
 				.ToArrayAsync();
 
-			return allDeals;
+
+			AllContractServiceModel result = new AllContractServiceModel()
+			{
+				Contracts = contracts,
+				TotalContractsCount = totalContractsCount
+			};
+
+
+			return result;
 		}
 
 		

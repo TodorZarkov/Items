@@ -7,6 +7,8 @@
 	using static Common.EntityValidationErrorMessages.Item;
 
 	using Microsoft.AspNetCore.Mvc;
+	using Items.Web.ViewModels.Base;
+	using Items.Services.Data.Models.Contract;
 
 	public class DealController : BaseController
 	{
@@ -19,14 +21,16 @@
 			this.itemService = itemService;
 		}
 
-		public async Task<IActionResult> All()
+
+		[HttpGet]
+		public async Task<IActionResult> All([FromQuery] QueryFilterModel? queryModel = null)
 		{
 			try
 			{
 				Guid userId = Guid.Parse(User.GetId());
-				IEnumerable<ContractAllViewModel> allDealsModel = await contractService.AllAsync(userId);
+				AllContractServiceModel model = await contractService.AllAsync(userId, queryModel);
 
-				return View(allDealsModel);
+				return View(model);
 			}
 			catch (Exception e)
 			{

@@ -1,10 +1,12 @@
 ﻿namespace Items.Services.Data.Interfaces
 {
+	using Items.Services.Data.Models.Contract;
+	using Items.Web.ViewModels.Base;
 	using Items.Web.ViewModels.Deal;
 
 	public interface IContractService
 	{
-		public Task<IEnumerable<ContractAllViewModel>> AllAsync(Guid userId);
+		public Task<AllContractServiceModel> AllAsync(Guid userId, QueryFilterModel? queryModel = null);
 		Task CancelAsync(Guid id, Guid userId);
 		Task<bool> CanComplainAsync(Guid id, Guid userId);
 		Task<bool> CanReviseAsync(Guid id, Guid userId);

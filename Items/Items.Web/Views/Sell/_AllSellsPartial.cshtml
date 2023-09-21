@@ -4,7 +4,18 @@
 
 	@foreach (AllSellViewModel sell in Model)
 	{
-		<tr style="@(sell.IsAuction?"table-danger":string.Empty)">
+		string rowColor = string.Empty;
+		string stopBtnColor = "btn-danger";
+		if (sell.IsAuction)
+		{
+			rowColor = "table-danger";
+		}
+		else if (sell.IsSell && (sell.Quantity <= 0 || sell.EndSell <= dateTimeProvider.GetCurrentDateTime()))
+		{
+			rowColor = "table-dark";
+			stopBtnColor = "btn-success";
+		}
+		<tr class=@(rowColor)>
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center">
@@ -45,7 +56,7 @@
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100 ">
 
-					<p class="p-0 mb-0 me-1">@sell.Quantity</p>
+					<p class="p-0 mb-0 me-1">@sell.Quantity.ToString("G23")</p>
 					<p class="p-0 mb-0 me-2">@sell.Unit</p>
 					<partial name="_AccessSign" model="@sell.Visibility.Quantity"></partial>
 
@@ -91,10 +102,10 @@
 
 			<td style="height: 60px">
 				<div class="d-flex flex-nowrap align-items-center h-100">
-					
+
 					<a asp-controller="Item"
 					   asp-action="Details"
-					   asp-route-id="@sell.ItemId" 
+					   asp-route-id="@sell.ItemId"
 					   class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center me-2"
 					   title="Details">
 						<i class="fas fa-info"></i>
@@ -108,15 +119,28 @@
 						<i class="fas fa-pencil-alt"></i>
 					</a>
 
-					<a asp-controller="Sell"
-					   asp-action="Stop"
-					   asp-route-id="@sell.ItemId"
-					   class="btn btn-sm @(!sell.IsAuction && sell.EndSell.Date <= DateTime.UtcNow.Date?"btn-primary":"btn-danger") align-self-center d-flex flex-nowrap align-items-center me-2"
-					   title="Stop Sell/Auction!">
-						<i class="fas fa-times"></i>
-					</a>
+					@if (sell.IsAuction)
+					{
+						<button type="button"
+								onclick="stopAuctionAlert('@sell.ItemId')"
+								class="btn btn-sm @stopBtnColor align-self-center d-flex flex-nowrap align-items-center me-2"
+								title="Stop Sell/Auction!">
+							<i class="fas fa-times"></i>
+						</button>
+					}
+					else
+					{
+						<a asp-controller="Sell"
+						   asp-action="Stop"
+						   asp-route-id="@sell.ItemId"
+						   class="btn btn-sm @stopBtnColor align-self-center d-flex flex-nowrap align-items-center me-2"
+						   title="Stop Sell/Auction!">
+							<i class="fas fa-times"></i>
+						</a>
+					}
 
-					@if (sell.IsAuction && sell.EndSell <= DateTime.UtcNow)
+
+					@if (sell.IsAuction && sell.EndSell <= dateTimeProvider.GetCurrentDateTime())
 					{
 						<a class="btn btn-sm btn-warning align-self-center d-flex flex-nowrap align-items-center "
 						   title="Finish Auction">

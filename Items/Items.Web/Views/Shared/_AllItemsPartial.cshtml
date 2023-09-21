@@ -24,7 +24,7 @@
 							Barter Offers: @item.BarterOffers
 						</h6>
 						<p>Auction End: @item.EndSell</p>
-						<a href="#" class="btn btn-sm btn-danger">Stop Auction</a>
+						<button type="button" onclick="stopAuctionAlert('@item.Id')" class="btn btn-sm btn-danger">Stop Auction</button>
 					}
 					else if (item.IsOnMarket ?? false)
 					{
@@ -77,3 +77,5 @@
 	}
 
 </div>
+
+

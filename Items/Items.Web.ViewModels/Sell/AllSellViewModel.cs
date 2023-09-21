@@ -10,7 +10,7 @@
 
 		public string MainPictureUri { get; set; } = null!;
 
-		public string Quantity { get; set; } = null!;
+		public decimal Quantity { get; set; }
 
 		public string Unit { get; set; } = null!;
 

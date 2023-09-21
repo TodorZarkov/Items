@@ -636,7 +636,7 @@
 					MainPictureUri = i.MainPictureUri,
 					Location = i.Location.Name,
 					Place = i.Place.Name,
-					Quantity = i.Quantity.ToString("N2"),
+					Quantity = i.Quantity,
 					Unit = i.Unit.Symbol,
 					CurrentPrice = ((decimal)i.CurrentPrice!).ToString("N2"),
 					Currency = i.Currency!.Symbol,

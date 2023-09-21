@@ -60,3 +60,12 @@ function cascadePlacesDropdown(baseHost) {
 }
 
 
+function stopAuctionAlert(itemId) {
+    let wantToCancel = prompt("Do you really want to stop ONGOING Auction? All Bids will be LOST!");
+
+    if (wantToCancel !== null) {
+        window.location.href = `../Sell/Stop/${itemId}`;
+    }
+}
+
+

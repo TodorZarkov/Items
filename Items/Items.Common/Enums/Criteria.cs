@@ -14,7 +14,7 @@
 
 		[Display(Name = "Not Mine")]
 		NotMine = 4,
-		
-
+		Sold = 5,
+		Bought = 6,
 	}
 }

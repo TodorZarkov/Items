@@ -113,6 +113,7 @@
 			}
 		}
 
+
 		public string? Pluralize(string? name, string language = "en")
 		{
 			if (language != "en")
@@ -170,6 +171,8 @@
 			{
 				if (controllerName == "Deal")
 				{
+					result.Add(Criteria.Sold);
+					result.Add(Criteria.Bought);
 					return result;
 				}
 

@@ -8,13 +8,14 @@
 		HashSet<int> GetRandNUniqueOfM(int n, int m);
 
 		DealStatus GetDealStatus(bool sellerOk, bool buyerOk, bool SellerReceived, bool BuyerReceived);
-
 		Colors GetDealRowColor(bool sellerOk, bool buyerOk, bool SellerReceived, bool BuyerReceived, bool isSeller);
 
 
 		string? Pluralize(string? name, string language = "en");
 		IEnumerable<Criteria> GetAllowedCriteria(bool isAuthenticated, string? controllerName, string? actionName = null);
 		IEnumerable<Sorting> GetAllowedSorting(bool isAuthenticated, string? controllerName);
+
+
 
 		
 	}

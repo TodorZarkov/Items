@@ -163,5 +163,13 @@
 
 			return RedirectToAction("All", "Sell");
 		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> FinishAuction(Guid id)
+		{
+
+			return View();
+		}
 	}
 }

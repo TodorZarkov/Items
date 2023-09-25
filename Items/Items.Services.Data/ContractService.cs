@@ -47,7 +47,23 @@
 								(c.ItemDescription != null && c.ItemDescription.ToLower().Contains(searchTerm.ToLower())) );
 			}
 
+			Criteria[]? criteria = queryModel?.Criteria;
+			if (criteria != null && criteria.Length > 0)
 			
+			{
+				if (criteria.Contains(Criteria.Bought) && !criteria.Contains(Criteria.Sold))
+				{
+					dealsQuery = dealsQuery
+					.Where(c => c.BuyerId == userId);
+				}
+				else if (!criteria.Contains(Criteria.Bought) && criteria.Contains(Criteria.Sold))
+				{
+					dealsQuery = dealsQuery
+						.Where(c => c.SellerId == userId);
+				}
+
+			}
+
 			Sorting? sorting = queryModel?.SortBy;
 			if (sorting != null)
 			{
@@ -72,11 +88,15 @@
 						.OrderByDescending(c => c.CreatedOn);
 				}
 				// todo: Map  GetDealStatus or get another solution to sort by status
-				//else if (sorting == Sorting.Status)
-				//{
-				//	dealsQuery = dealsQuery
-				//		.OrderBy(c => helper.GetDealStatus(c.SellerOk, c.BuyerOk, c.SellerReceived, c.BuyerReceived));
-				//}
+				else if (sorting == Sorting.Status)
+				{
+					dealsQuery = dealsQuery
+						//.OrderBy(c => helper.GetDealStatus(c.SellerOk, c.BuyerOk, c.SellerReceived, c.BuyerReceived));
+						.OrderByDescending(c => c.SellerOk)
+						.ThenByDescending(c => c.BuyerOk)
+						.ThenByDescending(c => c.SellerReceived)
+						.ThenByDescending(c => c.BuyerReceived);
+				}
 				else if (sorting == Sorting.SendDate)
 				{
 					dealsQuery = dealsQuery

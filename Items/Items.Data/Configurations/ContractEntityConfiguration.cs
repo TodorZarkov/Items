@@ -31,6 +31,8 @@
                 .WithMany(e => e.ContractsAsBuyer)
                 .HasForeignKey(e => e.BuyerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            
         }
     }
 }

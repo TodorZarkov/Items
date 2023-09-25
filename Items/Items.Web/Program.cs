@@ -8,7 +8,7 @@ namespace Items.Web
 	using Items.Services.Data.Interfaces;
 	using Items.Services.Mapping;
 	using Items.Web.Infrastructure.ModelBinders;
-
+	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.Configuration;
 	using Microsoft.Extensions.WebEncoders;
@@ -62,6 +62,7 @@ namespace Items.Web
 				options.Lockout.MaxFailedAccessAttempts 
 					= builder.Configuration.GetValue<int>("Lockout:MaxFailedAccessAttempts");
 			})
+				.AddRoles<IdentityRole<Guid>>()
 				.AddEntityFrameworkStores<ItemsDbContext>();
 
 			builder.Services.AddAutoMapper(cfg =>

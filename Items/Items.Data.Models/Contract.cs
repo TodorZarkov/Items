@@ -119,9 +119,5 @@
 
         [MaxLength(DeliveryAddressMaxLength)]
         public string DeliveryAddress { get; set; } = null!;
-
-
-        
-        public DealStatus? Status { get; set; }
     }
 }

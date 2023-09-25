@@ -300,10 +300,11 @@
 				}
 
 				bool isOnMarket = await itemService.IsOnMarketAsync(id);
-				if (isOnMarket)
+				bool isAuction = await itemService.IsAuctionAsync(id);
+				if (isOnMarket || isAuction)
 				{
 					TempData[ErrorMessage] = "Item must be removed from The Market first!";
-					return RedirectToAction("Mine", "Item");
+					return RedirectToAction("All", "Sell");
 				}
 
 				PreDeleteItemViewModel model = await itemService.GetForDeleteByIdAsync(id);
@@ -337,10 +338,11 @@
 				}
 
 				bool isOnMarket = await itemService.IsOnMarketAsync(id);
-				if (isOnMarket)
+				bool isAuction = await itemService.IsAuctionAsync(id);
+				if (isOnMarket || isAuction)
 				{
 					TempData[ErrorMessage] = "Item must be removed from The Market first!";
-					return RedirectToAction("Mine", "Item");
+					return RedirectToAction("All", "Sell");
 				}
 
 				await itemService.DeleteByIdAsync(id);

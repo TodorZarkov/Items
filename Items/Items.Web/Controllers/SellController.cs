@@ -9,14 +9,17 @@
 	using static Common.NotificationMessages;
 
 	using Microsoft.AspNetCore.Mvc;
+	using Items.Services.Common.Interfaces;
 
 	public class SellController : BaseController
 	{
 		private readonly IItemService itemService;
+		private readonly IDateTimeProvider dateTimeProvider;
 
-		public SellController(IItemService itemService)
+		public SellController(IItemService itemService, IDateTimeProvider dateTimeProvider)
 		{
 			this.itemService = itemService;
+			this.dateTimeProvider = dateTimeProvider;
 		}
 
 		public async Task<IActionResult> All(QueryFilterModel? queryModel = null)
@@ -65,7 +68,7 @@
 				if (!isOnMarket && isAuction)
 				{
 					TempData[ErrorMessage] = "Please, finish the Auction First.";
-					RedirectToAction("All", "Sell");
+					return RedirectToAction("All", "Sell");
 				}
 
 
@@ -107,6 +110,13 @@
 				{
 					TempData[InformationMessage] = "Is Not An Auction, You Can Edit Regular.";
 					return RedirectToAction("Edit", "Item", new { id });
+				}
+
+				bool isOnMarket = await itemService.IsOnMarketAsync(id);
+				if (!isOnMarket && isAuction)
+				{
+					TempData[ErrorMessage] = "Please, finish the Auction First.";
+					return RedirectToAction("All", "Sell");
 				}
 
 				AuctionFormModel oldModel = await itemService.GetForAuctionUpdateAsync(id);
@@ -166,8 +176,50 @@
 
 
 		[HttpGet]
-		public async Task<IActionResult> FinishAuction(Guid id)
+		public async Task<IActionResult> SelectOffers(Guid id)
 		{
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				bool isAuthorized = await itemService.IsOwnerAsync(id, userId);
+				if (!isAuthorized)
+				{
+					return RedirectToAction("All", "Item");
+				}
+
+				bool exists = await itemService.ExistAsync(id);
+				if (!exists)
+				{
+					TempData[InformationMessage] = "Item has already been removed!";
+					return RedirectToAction("Mine", "Item");
+				}
+
+				bool isAuction = await itemService.IsAuctionAsync(id);
+				DateTime? endSell = await itemService.GetEndSellDateTime(id);
+				if (!isAuction || !endSell.HasValue)
+				{
+					TempData[InformationMessage] = "The Item is not on Auction any longer.";
+					return RedirectToAction("All", "Sell");
+				}
+
+				if ((DateTime)endSell >= dateTimeProvider.GetCurrentDateTime())
+				{
+					TempData[InformationMessage] = "The  Auction is not finished yet.";
+					return RedirectToAction("All", "Sell");
+				}
+
+
+
+
+
+
+
+
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 
 			return View();
 		}

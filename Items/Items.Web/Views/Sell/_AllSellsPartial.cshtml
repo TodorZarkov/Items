@@ -142,8 +142,11 @@
 
 					@if (sell.IsAuction && sell.EndSell <= dateTimeProvider.GetCurrentDateTime())
 					{
-						<a class="btn btn-sm btn-warning align-self-center d-flex flex-nowrap align-items-center "
-						   title="Finish Auction">
+						<a asp-controller="Sell"
+						   asp-action="SelectOffers"
+						   asp-route-id="@sell.ItemId"
+						   class="btn btn-sm btn-warning align-self-center d-flex flex-nowrap align-items-center "
+						   title="Select Offers">
 							<i class="fas fa-step-forward"></i>
 						</a>
 

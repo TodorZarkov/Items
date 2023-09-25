@@ -215,6 +215,10 @@
 			return result.HighestBid;
 		}
 
+
+
+
+
 		public async Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId)
 		{
 			//todo: consider deleted, expired and so on offers!!!

@@ -1,5 +1,26 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model ItemOfferViewModel
+
+<div class="card mb-3" >
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="@Model.MainPictureUri" style="max-height: 140px" class="img-fluid rounded-start" alt="The Auction Item Image">
+        </div>
+        <div class="col-md-4">
+            <div class="card-body">
+                <h4 class="card-title">Offers for @Model.Name</h4>
+                <p class ="card-text mb-1">Start Price - @(Model.StartPrice)@(Model.CurrencySymbol)</p>
+                <p class="card-text mb-1"><strong>Highest Bid - @(Model.HighestBid)@(Model.CurrencySymbol)</strong></p>
+                <p class="card-text mb-1"><strong>Barters - @(Model.BarterOffers)</strong></p>
+                
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-body">
+               
+                <p class="card-text mb-1">You have @(Model.QuantityLeft)@(Model.Unit) Left</p>
+                <p class="card-text mb-1">Location - @(Model.Country), @(Model.Town)</p>
+                <p class="card-text mb-1 "><small class="text-muted">The auction ended at @Model.EndSell</small></p>
+            </div>
+        </div>
+    </div>
+</div>

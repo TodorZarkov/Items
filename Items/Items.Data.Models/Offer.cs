@@ -11,7 +11,7 @@
         [Key]
         public Guid Id { get; set; }
 
-
+        public bool Win { get; set; }
 
 
         [MaxLength(MessageMaxLength)]

@@ -1,21 +1,19 @@
 ﻿namespace Items.Services.Data.Models.Offer
 {
-	using Items.Web.ViewModels.Bid;
 	using Items.Web.ViewModels.Item;
+	using Items.Web.ViewModels.Offer;
 
 	public class AllOfferServiceModel
 	{
 		public AllOfferServiceModel()
 		{
-			Bids = new HashSet<AllBidViewModel>();
-			ItemsFitForBarter = new HashSet<ItemForBarterViewModel>();
+			Offers = new HashSet<AllOfferViewModel>();
 		}
 
-		public IEnumerable<AllBidViewModel> Bids { get; set; }
+		public IEnumerable<AllOfferViewModel> Offers { get; set; }
 
 		public int TotalOffersCount { get; set; }
 
-        public IEnumerable<ItemForBarterViewModel> ItemsFitForBarter { get; set; }
-    }
-		
+		public ItemBidViewModel Item { get; set; } = null!;
+	}
 }

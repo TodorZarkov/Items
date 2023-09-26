@@ -36,8 +36,7 @@
 		}
 
 
-
-		public async Task<AllOfferServiceModel> AllMineAsync(Guid userId, QueryFilterModel? queryModel = null)
+		public async Task<AllBidServiceModel> AllMineAsync(Guid userId, QueryFilterModel? queryModel = null)
 		{
 			var offerQuery = dbContext.Offers
 				.AsQueryable()
@@ -150,13 +149,20 @@
 				})
 				.ToArrayAsync();
 
-			AllOfferServiceModel result = new AllOfferServiceModel()
+			AllBidServiceModel result = new AllBidServiceModel()
 			{
 				Bids = bids,
 				TotalOffersCount = totalOffersCount
 			};
 
 			return result;
+		}
+
+
+		public Task<AllOfferServiceModel> AllByItemIdAsync(Guid id, QueryFilterModel? queryModel)
+		{
+			
+			throw new NotImplementedException();
 		}
 
 		public async Task<AddBidFormModel> GetForCreate(Guid itemId)
@@ -214,7 +220,6 @@
 
 			return result.HighestBid;
 		}
-
 
 
 
@@ -298,9 +303,9 @@
 			await dbContext.SaveChangesAsync();
 		}
 
-		public async Task DeleteAsync(Guid id)
+		public async Task DeleteAsync(Guid offerId)
 		{
-			Offer? offer = await dbContext.Offers.FindAsync(id);
+			Offer? offer = await dbContext.Offers.FindAsync(offerId);
 			if (offer == null)
 			{
 				return;
@@ -310,5 +315,19 @@
 
 			await dbContext.SaveChangesAsync();
 		}
+
+		public async Task<int> RemoveExpiredByItemId(Guid itemId)
+		{
+			Offer[] expiredOffers = await dbContext.Offers
+				.Where(o => o.ItemId == itemId && o.Expires < dateTimeProvider.GetCurrentDateTime())
+				.ToArrayAsync();
+			int result = expiredOffers.Length;
+
+			dbContext.Offers.RemoveRange(expiredOffers);
+			await dbContext.SaveChangesAsync();
+
+			return result;
+		}
+
 	}
 }

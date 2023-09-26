@@ -10,16 +10,19 @@
 
 	using Microsoft.AspNetCore.Mvc;
 	using Items.Services.Common.Interfaces;
+	using Items.Services.Data.Models.Offer;
 
 	public class SellController : BaseController
 	{
 		private readonly IItemService itemService;
 		private readonly IDateTimeProvider dateTimeProvider;
+		private readonly IOfferService offerService;
 
-		public SellController(IItemService itemService, IDateTimeProvider dateTimeProvider)
+		public SellController(IItemService itemService, IDateTimeProvider dateTimeProvider, IOfferService offerService)
 		{
 			this.itemService = itemService;
 			this.dateTimeProvider = dateTimeProvider;
+			this.offerService = offerService;
 		}
 
 		public async Task<IActionResult> All(QueryFilterModel? queryModel = null)
@@ -176,7 +179,7 @@
 
 
 		[HttpGet]
-		public async Task<IActionResult> SelectOffers(Guid id)
+		public async Task<IActionResult> Offers(Guid id, QueryFilterModel? queryModel = null)
 		{
 			try
 			{
@@ -207,21 +210,19 @@
 					TempData[InformationMessage] = "The  Auction is not finished yet.";
 					return RedirectToAction("All", "Sell");
 				}
+				
+				int expiredCount = await offerService.RemoveExpiredByItemId(id);
+
+				AllOfferServiceModel model = await offerService.AllByItemIdAsync(id, queryModel);
 
 
-
-
-
-
-
-
+				return View(model);
 			}
 			catch (Exception e)
 			{
 				return GeneralError(e);
 			}
 
-			return View();
 		}
 	}
 }

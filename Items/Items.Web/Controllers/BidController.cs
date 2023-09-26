@@ -41,7 +41,7 @@
 			{
 				Guid userId = Guid.Parse(User.GetId());
 
-				AllOfferServiceModel model = await offerService.AllMineAsync(userId, queryModel);
+				AllBidServiceModel model = await offerService.AllMineAsync(userId, queryModel);
 
 				model.ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId);
 
@@ -270,7 +270,7 @@
 					}
 
 					
-					AllOfferServiceModel allModel = await offerService.AllMineAsync(userId, queryModel);
+					AllBidServiceModel allModel = await offerService.AllMineAsync(userId, queryModel);
 
 					allModel.ItemsFitForBarter = await itemService.MyAvailableForBarterAsync(userId);
 

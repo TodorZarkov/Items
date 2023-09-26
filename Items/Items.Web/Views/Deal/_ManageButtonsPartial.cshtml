@@ -97,15 +97,16 @@
 	}
 	else if(!deal.IsSeller && deal.DealStatus == Fulfilled)
 	{
+		<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id"
+		   class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center me-1">
+			<p class="p-0 mb-0 me-0 "><i class="fas fa-info-circle"></i></p>
+		</a>
 		<a asp-controller="Item" asp-action="CreateFromDeal" asp-route-id="@deal.Id"
 		   class="btn btn-sm btn-primary align-self-center d-flex flex-nowrap align-items-center me-1">
 			<p class="p-0 mb-0 me-1 ">Create</p>
 			<p class="p-0 mb-0 me-0 ">Item</p>
 		</a>
-		<a asp-controller="Deal" asp-action="Details" asp-route-id="@deal.Id"
-		   class="btn btn-sm btn-info align-self-center d-flex flex-nowrap align-items-center me-1">
-			<p class="p-0 mb-0 me-0 "><i class="fas fa-info-circle"></i></p>
-		</a>
+		
 	}
 	else //Off
 	{

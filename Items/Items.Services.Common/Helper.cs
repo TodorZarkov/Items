@@ -239,15 +239,13 @@
 				else if (controllerName == "Sell" && actionName == "Offers")
 				{
 					result.AddRange(new[] { 
-											  Sorting.PriceDec
+											  Sorting.UserName
+											, Sorting.PriceDec
 											, Sorting.PriceAsc
-											, Sorting.UserName
 											, Sorting.Email
 											, Sorting.Phone
 											, Sorting.BarterName
 											, Sorting.EndDate
-											, Sorting.Country
-											, Sorting.Town
 					});
 				}
 				else if (controllerName == "Sell")

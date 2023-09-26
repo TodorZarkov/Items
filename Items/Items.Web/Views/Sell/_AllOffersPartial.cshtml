@@ -1,1 +1,127 @@
 ﻿@model IEnumerable<AllOfferViewModel>
+
+<tbody>
+
+	@foreach (AllOfferViewModel offer in Model)
+	{
+		<tr>
+			<th scope="row" style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					@if (offer.UserName != null)
+					{
+						<p class="p-0 mb-0 me-2">@offer.UserName</p>
+					}
+					else
+					{
+						<partial name="_AccessSign" model="@AccessModifier.Private" />
+					}
+				</div>
+			</th>
+
+			<td scope="row" style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					@if (offer.Email != null)
+					{
+						<p class="p-0 mb-0 me-2">@offer.Email</p>
+					}
+					else
+					{
+						<partial name="_AccessSign" model="@AccessModifier.Private" />
+					}
+				</div>
+			</td>
+
+			<td scope="row" style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					@if (offer.Phone != null)
+					{
+						<p class="p-0 mb-0 me-2">@offer.Phone</p>
+					}
+					else
+					{
+						<partial name="_AccessSign" model="@AccessModifier.Private" />
+					}
+				</div>
+			</td>
+
+			<td class="dropdown">
+
+				<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fas fa-align-left"></i>
+				</button>
+				<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;">
+					<p>
+						@offer.Message
+					</p>
+				</div>
+
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-1 ">@offer.Value</p>
+					<p class="p-0 mb-0 me-0 ">@offer.CurrencySymbol</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-1">@offer.Quantity.ToString("G29")</p>
+					<p class="p-0 mb-0 me-0">@offer.UnitSymbol</p>
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+
+					<p class="p-0 mb-0 me-2">@offer.Expires</p>
+
+				</div>
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<img style="height: 50px; border-radius: 2px;" src="@offer.BarterPictureUri">
+				</div>
+			</td>
+
+			<th scope="row" style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-2">@offer.BarterName</p>
+				</div>
+			</th>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center">
+					<p class="p-0 mb-0 me-1">@offer.BarterQuantity</p>
+					<p class="p-0 mb-0 me-0">@offer.BarterUnit</p>
+				</div>
+			</td>
+
+			<td class="dropdown">
+				@if (offer.BarterDescription != null)
+				{
+					<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="fas fa-align-left"></i>
+					</button>
+					<div class="dropdown-menu p-4 text-muted" style="max-width: 500px;">
+						<p>
+							@offer.BarterDescription
+						</p>
+					</div>
+				}
+			</td>
+
+			<td style="height: 60px">
+				<div class="d-flex flex-nowrap align-items-center h-100">
+					<a asp-controller=""
+					   asp-action=""
+					   asp-route-id="@offer.Id"
+					   class="btn btn-sm btn-danger align-self-center">Accept Offer</a>
+				</div>
+			</td>
+		</tr>
+	}
+
+
+</tbody>

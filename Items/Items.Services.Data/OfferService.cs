@@ -239,16 +239,6 @@
 					offerQuery = offerQuery
 						.OrderBy(o => o.Expires);
 				}
-				else if (sorting == Sorting.Country)
-				{
-					offerQuery = offerQuery
-						.OrderByDescending(o => o.BuyerLocation == null ? null : o.BuyerLocation.Country);
-				}
-				else if (sorting == Sorting.Town)
-				{
-					offerQuery = offerQuery
-						.OrderByDescending(o => o.BuyerLocation == null ? null : o.BuyerLocation.Town);
-				}
 				else if (sorting == Sorting.PriceAsc)
 				{
 					offerQuery = offerQuery

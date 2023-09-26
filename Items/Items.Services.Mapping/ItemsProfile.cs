@@ -48,7 +48,15 @@
 				.ForMember(d => d.BarterName,
 					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Name : null))
 				.ForMember(d => d.BarterDescription,
-					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Description : null));
+					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Description : null))
+				.ForMember(d => d.BarterQuantity,
+					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Quantity.ToString("G29") : null))
+				.ForMember(d => d.CurrencySymbol,
+					cfg => cfg.MapFrom(s => s.Currency.Symbol))
+				.ForMember(d => d.UnitSymbol,
+					cfg => cfg.MapFrom(s => s.Item.Unit.Symbol))
+				.ForMember(d => d.Expires,
+					cfg => cfg.MapFrom(s => s.Expires.ToString(BiddingLongUtcDateTime)));
 
 
 			//Item

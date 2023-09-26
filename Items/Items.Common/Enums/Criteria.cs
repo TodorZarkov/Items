@@ -16,5 +16,7 @@
 		NotMine = 4,
 		Sold = 5,
 		Bought = 6,
+		Barters = 7,
+		Bids = 8,
 	}
 }

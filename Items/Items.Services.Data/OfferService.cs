@@ -21,6 +21,8 @@
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 	using Items.Common.Enums;
+	using Items.Web.ViewModels.Offer;
+	using AutoMapper.QueryableExtensions;
 
 	public class OfferService : IOfferService
 	{
@@ -109,7 +111,7 @@
 				.Take(hitsPerPage);
 
 			IEnumerable<AllBidViewModel> bids = await offerQuery
-				
+
 				//.Where(o => o.Expires > DateTime.UtcNow)
 				.Select(o => new AllBidViewModel
 				{
@@ -159,10 +161,134 @@
 		}
 
 
-		public Task<AllOfferServiceModel> AllByItemIdAsync(Guid id, QueryFilterModel? queryModel)
+		public async Task<AllOfferServiceModel> AllByItemIdAsync(Guid id, QueryFilterModel? queryModel)
 		{
-			
-			throw new NotImplementedException();
+			var offerQuery = dbContext.Offers
+				.AsNoTracking()
+				.AsQueryable()
+				.Where(o => o.ItemId == id);
+
+			string? searchTerm = queryModel?.SearchTerm;
+			if (!string.IsNullOrEmpty(searchTerm))
+			{
+				offerQuery = offerQuery
+
+					.Where(o => (o.UseBuyerName && o.Buyer.UserName.ToLower().Contains(searchTerm.ToLower()))
+								|| (o.UseBuyerEmail && o.Buyer.Email.ToLower().Contains(searchTerm.ToLower()))
+								|| (o.UseBuyerPhone && o.Buyer.PhoneNumber.ToLower().Contains(searchTerm.ToLower())) // todo: what when user gets deleted from the site?
+								|| (o.BarterItem != null && o.BarterItem.Name.ToLower().Contains(searchTerm.ToLower()))
+					);
+			}
+
+			Criteria[]? criteria = queryModel?.Criteria;
+			if (criteria != null && criteria.Length > 0)
+			{
+				if (criteria.Contains(Criteria.Barters) && !criteria.Contains(Criteria.Bids))
+				{
+					offerQuery = offerQuery
+						.Where(o => o.BarterItem != null
+									&& o.Value == 0
+									);
+				}
+				else if (!criteria.Contains(Criteria.Barters) && criteria.Contains(Criteria.Bids))
+				{
+					offerQuery = offerQuery
+						.Where(o => o.BarterItem == null
+									&& o.Value != 0
+									);
+				}
+				else if (criteria.Contains(Criteria.Barters) && criteria.Contains(Criteria.Bids))
+				{
+					offerQuery = offerQuery
+						.Where(o => o.BarterItem != null
+									&& o.Value != 0
+									);
+				}
+
+				
+			}
+
+			Sorting? sorting = queryModel?.SortBy;
+			if (sorting != null)
+			{
+				if (sorting == Sorting.UserName)
+				{
+					offerQuery = offerQuery
+						.OrderByDescending(o => o.UseBuyerName)
+						.ThenBy(o => o.Buyer.UserName);
+				}
+				else if (sorting == Sorting.Email)
+				{
+					offerQuery = offerQuery
+						.OrderByDescending(o => o.UseBuyerEmail)
+						.ThenBy(o => o.Buyer.Email);
+				}
+				else if (sorting == Sorting.Phone)
+				{
+					offerQuery = offerQuery
+						.OrderByDescending(o => o.UseBuyerPhone)
+						.ThenBy(o => o.Buyer.PhoneNumber);
+				}
+				else if (sorting == Sorting.BarterName)
+				{
+					offerQuery = offerQuery
+						.OrderBy(o => o.BarterItem == null ? null : o.BarterItem.Name);
+				}
+				else if (sorting == Sorting.EndDate)
+				{
+					offerQuery = offerQuery
+						.OrderBy(o => o.Expires);
+				}
+				else if (sorting == Sorting.Country)
+				{
+					offerQuery = offerQuery
+						.OrderByDescending(o => o.BuyerLocation == null ? null : o.BuyerLocation.Country);
+				}
+				else if (sorting == Sorting.Town)
+				{
+					offerQuery = offerQuery
+						.OrderByDescending(o => o.BuyerLocation == null ? null : o.BuyerLocation.Town);
+				}
+				else if (sorting == Sorting.PriceAsc)
+				{
+					offerQuery = offerQuery
+						.OrderBy(o => o.Value);
+				}
+				else if (sorting == Sorting.PriceDec)
+				{
+					offerQuery = offerQuery
+						.OrderByDescending(o => o.Value);
+				}
+
+
+			}
+
+			var totalOffersCount = await offerQuery.CountAsync();
+
+			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;
+			int hitsPerPage = queryModel?.HitsPerPage ?? DefaultHitsPerPage;
+
+			offerQuery = offerQuery
+				.Skip((currentPage - 1) * hitsPerPage)
+				.Take(hitsPerPage);
+
+
+			IEnumerable<AllOfferViewModel> offersModel = await offerQuery
+				.ProjectTo<AllOfferViewModel>(mapper.ConfigurationProvider).ToArrayAsync();
+
+			ItemBidViewModel itemModel = await dbContext.Items
+				.Where(i => i.Id == id)
+				.ProjectTo<ItemBidViewModel>(mapper.ConfigurationProvider)
+				.SingleAsync();
+
+			AllOfferServiceModel result = new AllOfferServiceModel()
+			{
+				Offers = offersModel,
+				TotalOffersCount = totalOffersCount,
+				Item = itemModel
+			};
+
+			return result;
 		}
 
 		public async Task<AddBidFormModel> GetForCreate(Guid itemId)
@@ -188,7 +314,8 @@
 			var result = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == itemId)
-				.Select(i => new {
+				.Select(i => new
+				{
 					HighestBid = i.Offers.Count != 0 ? i.Offers.Max(o => o.Value) : 0,
 					StartPrice = i.CurrentPrice
 				})
@@ -207,7 +334,8 @@
 			var result = await dbContext.Offers
 				.Where(o => o.Id == id)
 				.Where(o => !o.Item.Deleted)
-				.Select(o => new {
+				.Select(o => new
+				{
 					HighestBid = o.Item.Offers.Count != 0 ? o.Item.Offers.Max(o => o.Value) : 0,
 					StartPrice = o.Item.CurrentPrice
 				})
@@ -228,9 +356,9 @@
 		{
 			//todo: consider deleted, expired and so on offers!!!
 			bool result = await dbContext.Offers
-				.AnyAsync(o => 
-								o.Expires >= dateTimeProvider.GetCurrentDateTime() 
-								&& o.BuyerId == userId 
+				.AnyAsync(o =>
+								o.Expires >= dateTimeProvider.GetCurrentDateTime()
+								&& o.BuyerId == userId
 								&& o.ItemId == itemId);
 
 			return result;

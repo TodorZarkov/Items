@@ -3,7 +3,9 @@
 	using AutoMapper;
 	using Items.Data.Models;
 	using Items.Web.ViewModels.Bid;
+	using Items.Web.ViewModels.Item;
 	using Items.Web.ViewModels.Location;
+	using Items.Web.ViewModels.Offer;
 	using Items.Web.ViewModels.Place;
 
 	public class ItemsProfile : Profile
@@ -32,6 +34,14 @@
 
             //Offer
             CreateMap<AddBidFormModel, Offer>();
+            CreateMap<Offer, AllOfferViewModel>();
+
+
+            //Item
+            CreateMap<Item, ItemBidViewModel>();
+
+
+
         }
     }
 }

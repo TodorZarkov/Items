@@ -35,6 +35,10 @@
 		SendDate = 11,
 
 		[Display(Name = "Delivery Date")]
-		DeliveryDate = 12
+		DeliveryDate = 12,
+		UserName = 13,
+		Email = 14,
+		Phone = 15,
+		BarterName = 16
 	}
 }

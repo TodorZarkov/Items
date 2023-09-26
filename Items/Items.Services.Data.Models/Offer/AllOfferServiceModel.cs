@@ -14,6 +14,6 @@
 
 		public int TotalOffersCount { get; set; }
 
-		public ItemBidViewModel Item { get; set; } = null!;
+		public ItemOfferViewModel Item { get; set; } = null!;
 	}
 }

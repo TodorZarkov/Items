@@ -276,9 +276,9 @@
 			IEnumerable<AllOfferViewModel> offersModel = await offerQuery
 				.ProjectTo<AllOfferViewModel>(mapper.ConfigurationProvider).ToArrayAsync();
 
-			ItemBidViewModel itemModel = await dbContext.Items
+			ItemOfferViewModel itemModel = await dbContext.Items
 				.Where(i => i.Id == id)
-				.ProjectTo<ItemBidViewModel>(mapper.ConfigurationProvider)
+				.ProjectTo<ItemOfferViewModel>(mapper.ConfigurationProvider)
 				.SingleAsync();
 
 			AllOfferServiceModel result = new AllOfferServiceModel()
@@ -449,12 +449,11 @@
 			Offer[] expiredOffers = await dbContext.Offers
 				.Where(o => o.ItemId == itemId && o.Expires < dateTimeProvider.GetCurrentDateTime())
 				.ToArrayAsync();
-			int result = expiredOffers.Length;
 
 			dbContext.Offers.RemoveRange(expiredOffers);
 			await dbContext.SaveChangesAsync();
 
-			return result;
+			return await dbContext.Offers.Where(o => o.ItemId == itemId).CountAsync();
 		}
 
 	}

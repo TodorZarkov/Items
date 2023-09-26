@@ -1,0 +1,43 @@
+﻿@model Items.Services.Data.Models.Offer.AllOfferServiceModel
+
+@{
+	ViewData["Title"] = "Item Offers";
+	ViewBag.ActiveLink = "AllSell";
+}
+
+@*here the item for sale*@
+
+
+<vc:query-filter hits="@Model.TotalOffersCount" />
+
+
+@if (Model.Offers.Any())
+{
+	<table class="table table-warning table-sm align-middle">
+		<thead>
+			<tr>
+				<th scope="col">User Name</th>
+				<th scope="col">Email</th>
+				<th scope="col">Phone</th>
+				<th scope="col">Message</th>
+				<th scope="col">Value</th>
+				<th scope="col">Qty</th>
+				<th scope="col">Expire</th>
+				<th scope="col" colspan="4">Barter Item</th>
+				<th scope="col" class="ms-auto">Manage</th>
+			</tr>
+		</thead>
+
+		@*<partial name="_AllOffersPartial" model="@Model.Offers" />*@
+
+	</table>
+
+}
+else
+{
+	<div style="margin-top: 40vh" class="d-flex align-items-center justify-content-center">
+		<h3>No Sells.</h3>
+	</div>
+}
+
+

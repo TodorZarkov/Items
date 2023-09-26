@@ -17,6 +17,11 @@
 		Task<decimal?> GetHighestBidByItemIdAsync(Guid itemId);
 		Task<decimal?> GetHighestBidByOfferIdAsync(Guid id);
 		Task<bool> IsOwnerAsync(Guid id, Guid userId);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="itemId"></param>
+		/// <returns>Offers count after the removing.</returns>
 		Task<int> RemoveExpiredByItemId(Guid itemId);
 		Task<decimal> SufficientQuantity(Guid id, decimal quantity);
 	}

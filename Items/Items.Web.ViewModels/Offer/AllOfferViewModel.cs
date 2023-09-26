@@ -2,15 +2,19 @@
 {
 	public class AllOfferViewModel
 	{
-		public Guid OfferId { get; set; }
+        public string? UserName { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+
+        public Guid Id { get; set; }
 
 		public string Expires { get; set; } = null!;
 
 		public string? Message { get; set; }
 
 
-		public decimal QuantityToBuy { get; set; }
-		public decimal ValuePerQuantity { get; set; }
+		public decimal Quantity { get; set; }
+		public decimal Value { get; set; }
 
 
 		public string? BarterQuantity { get; set; }

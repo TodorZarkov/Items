@@ -211,7 +211,13 @@
 					return RedirectToAction("All", "Sell");
 				}
 				
-				int expiredCount = await offerService.RemoveExpiredByItemId(id);
+				int offersLeft = await offerService.RemoveExpiredByItemId(id);
+				if (offersLeft <= 0)
+				{
+					await itemService.StopSellByItemIdAsync(id);
+					TempData[InformationMessage] = "All Offers has expired. Auction Stopped!";
+					return RedirectToAction("All", "Sell");
+				}
 
 				AllOfferServiceModel model = await offerService.AllByItemIdAsync(id, queryModel);
 

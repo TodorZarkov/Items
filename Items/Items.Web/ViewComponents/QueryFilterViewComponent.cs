@@ -30,17 +30,21 @@
 
 			bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 
-
-			if (controllerName != "Deal")
+			model.SearchPlaceHolder = $"Search in {controllerNamePlural}";
+			if ((controllerName == "Sell" && actionName == "Offers"))
 			{
-				model.AllAvailableCategories = await categoryService.GetForSelectAsync();
+				model.SearchPlaceHolder = $"Search in Offers for this Item";
 			}
-			else
+
+			if (controllerName == "Deal" || (controllerName == "Sell" && actionName == "Offers"))
 			{
 				model.AllAvailableCategories = new List<ForSelectCategoryViewModel>();
 			}
-
-			model.SearchPlaceHolder = $"Search in {controllerNamePlural}";
+			else
+			{
+				model.AllAvailableCategories = await categoryService.GetForSelectAsync();
+			}
+			
 
 			model.AvailableCriteria
 				.AddRange(helper.GetAllowedCriteria(isAuthenticated, controllerName, actionName));
@@ -50,8 +54,14 @@
 			if (isAuthenticated)
 			{
 				Guid userId = Guid.Parse(UserClaimsPrincipal.GetId());
-
-				model.MyAvailableCategories = await categoryService.GetForSelectAsync(userId);
+				if (controllerName == "Deal" || (controllerName == "Sell" && actionName == "Offers"))
+				{
+					model.MyAvailableCategories = new List<ForSelectCategoryViewModel>();
+				}
+				else
+				{
+					model.MyAvailableCategories = await categoryService.GetForSelectAsync(userId);
+				}
 
 				if (Request.Query.ContainsKey("LocationId"))
 				{

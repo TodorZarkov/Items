@@ -46,7 +46,9 @@
 				.ForMember(d => d.BarterPictureUri,
 					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.MainPictureUri : null))
 				.ForMember(d => d.BarterName,
-					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Name : null));
+					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Name : null))
+				.ForMember(d => d.BarterDescription,
+					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Description : null));
 
 
 			//Item
@@ -68,8 +70,7 @@
 				.ForMember(d => d.Unit,
 					opt => opt.MapFrom(s => s.Unit.Symbol))
 				.ForMember(d => d.EndSell,
-					opt => opt.MapFrom(s => ((DateTime)(s.EndSell!)).ToString(BiddingLongUtcDateTime)))
-				;
+					opt => opt.MapFrom(s => ((DateTime)(s.EndSell!)).ToString(BiddingLongUtcDateTime)));
 
 
 

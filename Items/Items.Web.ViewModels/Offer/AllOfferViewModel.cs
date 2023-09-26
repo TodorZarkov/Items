@@ -22,5 +22,6 @@
 		public Guid? BarterItemId { get; set; }
 		public string? BarterPictureUri { get; set; }
 		public string? BarterName { get; set; }
-	}
+        public string? BarterDescription { get; set; }
+    }
 }

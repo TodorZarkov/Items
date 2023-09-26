@@ -5,7 +5,7 @@
 	ViewBag.ActiveLink = "AllSell";
 }
 
-@*here the item for sale*@
+<partial name="_SellItemPartial" model="@Model.Item"/>
 
 
 <vc:query-filter hits="@Model.TotalOffersCount" />
@@ -20,15 +20,15 @@
 				<th scope="col">Email</th>
 				<th scope="col">Phone</th>
 				<th scope="col">Message</th>
-				<th scope="col">Value</th>
+				<th scope="col">Price</th>
 				<th scope="col">Qty</th>
 				<th scope="col">Expire</th>
-				<th scope="col" colspan="4">Barter Item</th>
+				<th scope="col" colspan="5">Barter Item</th>
 				<th scope="col" class="ms-auto">Manage</th>
 			</tr>
 		</thead>
 
-		@*<partial name="_AllOffersPartial" model="@Model.Offers" />*@
+		<partial name="_AllOffersPartial" model="@Model.Offers" />
 
 	</table>
 

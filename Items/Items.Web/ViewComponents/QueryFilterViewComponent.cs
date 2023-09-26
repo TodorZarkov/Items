@@ -45,7 +45,7 @@
 			model.AvailableCriteria
 				.AddRange(helper.GetAllowedCriteria(isAuthenticated, controllerName, actionName));
 			model.AvailableSorting
-				.AddRange(helper.GetAllowedSorting(isAuthenticated, controllerName));
+				.AddRange(helper.GetAllowedSorting(isAuthenticated, controllerName, actionName));
 
 			if (isAuthenticated)
 			{

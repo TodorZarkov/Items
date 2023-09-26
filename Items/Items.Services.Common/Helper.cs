@@ -180,6 +180,12 @@
 				{
 					result.AddRange(new[] { Criteria.Mine, Criteria.NotMine });
 				}
+				else if (controllerName == "Sell" && actionName == "Offers")
+				{
+					result.AddRange(new[] { Criteria.Bids
+											, Criteria.Barters 
+					});
+				}
 				else if (controllerName == "Sell")
 				{
 					result.AddRange(new[] { Criteria.Auctions, Criteria.OnSale });
@@ -189,38 +195,79 @@
 			return result;
 		}
 
-		public IEnumerable<Sorting> GetAllowedSorting(bool isAuthenticated, string? controllerName)
+		public IEnumerable<Sorting> GetAllowedSorting(bool isAuthenticated
+													, string? controllerName
+													, string? actionName = null
+			)
 		{
 			List<Sorting> result = new List<Sorting>();
 
 
 			if (controllerName == "Item" || controllerName == "Category")
 			{
-				result.AddRange(new[] { Sorting.Name, Sorting.PriceDec, Sorting.PriceAsc, Sorting.Latest });
+				result.AddRange(new[] { Sorting.Name
+										, Sorting.PriceDec
+										, Sorting.PriceAsc
+										, Sorting.Latest 
+				});
 			}
 
 			if (isAuthenticated)
 			{
 				if (controllerName == "Location" || controllerName == "Place")
 				{
-					result.AddRange(new[] { Sorting.Name, Sorting.Country, Sorting.Town });
+					result.AddRange(new[] { Sorting.Name
+											, Sorting.Country
+											, Sorting.Town 
+					});
 				}
-				else if (controllerName == "Bid" || controllerName == "Sell" || controllerName == "Deal")
+				else if (controllerName == "Bid" || controllerName == "Deal")
 				{
-					result.AddRange(new[] { Sorting.Name, Sorting.PriceDec, Sorting.PriceAsc });
+					result.AddRange(new[] { Sorting.Name
+											, Sorting.PriceDec
+											, Sorting.PriceAsc 
+					});
 				}
 
 				if (controllerName == "Bid")
 				{
-					result.AddRange(new[] { Sorting.Latest, Sorting.EndDate, Sorting.StartDate });
+					result.AddRange(new[] { Sorting.Latest
+											, Sorting.EndDate
+											, Sorting.StartDate 
+					});
+				}
+				else if (controllerName == "Sell" && actionName == "Offers")
+				{
+					result.AddRange(new[] { 
+											  Sorting.PriceDec
+											, Sorting.PriceAsc
+											, Sorting.UserName
+											, Sorting.Email
+											, Sorting.Phone
+											, Sorting.BarterName
+											, Sorting.EndDate
+											, Sorting.Country
+											, Sorting.Town
+					});
 				}
 				else if (controllerName == "Sell")
 				{
-					result.AddRange(new[] { Sorting.Latest, Sorting.Type, Sorting.EndDate, Sorting.StartDate });
+					result.AddRange(new[] { Sorting.Name
+											, Sorting.PriceDec
+											, Sorting.PriceAsc
+											, Sorting.Latest
+											, Sorting.Type
+											, Sorting.EndDate
+											, Sorting.StartDate 
+					});
 				}
 				else if (controllerName == "Deal")
 				{
-					result.AddRange(new[] { Sorting.Latest, Sorting.Status, Sorting.SendDate, Sorting.DeliveryDate, });
+					result.AddRange(new[] { Sorting.Latest
+											, Sorting.Status
+											, Sorting.SendDate
+											, Sorting.DeliveryDate
+					});
 				}
 			}
 

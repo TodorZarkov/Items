@@ -27,10 +27,6 @@
         [Required]
         public ApplicationUser Buyer { get; set; } = null!;
 
-		[ForeignKey(nameof(BuyerLocation))]
-		public Guid? LocationId { get; set; }
-
-		public Location? BuyerLocation { get; set; }
 
         public bool UseBuyerName { get; set; }
         public bool UseBuyerEmail { get; set; }

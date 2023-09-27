@@ -66,18 +66,19 @@
 		<span asp-validation-for="@Model.BarterQuantity" class="text-danger text-sm-start"></span>
 	</div>
 
-	<div class="form-floating mb-3 ">
-		<select asp-for="@Model.LocationId"
-				asp-items="@(new SelectList(
-										Model.AvailableLocations,
-										nameof(ForSelectLocationViewModel.LocationId),
-										nameof(ForSelectLocationViewModel.LocationName),
-										Model.LocationId))"
-				class="form-control form-control-sm">
-			<option selected></option>
-			</select>
-		<label asp-for="@Model.LocationId"></label>
-		<span asp-validation-for="@Model.LocationId" class="text-danger text-sm-start"></span>
+	<div class="form-check">
+		<input class="form-check-input" type="checkbox" asp-for="@Model.UseBuyerName">
+		<label class="form-check-label" asp-for="@Model.UseBuyerName"></label>
 	</div>
-
+	
+	<div class="form-check">
+		<input class="form-check-input" type="checkbox" asp-for="@Model.UseBuyerEmail">
+		<label class="form-check-label" asp-for="@Model.UseBuyerEmail"></label>
+	</div>
+	
+	<div class="form-check">
+		<input class="form-check-input" type="checkbox" asp-for="@Model.UseBuyerPhone">
+		<label class="form-check-label" asp-for="@Model.UseBuyerPhone"></label>
+	</div>
+	
 </form>

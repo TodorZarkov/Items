@@ -90,8 +90,6 @@
 					await itemService.MyAvailableForBarterAsync(userId);
 				model.AvailableCurrencies =
 					await currencyService.AllForSelectAsync();
-				model.AvailableLocations =
-					await locationService.GetForSelectAsync(userId);
 
 				return View(model);
 			}
@@ -169,26 +167,15 @@
 					}
 				}
 
-				bool isValidLocation = true;
-				if (model.LocationId != null)
-				{
-					isValidLocation =
-						await locationService.IsAllowedIdAsync((Guid)model.LocationId, userId);
-					if (!isValidLocation)
-					{
-						ModelState.AddModelError(nameof(model.LocationId), InvalidLocationId);
-					}
-				}
 
 
-				if (!ModelState.IsValid || quantityLeft < 0m || isInvalidExpirationDate || !isValidBidValue || !isValidCurrency || itemCurrencyId != model.CurrencyId || !isValidBarterItem || !isValidLocation)
+				if (!ModelState.IsValid || quantityLeft < 0m || isInvalidExpirationDate || !isValidBidValue || !isValidCurrency || itemCurrencyId != model.CurrencyId || !isValidBarterItem )
 				{
 					model.AvailableBarters =
 					await itemService.MyAvailableForBarterAsync(userId);
 					model.AvailableCurrencies =
 						await currencyService.AllForSelectAsync();
-					model.AvailableLocations =
-						await locationService.GetForSelectAsync(userId);
+					
 
 					return View(model);
 				}

@@ -65,13 +65,12 @@
 		public decimal? BarterQuantity { get; set; }
 
 
+		[Display(Name = "Give My User Name to the Seller.")]
+		public bool UseBuyerName { get; set; }
+		[Display(Name = "Give My Email to the Seller.")]
+		public bool UseBuyerEmail { get; set; }
+		[Display(Name = "Give My Phone Number to the Seller.")]
+		public bool UseBuyerPhone { get; set; }
 
-
-
-		//async check location id
-		[Display(Name = "Your Location")]
-		public Guid? LocationId { get; set; }
-
-		public IEnumerable<ForSelectLocationViewModel>? AvailableLocations { get; set; }
 	}
 }

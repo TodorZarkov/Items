@@ -9,16 +9,24 @@
 	using Microsoft.AspNetCore.Mvc;
 	using Items.Web.ViewModels.Base;
 	using Items.Services.Data.Models.Contract;
+	using Items.Services.Common.Interfaces;
 
 	public class DealController : BaseController
 	{
 		private readonly IContractService contractService;
 		private readonly IItemService itemService;
+		private readonly IOfferService offerService;
+		private readonly IDateTimeProvider dateTimeProvider;
 
-		public DealController(IContractService contractService, IItemService itemService)
+		public DealController(IContractService contractService
+							, IItemService itemService
+							, IOfferService offerService
+							, IDateTimeProvider dateTimeProvider)
 		{
 			this.contractService = contractService;
 			this.itemService = itemService;
+			this.offerService = offerService;
+			this.dateTimeProvider = dateTimeProvider;
 		}
 
 
@@ -43,18 +51,18 @@
 		[HttpGet]
 		public async Task<IActionResult> Add(Guid itemId)
 		{
+			bool exists = await itemService.ExistAsync(itemId);
+			if (!exists)
+			{
+				TempData[InformationMessage] = "Item has already been removed!";
+				return RedirectToAction("All", "Item");
+			}
+
 			Guid buyerId = Guid.Parse(User.GetId());
 			bool isOwner = await itemService.IsOwnerAsync(itemId, buyerId);
 			if (isOwner)
 			{
 				TempData[ErrorMessage] = "You cannot Buy or Bid for your own item!";
-				return RedirectToAction("All", "Item");
-			}
-
-			bool exists = await itemService.ExistAsync(itemId);
-			if (!exists)
-			{
-				TempData[InformationMessage] = "Item has already been removed!";
 				return RedirectToAction("All", "Item");
 			}
 
@@ -188,10 +196,54 @@
 		[HttpGet]
 		public async Task<IActionResult> AddFromOffer(Guid offerId)
 		{
-			//exists
-			//is mine
-			//expired
-			//
+			bool offerExist = await offerService.ExistAsync(offerId);
+			if (!offerExist)
+			{
+				return GeneralError();
+			}
+
+			Guid userId = Guid.Parse(User.GetId());
+			bool isMine = await offerService.IsOwnerAsync(offerId, userId);
+			if (!isMine)
+			{
+				return GeneralError();
+			}
+
+			bool isWinner = await offerService.IsWinnerAsync(offerId);
+			if (!isWinner)
+			{
+				return GeneralError();
+			}
+
+			bool expired = await offerService.ExpiredAsync(offerId);
+			if (expired)
+			{
+				TempData[WarningMessage] = "The Offer has expired.";
+				return RedirectToAction("All", "Bid");
+			}
+			// todo: Lock the barter item until auction is finished. can use PromisedQuantity != 0 to Lock Barter.
+			
+			Guid itemId = await offerService.GetItemIdFromOfferIdAsync(offerId);
+			bool itemExist = await itemService.ExistAsync(itemId);
+			bool isMyItem = await itemService.IsOwnerAsync(itemId, userId);
+			bool isAuction = await itemService.IsAuctionAsync(itemId);
+			bool isEndSellOk = (await itemService.GetEndSellDateTime(itemId)) < dateTimeProvider.GetCurrentDateTime();
+			if (!itemExist || isMyItem || !isAuction || !isEndSellOk)
+			{
+				return GeneralError();
+			}
+
+
+
+			//item has enough quantity
+
+			//barter exists
+			//barter sufficient quantity
+
+			//on create Deal
+			//also must reduce the promisedQuantity as long as the Quantity of the item and of the barter
+			//delete offer itself
+			//implement copy barter to the seller deal panel
 
 			return View();
 		}

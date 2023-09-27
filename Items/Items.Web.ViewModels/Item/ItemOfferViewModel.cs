@@ -2,5 +2,6 @@
 {
 	public class ItemOfferViewModel : ItemBidViewModel
 	{
-	}
+        public decimal PromisedQuantity { get; set; }
+    }
 }

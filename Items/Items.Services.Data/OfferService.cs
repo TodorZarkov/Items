@@ -31,6 +31,7 @@
 		private readonly IMapper mapper;
 		private readonly IDateTimeProvider dateTimeProvider;
 
+
 		public OfferService(ItemsDbContext dbContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
 		{
 			this.dbContext = dbContext;
@@ -462,16 +463,26 @@
 			return await dbContext.Offers.Where(o => o.ItemId == itemId).CountAsync();
 		}
 
-		public Task AcceptOfferAsync(Guid id)
+		public async Task AcceptOfferAsync(Guid id)
 		{
-			throw new NotImplementedException();
+			Item item = await dbContext.Offers
+				.Where(o => o.Id == id)
+				.Select(o => o.Item)
+				.SingleAsync();
+			Offer offer = await dbContext.Offers
+				.SingleAsync(o => o.Id == id);
+
+			item.PromisedQuantity += offer.Quantity;
+			offer.Win = true;
+
+			await dbContext.SaveChangesAsync();
 		}
 
 		public async Task<bool> CanPromiseQuantityAsync(Guid itemId, Guid offerId)
 		{
 			bool result = await dbContext.Items
 				.Where(i => i.Id == itemId)
-				.AnyAsync(i => i.PromisedQuantity <= i.Offers.Single(o => o.Id == offerId).Quantity);
+				.AnyAsync(i => i.PromisedQuantity + i.Offers.Single(o => o.Id == offerId).Quantity <= i.Quantity);
 
 			return result;
 		}

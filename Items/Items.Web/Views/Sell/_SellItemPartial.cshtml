@@ -18,6 +18,7 @@
             <div class="card-body">
                
                 <p class="card-text mb-1">You have @(((decimal)(Model.QuantityLeft!)).ToString("G29"))@(Model.Unit) Left</p>
+                <p class="card-text mb-1">You have @(((decimal)(Model.PromisedQuantity!)).ToString("G29"))@(Model.Unit) Promised</p>
                 <p class="card-text mb-1">Location - @(Model.Country), @(Model.Town)</p>
                 <p class="card-text mb-1 "><small class="text-muted">The auction ended at @Model.EndSell.ToString(BiddingLongUtcDateTime)</small></p>
             </div>

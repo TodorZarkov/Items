@@ -1,12 +1,11 @@
 ﻿namespace Items.Data.Models
 {
-	using System.ComponentModel;
 	using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-	using Items.Common.Enums;
 	using Microsoft.EntityFrameworkCore;
 
     using static Common.EntityValidationConstants.Contract;
+    using static Common.EntityValidationConstants.User;
 
     public class Contract
     {
@@ -39,12 +38,18 @@
 
 
         //the data is internal and it is checked in the identity
-		public string? SellerName { get; set; } 
+        [MaxLength(UserNameMaxLength)]
+		public string? SellerName { get; set; }
+		[MaxLength(UserEmailMaxLength)]
 		public string? SellerEmail { get; set; }
+		[MaxLength(UserPhoneMaxLength)]
 		public string? SellerPhone { get; set; }
-                                                                                       
+                                
+		[MaxLength(UserNameMaxLength)]
 		public string? BuyerName { get; set; }
+		[MaxLength(UserEmailMaxLength)]
 		public string? BuyerEmail { get; set; }
+		[MaxLength(UserPhoneMaxLength)]
 		public string? BuyerPhone { get; set; }
          
 

@@ -2,6 +2,7 @@
 {
 	using Items.Web.Validators.Attributes;
 	using static Common.EntityValidationConstants.Contract;
+	using static Common.EntityValidationConstants.User;
 	using static Common.EntityValidationErrorMessages.Contract;
 
 	using System.ComponentModel.DataAnnotations;
@@ -11,9 +12,14 @@
         public Guid? Id { get; set; }
         public bool? IsSeller { get; set; }
 
-//to view and to confirm that nothing has changed in the period between confirmations, in the considering item ---------------------
+		//to view and to confirm that nothing has changed in the period between confirmations, in the considering item ---------------------
+		[StringLength(UserNameMaxLength, MinimumLength = UserNameMinLength)]
         public string? SellerName { get; set; } // permission from  the Item visibility
+		[EmailAddress]
+		[StringLength(UserEmailMaxLength, MinimumLength = UserEmailMinLength)]
 		public string? SellerEmail { get; set; }// permission from  the Item visibility
+		[Phone]
+		[StringLength(UserPhoneMaxLength, MinimumLength = UserPhoneMinLength)]
 		public string? SellerPhone { get; set; }// permission from  the Item visibility
 
 		public string? BuyerName { get; set; }// permission from  Form user consent     - got from db

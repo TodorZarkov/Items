@@ -144,6 +144,8 @@
 
 			public const int ItemDescriptionMinLength = 10;
 			public const int ItemDescriptionMaxLength = 1000;
+
+
 		}
         
         public static class QueryFilter
@@ -156,6 +158,19 @@
 
 
         }
+
+        public static class User
+        {
+
+			public const int UserNameMinLength = 2;
+			public const int UserNameMaxLength = 200;
+
+			public const int UserEmailMinLength = 2;
+			public const int UserEmailMaxLength = 200;
+
+			public const int UserPhoneMinLength = 2;
+			public const int UserPhoneMaxLength = 200;
+		}
 
         
     }

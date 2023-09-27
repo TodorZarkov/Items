@@ -58,12 +58,34 @@
         [Required]
         public Currency Currency { get; set; } = null!;
 
+		
+		[MaxLength(ItemNameMaxLength)]
+		public string? BarterName { get; set; } = null!;
 
-        
-        [ForeignKey(nameof(Item))]
+		[MaxLength(UriMaxLength)]
+		public string? BarterPictureUri { get; set; } = null!;
+
+		[MaxLength(ItemDescriptionMaxLength)]
+		public string? BarterDescription { get; set; }
+
+		[Precision(QuantityPrecision, QuantityScale)]
+		public decimal BarterQuantity { get; set; }
+
+		[ForeignKey(nameof(BarterUnit))]
+		public int? BarterUnitId { get; set; }
+		public Unit? BarterUnit { get; set; } = null!;
+
+		[ForeignKey(nameof(Barter))]
+		public Guid? BarterId { get; set; }
+		public Item? Barter { get; set; }
+
+
+
+
+
+
+		[ForeignKey(nameof(Item))]
         public Guid? ItemId { get; set; }
-
-        
         public Item? Item { get; set; }
 
 

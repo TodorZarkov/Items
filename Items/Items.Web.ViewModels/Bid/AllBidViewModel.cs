@@ -1,13 +1,14 @@
 ﻿namespace Items.Web.ViewModels.Bid
 {
-	using Items.Web.ViewModels.Item;
-	using Items.Web.ViewModels.Offer;
+    using Items.Web.ViewModels.Item;
 
-	public class AllBidViewModel
+    public class AllBidViewModel
 	{
 		public Guid ItemId { get; set; }
 
-		public ItemBidViewModel Item { get; set; } = null!;
+        public bool Win { get; set; }
+
+        public ItemBidViewModel Item { get; set; } = null!;
 
 		public Guid OfferId { get; set; }
 

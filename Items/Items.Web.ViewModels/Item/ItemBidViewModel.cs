@@ -2,8 +2,9 @@
 {
 	public class ItemBidViewModel
 	{
+        public Guid Id { get; set; }
 
-		public string Name { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
 		public string MainPictureUri { get; set; } = null!;
 
@@ -25,6 +26,6 @@
 
 		public string Unit { get; set; } = null!;//
 
-		public string EndSell { get; set; } = null!;//
+		public DateTime EndSell { get; set; }//
     }
 }

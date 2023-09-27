@@ -1142,6 +1142,7 @@
 			item.EndSell = null;
 			item.ModifiedOn = dateTimeProvider.GetCurrentDateTime();
 			item.IsAuction = false;
+			item.PromisedQuantity = 0;
 
 			Offer[] offers = await dbContext.Offers
 				.Where(o => o.ItemId == id)

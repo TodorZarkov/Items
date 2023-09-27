@@ -3,9 +3,10 @@
 @{
 	ViewData["Title"] = "Item Offers";
 	ViewBag.ActiveLink = "AllSell";
+	TempData["itemId"] = Model.Item.Id;
 }
 
-<partial name="_SellItemPartial" model="@Model.Item"/>
+<partial name="_SellItemPartial" model="@Model.Item" />
 
 
 <vc:query-filter hits="@Model.TotalOffersCount" />

@@ -8,6 +8,8 @@
 	using Items.Services.Common.Interfaces;
 	using Items.Services.Data.Models.Offer;
 	using Items.Services.Data.Interfaces;
+	using Items.Common.Enums;
+	using Items.Web.ViewModels.Offer;
 	using static Items.Common.Enums.AccessModifier;
 	using static Items.Common.FormatConstants.DateAndTime;
 	using static Items.Common.GeneralConstants;
@@ -16,13 +18,12 @@
 	using Microsoft.EntityFrameworkCore;
 
 	using AutoMapper;
+	using AutoMapper.QueryableExtensions;
 
 	using System;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
-	using Items.Common.Enums;
-	using Items.Web.ViewModels.Offer;
-	using AutoMapper.QueryableExtensions;
+	
 
 	public class OfferService : IOfferService
 	{
@@ -116,6 +117,7 @@
 				.Select(o => new AllBidViewModel
 				{
 					OfferId = o.Id,
+					Win = o.Win,
 					Expires = o.Expires.ToString(BiddingLongUtcDateTime),
 					Message = o.Message,
 					ValuePerQuantity = o.Value,
@@ -145,7 +147,7 @@
 						CurrencySymbol = o.Currency.Symbol,
 						QuantityLeft = o.Item.ItemVisibility.Quantity == Public ?
 										o.Item.Quantity : null,
-						EndSell = ((DateTime)o.Item.EndSell!).ToString(BiddingLongUtcDateTime)
+						EndSell = (DateTime)o.Item.EndSell!
 					},
 
 				})
@@ -159,7 +161,6 @@
 
 			return result;
 		}
-
 
 		public async Task<AllOfferServiceModel> AllByItemIdAsync(Guid id, QueryFilterModel? queryModel)
 		{
@@ -339,6 +340,15 @@
 			return result.HighestBid;
 		}
 
+		public async Task<Guid> GetItemIdFromOfferIdAsync(Guid id)
+		{
+			Guid itemId = await dbContext.Offers
+				.Where(o => o.Id == id)
+				.Select(o => o.ItemId)
+				.SingleAsync();
+
+			return itemId;
+		}
 
 
 
@@ -351,6 +361,12 @@
 								&& o.BuyerId == userId
 								&& o.ItemId == itemId);
 
+			return result;
+		}
+
+		public async Task<bool> ExistAsync(Guid id)
+		{
+			bool result = await dbContext.Offers.AnyAsync(o => o.Id == id);
 			return result;
 		}
 
@@ -446,5 +462,22 @@
 			return await dbContext.Offers.Where(o => o.ItemId == itemId).CountAsync();
 		}
 
+		public Task AcceptOfferAsync(Guid id)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<bool> CanPromiseQuantityAsync(Guid itemId, Guid offerId)
+		{
+			bool result = await dbContext.Items
+				.Where(i => i.Id == itemId)
+				.AnyAsync(i => i.PromisedQuantity <= i.Offers.Single(o => o.Id == offerId).Quantity);
+
+			return result;
+		}
+
+		
+
+		
 	}
 }

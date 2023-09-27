@@ -231,9 +231,72 @@
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="id">The considered offer id</param>
+		/// <returns></returns>
 		[HttpGet]
 		public async Task<IActionResult> Accept(Guid id)
 		{
+			Guid? itemId = (Guid?)TempData["itemId"];
+			if (!itemId.HasValue)
+			{
+				return GeneralError();
+			}
+
+			bool existOffer = await offerService.ExistAsync(id);
+			if (!existOffer)
+			{
+				return GeneralError();
+			}
+
+			Guid userId = Guid.Parse(User.GetId());
+			bool isMyOffer = await offerService.IsOwnerAsync(id, userId);
+			if (isMyOffer)
+			{
+				TempData[ErrorMessage] = "You cannot accept your own Offer!";
+				return RedirectToAction("All", "Sell");
+			}
+
+			bool existItem = await itemService.ExistAsync((Guid)itemId);
+			if (!existItem)
+			{
+				return GeneralError();
+			}
+
+			Guid itemIdToCheck = await offerService.GetItemIdFromOfferIdAsync(id);
+			if (itemIdToCheck != itemId)
+			{
+				return GeneralError();
+			}
+
+			bool isMyItem = await itemService.IsOwnerAsync((Guid)itemId, userId);
+			if (!isMyItem)
+			{
+				TempData[ErrorMessage] = "You cannot manage this Item!";
+				return GeneralError();
+			}
+
+			bool isItemAuction = await itemService.IsAuctionAsync((Guid)itemId);
+			bool isValidEndDate = (await itemService.GetEndSellDateTime((Guid)itemId)) < dateTimeProvider.GetCurrentDateTime();
+			if (!isItemAuction || !isValidEndDate)
+			{
+				TempData[WarningMessage] = "Auction not available for to accept offers.";
+				return RedirectToAction("All", "Sell");
+			}
+
+			Guid offerId = id;
+			bool canPromiseQuantity = await offerService.CanPromiseQuantityAsync((Guid)itemId, offerId);
+			if (!canPromiseQuantity)
+			{
+				TempData[InformationMessage] = "Cannot Accept this Offer Due to insufficient quantity.";
+				return RedirectToAction("Offers", "Sell", new { id = TempData["itemId"] });
+			}
+
+
+
+			await offerService.AcceptOfferAsync(id);
 
 			return RedirectToAction("Offers", "Sell", new { id = TempData["itemId"] });
 		}

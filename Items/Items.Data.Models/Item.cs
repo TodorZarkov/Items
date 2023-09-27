@@ -127,7 +127,7 @@
         public bool? IsAuction { get; set; }
 
         [Precision(PromisedQuantityPrecision, PromisedQuantityScale)]
-        public double PromisedQuantity { get; set; }
+        public decimal PromisedQuantity { get; set; }
 
 
         public ICollection<Offer> Offers { get; set; }

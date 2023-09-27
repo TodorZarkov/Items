@@ -78,7 +78,7 @@
 				.ForMember(d => d.Unit,
 					opt => opt.MapFrom(s => s.Unit.Symbol))
 				.ForMember(d => d.EndSell,
-					opt => opt.MapFrom(s => ((DateTime)(s.EndSell!)).ToString(BiddingLongUtcDateTime)));
+					opt => opt.MapFrom(s => (DateTime)s.EndSell!));
 
 
 

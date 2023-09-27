@@ -6,16 +6,20 @@
 
 	public interface IOfferService
 	{
+		Task AcceptOfferAsync(Guid id);
 		Task<AllOfferServiceModel> AllByItemIdAsync(Guid id, QueryFilterModel? queryModel);
 		Task<AllBidServiceModel> AllMineAsync(Guid userId, QueryFilterModel? queryModel = null);
+		Task<bool> CanPromiseQuantityAsync(Guid itemId, Guid offerId);
 		Task<bool> CanUpdate(Guid id);
 		Task<Guid> CreateAsync(AddBidFormModel model, Guid itemId, Guid userId);
 		Task DeleteAsync(Guid id);
 		Task EditAsync(Guid id, EditBidFormModel model);
+		Task<bool> ExistAsync(Guid id);
 		Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId);
 		Task<AddBidFormModel> GetForCreate(Guid itemId);
 		Task<decimal?> GetHighestBidByItemIdAsync(Guid itemId);
 		Task<decimal?> GetHighestBidByOfferIdAsync(Guid id);
+		Task<Guid> GetItemIdFromOfferIdAsync(Guid id);
 		Task<bool> IsOwnerAsync(Guid id, Guid userId);
 		/// <summary>
 		/// 

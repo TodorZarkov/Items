@@ -81,7 +81,7 @@
 			}
 			 
 
-			ContractFormViewModel model = await contractService.GetForPreviewByIdAsync(itemId);
+			ContractFormViewModel model = await contractService.GetForPreviewByIdAsync(itemId, buyerId);
 
 			return View(model);
 		}

@@ -17,6 +17,7 @@
 	using Items.Web.ViewModels.Base;
 	using Items.Common.Enums;
 	using Items.Services.Data.Models.Contract;
+	using System.Security.Claims;
 
 	public class ContractService : IContractService
 	{
@@ -175,8 +176,18 @@
 
 		
 
-		public async Task<ContractFormViewModel> GetForPreviewByIdAsync(Guid itemId)
+		public async Task<ContractFormViewModel> GetForPreviewByIdAsync(Guid itemId, Guid buyerId)
 		{
+			var buyerData = await dbContext.Users
+				.Where(u => u.Id == buyerId)
+				.Select(u => new
+				{
+					Name = u.UserName,
+					Email = u.EmailConfirmed ? u.Email : null,
+					Phone = u.PhoneNumberConfirmed ? u.PhoneNumber : null
+				})
+				.SingleAsync();
+
 			ContractFormViewModel model = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => !i.Deleted)
@@ -186,6 +197,10 @@
 					SellerName = i.ItemVisibility.Owner == Public ? i.Owner.UserName : null,
 					SellerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
 					SellerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
+					
+					BuyerName = buyerData.Name ,
+					BuyerEmail = buyerData.Email ,
+					BuyerPhone = buyerData.Phone ,
 
 					ItemId = i.Id,
 					Price = (decimal)i.CurrentPrice!,
@@ -210,9 +225,6 @@
 
 		public async Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId)
 		{
-			ApplicationUser buyer = dbContext.Users.Single(u => u.Id == buyerId);
-
-
 			ContractFormViewModel previewModel = await dbContext.Items
 				.AsNoTracking()
 				.Where(i => !i.Deleted)
@@ -223,9 +235,9 @@
 					SellerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
 					SellerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
 
-					BuyerName = model.ConsentBuyerInfo ? buyer.UserName : null,
-					BuyerEmail = model.ConsentBuyerInfo ? buyer.Email : null,
-					BuyerPhone = model.ConsentBuyerInfo ? buyer.PhoneNumber : null,
+					BuyerName = model.ConsentBuyerInfo ? model.BuyerName : null,
+					BuyerEmail = model.ConsentBuyerInfo ? model.BuyerEmail : null,
+					BuyerPhone = model.ConsentBuyerInfo ? model.BuyerPhone : null,
 
 					ItemId = i.Id,
 					Price = (decimal)i.CurrentPrice!,

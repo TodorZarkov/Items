@@ -15,7 +15,7 @@
 		Task CreateAsync(ContractFormViewModel previewModel, Guid itemId, Guid buyerId);
 		Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId);
 		Task<ContractViewModel> GetForDetailsAsync(Guid contractId);
-		Task<ContractFormViewModel> GetForPreviewByIdAsync(Guid itemId);
+		Task<ContractFormViewModel> GetForPreviewByIdAsync(Guid itemId, Guid buyerId);
 		Task<ContractFormViewModel> GetForRevise(Guid id, Guid userId);
 		Task<bool> IsBuyerAsync(Guid dealId, Guid userId);
 		Task<bool> IsSellerAsync(Guid id, Guid userId);

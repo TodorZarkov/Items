@@ -230,5 +230,12 @@
 			}
 
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> Accept(Guid id)
+		{
+
+			return RedirectToAction("Offers", "Sell", new { id = TempData["itemId"] });
+		}
 	}
 }

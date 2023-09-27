@@ -22,6 +22,8 @@
 
 		public const int DefaultOfferExpirationDays = 2;
 
+		public const int AcceptedOfferExpirationsHours = 12;
+
 
 		public const int DefaultCurrentPage = 1;
 		public const int DefaultHitsPerPage = 4;

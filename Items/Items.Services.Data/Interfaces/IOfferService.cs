@@ -16,11 +16,14 @@
 		Task EditAsync(Guid id, EditBidFormModel model);
 		Task<bool> ExistAsync(Guid id);
 		Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId);
+		Task<bool> ExpiredAsync(Guid id);
 		Task<AddBidFormModel> GetForCreate(Guid itemId);
 		Task<decimal?> GetHighestBidByItemIdAsync(Guid itemId);
 		Task<decimal?> GetHighestBidByOfferIdAsync(Guid id);
 		Task<Guid> GetItemIdFromOfferIdAsync(Guid id);
 		Task<bool> IsOwnerAsync(Guid id, Guid userId);
+		Task<bool> IsWinnerAsync(Guid id);
+
 		/// <summary>
 		/// 
 		/// </summary>

@@ -253,6 +253,20 @@
 					return GeneralError();
 				}
 
+				bool isExpiredOffer = await offerService.ExpiredAsync(id);
+				if (isExpiredOffer)
+				{
+					TempData[InformationMessage] = "The Offer has Expired. Try another one.";
+					return RedirectToAction("Offers", "Sell", new { id = TempData["itemId"] });
+				}
+
+				bool isWinner = await offerService.IsWinnerAsync(id);
+				if (isWinner)
+				{
+					TempData[WarningMessage] = "The Offer is already Accepted!";
+					return RedirectToAction("Offers", "Sell", new { id = TempData["itemId"] });
+				}
+
 				Guid userId = Guid.Parse(User.GetId());
 				bool isMyOffer = await offerService.IsOwnerAsync(id, userId);
 				if (isMyOffer)

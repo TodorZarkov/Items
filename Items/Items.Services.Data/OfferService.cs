@@ -379,6 +379,14 @@
 			return result;
 		}
 
+		public async Task<bool> IsWinnerAsync(Guid id)
+		{
+			bool result = await dbContext.Offers
+				.AnyAsync(o => o.Id == id && o.Win == true);
+
+			return result;
+		}
+
 		public async Task<bool> CanUpdate(Guid id)
 		{
 			bool result = await dbContext.Offers.AnyAsync(o => o.Id == id &&
@@ -402,6 +410,14 @@
 							   // todo: globally, quantity must be integer and the measurement units must be added
 
 			return itemQuantity - quantity;
+		}
+
+		public async Task<bool> ExpiredAsync(Guid id)
+		{
+			bool result = await dbContext.Offers
+				.AnyAsync(o => o.Id == id && o.Expires < dateTimeProvider.GetCurrentDateTime());
+
+			return result;
 		}
 
 
@@ -474,6 +490,7 @@
 
 			item.PromisedQuantity += offer.Quantity;
 			offer.Win = true;
+			offer.Expires = dateTimeProvider.GetCurrentDateTime().AddHours(AcceptedOfferExpirationsHours);
 
 			await dbContext.SaveChangesAsync();
 		}
@@ -486,8 +503,6 @@
 
 			return result;
 		}
-
-		
 
 		
 	}

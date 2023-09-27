@@ -39,6 +39,7 @@
 		}
 
 
+
 		[HttpGet]
 		public async Task<IActionResult> Add(Guid itemId)
 		{
@@ -57,14 +58,20 @@
 				return RedirectToAction("All", "Item");
 			}
 
+			bool isAuction = await itemService.IsAuctionAsync(itemId);
+			if (isAuction)
+			{
+				TempData[WarningMessage] = "The Item is on Auction. Please try in the  Bid panel.";
+				return RedirectToAction("All", "Bid");
+			}
+
 			bool isOnTheMarket = await itemService.IsOnMarketAsync(itemId);
 			if (!isOnTheMarket)
 			{
 				TempData[InformationMessage] = "Item Is Not On The  Market Anymore!";
-				RedirectToAction("All", "Item");
+				return RedirectToAction("All", "Item");
 			}
-
-
+			 
 
 			ContractFormViewModel model = await contractService.GetForPreviewByIdAsync(itemId);
 
@@ -87,6 +94,13 @@
 			{
 				TempData[InformationMessage] = "Item has already been removed!";
 				return RedirectToAction("All", "Item");
+			}
+
+			bool isAuction = await itemService.IsAuctionAsync(itemId);
+			if (isAuction)
+			{
+				TempData[WarningMessage] = "The Item is on Auction. Please try in the  Bid panel.";
+				return RedirectToAction("All", "Bid");
 			}
 
 			bool isOnTheMarket = await itemService.IsOnMarketAsync(itemId);
@@ -122,11 +136,18 @@
 					return RedirectToAction("All", "Item");
 				}
 
+				bool isAuction = await itemService.IsAuctionAsync(itemId);
+				if (isAuction)
+				{
+					TempData[WarningMessage] = "The Item is on Auction. Please try in the  Bid panel.";
+					return RedirectToAction("All", "Bid");
+				}
+
 				bool isOnTheMarket = await itemService.IsOnMarketAsync(itemId);
 				if (!isOnTheMarket)
 				{
 					TempData[InformationMessage] = "Item Is Not On The  Market Anymore!";
-					RedirectToAction("All", "Item");
+					return RedirectToAction("All", "Item");
 				}
 
 
@@ -161,6 +182,20 @@
 				return GeneralError(e);
 			}
 		}
+
+
+
+		[HttpGet]
+		public async Task<IActionResult> AddFromOffer(Guid offerId)
+		{
+			//exists
+			//is mine
+			//expired
+			//
+
+			return View();
+		}
+
 
 
 		[HttpGet]

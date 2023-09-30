@@ -23,7 +23,20 @@
 
 			if (stringValue != null && !string.IsNullOrEmpty(stringValue))
 			{
-				stringValue = htmlEncoder.Encode(stringValue);
+				//todo: This is workaround. Cannot disable the default escaping of 'enter' and + or other potential security risk characters!!
+				//If we want to keep the db safe from xss and see no double encoding to the final html. the decoder filter must be applied
+				//to every ViewResult.
+				if (stringValue.Contains('+') || stringValue.Contains((char)10) || stringValue.Contains((char)13))
+				{
+					stringValue = htmlEncoder.Encode(stringValue);
+					stringValue = stringValue.Replace("&#x2B;", "+");
+					stringValue = stringValue.Replace("&#xD;", ((char)13).ToString());
+					stringValue = stringValue.Replace("&#xA;", ((char)10).ToString());
+				}
+				else
+				{
+					stringValue = htmlEncoder.Encode(stringValue);
+				}
 			}
 			if (string.IsNullOrEmpty(stringValue))
 			{

@@ -81,7 +81,7 @@
 			}
 			 
 
-			ContractFormViewModel model = await contractService.GetForPreviewByIdAsync(itemId, buyerId);
+			ContractFormViewModel model = await contractService.GetForPreviewAsync(itemId, buyerId);
 
 			return View(model);
 		}
@@ -202,8 +202,8 @@
 				return GeneralError();
 			}
 
-			Guid userId = Guid.Parse(User.GetId());
-			bool isMine = await offerService.IsOwnerAsync(offerId, userId);
+			Guid buyerId = Guid.Parse(User.GetId());
+			bool isMine = await offerService.IsOwnerAsync(offerId, buyerId);
 			if (!isMine)
 			{
 				return GeneralError();
@@ -225,32 +225,43 @@
 			
 			Guid itemId = await offerService.GetItemIdFromOfferIdAsync(offerId);
 			bool itemExist = await itemService.ExistAsync(itemId);
-			bool isMyItem = await itemService.IsOwnerAsync(itemId, userId);
+			bool isMyItem = await itemService.IsOwnerAsync(itemId, buyerId);
 			bool isAuction = await itemService.IsAuctionAsync(itemId);
 			bool isEndSellOk = (await itemService.GetEndSellDateTime(itemId)) < dateTimeProvider.GetCurrentDateTime();
 			if (!itemExist || isMyItem || !isAuction || !isEndSellOk)
 			{
 				return GeneralError();
 			}
+			bool barterExist = await itemService.ExistBarterItemByOfferIdAsync(offerId);
+			if (!barterExist)
+			{
+				TempData[ErrorMessage] = "Barter Item you have proposed no longer available. Auction cannot be competed.";
+				return RedirectToAction("All", "Sell");
+			}
 
+			bool validQuantitiesInOffer = await offerService.ValidQuantitiesInOffer(offerId);
+			if (!validQuantitiesInOffer)
+			{
+				return GeneralError();
+			}
 
-
-			//item has enough quantity
-
-			//barter exists
-			//barter sufficient quantity
-
-			//on create Deal
-			//also must reduce the promisedQuantity as long as the Quantity of the item and of the barter
-			//delete offer itself
-			//implement copy barter to the seller deal panel
-
-			return View();
+			ContractFormViewModel model = await contractService.GetForPreviewAsync(itemId, buyerId, offerId);
+			 
+			return View(model);
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> AddFromOffer(Guid offerId, ContractFormViewModel previewModel)
+		{
+			// todo: implement
+			//on create Deal
+			//also must reduce the promisedQuantity as much as the Quantity of the item and of the barter.
+			//delete offer itself
+			//implement copy barter to the seller deal panel
+			return RedirectToAction("All", "Deal");//with query for the newly created deal!
+		}
 
-
-		[HttpGet]
+			[HttpGet]
 		public async Task<IActionResult> Details(Guid id)
 		{
 			try

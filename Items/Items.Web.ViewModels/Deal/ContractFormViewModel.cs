@@ -27,8 +27,23 @@
 		public string? BuyerPhone { get; set; }// permission from  Form user consent    - got from db
 
 
-		
-        public Guid? ItemId { get; set; }
+		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+		public string? BarterName { get; set; } = null!;
+		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterDescription", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+		public string? BarterPictureUri { get; set; } = null!;
+		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+		public string? BarterDescription { get; set; }
+		[RequiredIfPresent("BarterUnitSymbol", "BarterDescription", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+		public decimal BarterQuantity { get; set; }
+		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+		public string? BarterUnitSymbol { get; set; }
+		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterName", "BarterUnitSymbol", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+		public Guid? BarterId { get; set; }
+
+
+
+
+		public Guid? ItemId { get; set; }
 
         [Range(ValueMinValue, ValueMaxValue)]
         public decimal Price { get; set; }

@@ -22,6 +22,7 @@
 	using Items.Services.Data.Models.Item;
 	using Items.Common.Enums;
 	using AutoMapper;
+	using System.Reflection.Metadata.Ecma335;
 
 	public class ItemService : IItemService
 	{
@@ -1015,6 +1016,23 @@
 			return result;
 		}
 
+		public async Task<bool> ExistBarterItemByOfferIdAsync(Guid offerId)
+		{
+			Guid? barterId = await dbContext.Offers
+				.Where(o => o.Id == offerId)
+				.Select(o => o.BarterItemId)
+				.SingleAsync();
+
+			if (barterId == null)
+			{
+				return true;
+			}
+
+			bool result = await ExistAsync((Guid)barterId);
+
+			return result;
+		}
+
 
 
 		public async Task<Guid> CreateItemAsync(ItemFormModel model, Guid userId)
@@ -1185,6 +1203,7 @@
 			return model;
 		}
 
+		
 	}
 
 

@@ -17,7 +17,6 @@
 	using Items.Web.ViewModels.Base;
 	using Items.Common.Enums;
 	using Items.Services.Data.Models.Contract;
-	using System.Security.Claims;
 
 	public class ContractService : IContractService
 	{
@@ -176,7 +175,7 @@
 
 		
 
-		public async Task<ContractFormViewModel> GetForPreviewByIdAsync(Guid itemId, Guid buyerId)
+		public async Task<ContractFormViewModel> GetForPreviewAsync(Guid itemId, Guid buyerId)
 		{
 			var buyerData = await dbContext.Users
 				.Where(u => u.Id == buyerId)
@@ -221,6 +220,11 @@
 				.SingleAsync();
 
 			return model;
+		}
+
+		public async Task<ContractFormViewModel> GetForPreviewAsync(Guid itemId, Guid buyerId, Guid offerId)
+		{
+			throw new NotImplementedException();
 		}
 
 		public async Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId)
@@ -534,5 +538,7 @@
 
 			return result;
 		}
+
+		
 	}
 }

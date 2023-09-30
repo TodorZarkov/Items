@@ -30,6 +30,7 @@
 		public static class Contract
 		{
 			public const string CannotBeDeliveredBeforeSent = "Cannot Be Delivered Before Sent.";
+			public const string BarterItemRequiredIfPresentAnyBarterProperty = "All Fields of Barter Item becomes required if at least one field of barter fields is present!";
 		}
 		
 		public static class Location

@@ -1,12 +1,14 @@
 ﻿namespace Items.Web.Controllers
 {
 	using static Common.NotificationMessages;
+	using Items.Web.Infrastructure.Filters;
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
 
 	[Authorize]
 	[AutoValidateAntiforgeryToken]
+	[HtmlDecodeFilter]
 	public abstract class BaseController : Controller
 	{
 

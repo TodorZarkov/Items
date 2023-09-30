@@ -145,7 +145,6 @@
 			public const int ItemDescriptionMinLength = 10;
 			public const int ItemDescriptionMaxLength = 1000;
 
-
 		}
         
         public static class QueryFilter

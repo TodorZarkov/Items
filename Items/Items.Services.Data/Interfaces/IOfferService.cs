@@ -31,5 +31,6 @@
 		/// <returns>Offers count after the removing.</returns>
 		Task<int> RemoveExpiredByItemId(Guid itemId);
 		Task<decimal> SufficientQuantity(Guid id, decimal quantity);
+		Task<bool> ValidQuantitiesInOffer(Guid offerId);
 	}
 }

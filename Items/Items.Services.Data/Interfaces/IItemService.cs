@@ -56,5 +56,13 @@
 		Task<decimal> SufficientQuantity(Guid itemId, decimal quantity);
 		Task<ItemFormModel> CopyFromContract(Guid id, Guid userId);
 		Task<bool> IsValidBarterAsync(Guid? barterItemId, decimal? barterQuantity, Guid userId);
+
+		/// <summary>
+		/// In case the barter item is included in the offer, checks if the barter item exists in db.
+		/// </summary>
+		/// <param name="offerId"></param>
+		/// <returns>True if an item is not included.True if an item is included and it is present in db. False if is included in the offer
+		/// but is not present in db.</returns>
+		Task<bool> ExistBarterItemByOfferIdAsync(Guid offerId);
 	}
 }

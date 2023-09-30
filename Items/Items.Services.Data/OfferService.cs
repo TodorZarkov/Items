@@ -23,7 +23,7 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
-	
+
 
 	public class OfferService : IOfferService
 	{
@@ -207,7 +207,7 @@
 									);
 				}
 
-				
+
 			}
 
 			Sorting? sorting = queryModel?.SortBy;
@@ -420,6 +420,19 @@
 			return result;
 		}
 
+		public async Task<bool> ValidQuantitiesInOffer(Guid offerId)
+		{
+			bool result = await dbContext.Offers
+				.Where(o => o.Id == offerId)
+				.AnyAsync(o =>  (o.Quantity <= o.Item.Quantity && o.BarterItem == null) ||
+								(o.Quantity <= o.Item.Quantity
+									&& o.BarterItem != null
+									&& o.BarterQuantity <= o.BarterItem.Quantity)
+								); // todo: use everywhere First, Single might rise performance issue?!
+
+			return result;
+		}
+
 
 
 		public async Task<Guid> CreateAsync(AddBidFormModel model, Guid itemId, Guid userId)
@@ -504,6 +517,6 @@
 			return result;
 		}
 
-		
+
 	}
 }

@@ -194,28 +194,28 @@
 
 
 		[HttpGet]
-		public async Task<IActionResult> AddFromOffer(Guid offerId)
+		public async Task<IActionResult> AddFromOffer(Guid id)
 		{
-			bool offerExist = await offerService.ExistAsync(offerId);
+			bool offerExist = await offerService.ExistAsync(id);
 			if (!offerExist)
 			{
 				return GeneralError();
 			}
 
 			Guid buyerId = Guid.Parse(User.GetId());
-			bool isMine = await offerService.IsOwnerAsync(offerId, buyerId);
+			bool isMine = await offerService.IsOwnerAsync(id, buyerId);
 			if (!isMine)
 			{
 				return GeneralError();
 			}
 
-			bool isWinner = await offerService.IsWinnerAsync(offerId);
+			bool isWinner = await offerService.IsWinnerAsync(id);
 			if (!isWinner)
 			{
 				return GeneralError();
 			}
 
-			bool expired = await offerService.ExpiredAsync(offerId);
+			bool expired = await offerService.ExpiredAsync(id);
 			if (expired)
 			{
 				TempData[WarningMessage] = "The Offer has expired.";
@@ -223,7 +223,7 @@
 			}
 			// todo: Lock the barter item until auction is finished. can use PromisedQuantity != 0 to Lock Barter.
 			
-			Guid itemId = await offerService.GetItemIdFromOfferIdAsync(offerId);
+			Guid itemId = await offerService.GetItemIdFromOfferIdAsync(id);
 			bool itemExist = await itemService.ExistAsync(itemId);
 			bool isMyItem = await itemService.IsOwnerAsync(itemId, buyerId);
 			bool isAuction = await itemService.IsAuctionAsync(itemId);
@@ -232,22 +232,22 @@
 			{
 				return GeneralError();
 			}
-			bool barterExist = await itemService.ExistBarterItemByOfferIdAsync(offerId);
+			bool barterExist = await itemService.ExistBarterItemByOfferIdAsync(id);
 			if (!barterExist)
 			{
 				TempData[ErrorMessage] = "Barter Item you have proposed no longer available. Auction cannot be competed.";
 				return RedirectToAction("All", "Sell");
 			}
 
-			bool validQuantitiesInOffer = await offerService.ValidQuantitiesInOffer(offerId);
+			bool validQuantitiesInOffer = await offerService.ValidQuantitiesInOffer(id);
 			if (!validQuantitiesInOffer)
 			{
 				return GeneralError();
 			}
 
-			ContractFormViewModel model = await contractService.GetForPreviewAsync(itemId, buyerId, offerId);
+			ContractFormViewModel model = await contractService.GetForPreviewAsync(itemId, buyerId, id);
 			 
-			return View(model);
+			return View("Add", model);
 		}
 
 		[HttpPost]
@@ -261,7 +261,7 @@
 			return RedirectToAction("All", "Deal");//with query for the newly created deal!
 		}
 
-			[HttpGet]
+		[HttpGet]
 		public async Task<IActionResult> Details(Guid id)
 		{
 			try

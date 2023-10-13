@@ -224,7 +224,78 @@
 
 		public async Task<ContractFormViewModel> GetForPreviewAsync(Guid itemId, Guid buyerId, Guid offerId)
 		{
-			throw new NotImplementedException();
+			var buyerData = await dbContext.Users
+				.Where(u => u.Id == buyerId)
+				.Select(u => new
+				{
+					Name = u.UserName,
+					Email = u.EmailConfirmed ? u.Email : null,
+					Phone = u.PhoneNumberConfirmed ? u.PhoneNumber : null
+				})
+				.SingleAsync();
+
+			var offerData = await dbContext.Offers
+				.AsNoTracking()
+				.Where(o => o.Id == offerId)
+				.Select(o => new
+				{
+					o.BarterItemId,
+					o.BarterQuantity,
+					BarterName = o.BarterItem != null ? o.BarterItem.Name : null,
+					BarterUnitSymbol = o.BarterItem != null ? o.BarterItem.Unit.Symbol : null,
+					BarterPictureUri = o.BarterItem != null ? o.BarterItem.MainPictureUri : null,
+					BarterDescription = o.BarterItem != null ? o.BarterItem.Description : null,
+					MessageFromBuyer = o.Message,
+					OfferQuantity = o.Quantity,
+					OfferValue = o.Value,
+					o.UseBuyerEmail,
+					o.UseBuyerName,
+					o.UseBuyerPhone
+				})
+				.SingleAsync();
+
+			ContractFormViewModel model = await dbContext.Items
+				.AsNoTracking()
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.Select(i => new ContractFormViewModel
+				{
+					SellerName = i.ItemVisibility.Owner == Public ? i.Owner.UserName : null,
+					SellerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
+					SellerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
+
+					BuyerName = offerData.UseBuyerName?buyerData.Name : null,
+					BuyerEmail = offerData.UseBuyerEmail ? buyerData.Email : null,
+					BuyerPhone = offerData.UseBuyerPhone ? buyerData.Phone : null,
+
+					ItemId = i.Id,
+					Price = offerData.OfferValue,
+					Quantity = offerData.OfferQuantity,
+					CurrencySymbol = i.Currency!.Symbol,
+					UnitSymbol = i.Unit.Symbol,
+					ItemName = i.Name,
+					ItemPictureUri = i.MainPictureUri,
+					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
+					SendDue = dateTimeProvider.GetCurrentDate()
+						.AddDays(SendDueDateDaysAfterNow),
+					DeliverDue = dateTimeProvider.GetCurrentDate()// TODO: automatize according to buyer distance
+						.AddDays(SendDueDateDaysAfterNow)
+						.AddDays(DeliverDueDateDaysAfterSend),
+					SellerComment = SellerDefaultComment,
+					BuyerComment = offerData.MessageFromBuyer,
+					BarterId = offerData.BarterItemId,
+					BarterName = offerData.BarterName,
+					BarterDescription = offerData.BarterDescription,
+					BarterPictureUri = offerData.BarterPictureUri,
+					BarterQuantity = offerData.BarterQuantity,
+					BarterUnitSymbol = offerData.BarterUnitSymbol
+					
+					//DeliveryAddress = ...  TODO: get address from new user property Address (if set)
+
+				})
+				.SingleAsync();
+
+			return model;
 		}
 
 		public async Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId)

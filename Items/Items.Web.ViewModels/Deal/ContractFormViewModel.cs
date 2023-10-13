@@ -34,7 +34,7 @@
 		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public string? BarterDescription { get; set; }
 		[RequiredIfPresent("BarterUnitSymbol", "BarterDescription", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
-		public decimal BarterQuantity { get; set; }
+		public decimal? BarterQuantity { get; set; }
 		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public string? BarterUnitSymbol { get; set; }
 		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterName", "BarterUnitSymbol", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]

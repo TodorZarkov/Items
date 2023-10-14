@@ -87,71 +87,71 @@
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Preview(ContractFormViewModel model, Guid itemId)
+		public async Task<IActionResult> Preview(ContractFormViewModel model, Guid id)
 		{
 			Guid buyerId = Guid.Parse(User.GetId());
-			bool isOwner = await itemService.IsOwnerAsync(itemId, buyerId);
+			bool isOwner = await itemService.IsOwnerAsync(id, buyerId);
 			if (isOwner)
 			{
 				TempData[ErrorMessage] = "You cannot Buy or Bid for your own item!";
 				return RedirectToAction("All", "Item");
 			}
 
-			bool exists = await itemService.ExistAsync(itemId);
+			bool exists = await itemService.ExistAsync(id);
 			if (!exists)
 			{
 				TempData[InformationMessage] = "Item has already been removed!";
 				return RedirectToAction("All", "Item");
 			}
 
-			bool isAuction = await itemService.IsAuctionAsync(itemId);
+			bool isAuction = await itemService.IsAuctionAsync(id);
 			if (isAuction)
 			{
 				TempData[WarningMessage] = "The Item is on Auction. Please try in the  Bid panel.";
 				return RedirectToAction("All", "Bid");
 			}
 
-			bool isOnTheMarket = await itemService.IsOnMarketAsync(itemId);
+			bool isOnTheMarket = await itemService.IsOnMarketAsync(id);
 			if (!isOnTheMarket)
 			{
 				TempData[InformationMessage] = "Item Is Not On The  Market Anymore!";
 				return RedirectToAction("All", "Item");
 			}
 
-			ContractFormViewModel previewModel = await contractService.GetForCreate(model, itemId, buyerId);
+			ContractFormViewModel previewModel = await contractService.GetForCreate(model, id, buyerId);
 
 
 			return View(previewModel);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Add(ContractFormViewModel previewModel, Guid itemId)
+		public async Task<IActionResult> Add(ContractFormViewModel previewModel, Guid id)
 		{
 			try
 			{
 				Guid buyerId = Guid.Parse(User.GetId());
-				bool isOwner = await itemService.IsOwnerAsync(itemId, buyerId);
+				bool isOwner = await itemService.IsOwnerAsync(id, buyerId);
 				if (isOwner)
 				{
 					TempData[ErrorMessage] = "You cannot Buy or Bid for your own item!";
 					return RedirectToAction("All", "Deal");
 				}
 
-				bool exists = await itemService.ExistAsync(itemId);
+				bool exists = await itemService.ExistAsync(id);
 				if (!exists)
 				{
 					TempData[InformationMessage] = "Item has already been removed!";
 					return RedirectToAction("All", "Item");
 				}
 
-				bool isAuction = await itemService.IsAuctionAsync(itemId);
+				bool isAuction = await itemService.IsAuctionAsync(id);
 				if (isAuction)
 				{
 					TempData[WarningMessage] = "The Item is on Auction. Please try in the  Bid panel.";
 					return RedirectToAction("All", "Bid");
 				}
 
-				bool isOnTheMarket = await itemService.IsOnMarketAsync(itemId);
+				bool isOnTheMarket = await itemService.IsOnMarketAsync(id);
 				if (!isOnTheMarket)
 				{
 					TempData[InformationMessage] = "Item Is Not On The  Market Anymore!";
@@ -160,7 +160,7 @@
 
 
 
-				decimal quantityLeft = await itemService.SufficientQuantity(itemId, previewModel.Quantity);
+				decimal quantityLeft = await itemService.SufficientQuantity(id, previewModel.Quantity);
 				if (quantityLeft < 0)
 				{
 					ModelState.AddModelError("Quantity", string.Format(InsufficientQuantity, quantityLeft + previewModel.Quantity));
@@ -174,7 +174,7 @@
 
 				try
 				{
-					await contractService.CreateAsync(previewModel, itemId, buyerId);
+					await contractService.CreateAsync(previewModel, id, buyerId);
 
 					TempData[SuccessMessage] = "The Order has been sent. Observe status!";
 				}
@@ -248,6 +248,13 @@
 			ContractFormViewModel model = await contractService.GetForPreviewAsync(itemId, buyerId, id);
 			 
 			return View("Add", model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> FromOfferPreview(ContractFormViewModel model, Guid id)
+		{
+
+			return View();
 		}
 
 		[HttpPost]

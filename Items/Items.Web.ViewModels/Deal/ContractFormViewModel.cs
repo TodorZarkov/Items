@@ -39,6 +39,7 @@
 		public string? BarterUnitSymbol { get; set; }
 		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterName", "BarterUnitSymbol", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public Guid? BarterId { get; set; }
+		public Guid? OfferId { get; set; }
 
 
 

@@ -8,9 +8,11 @@
 @{
 	ViewData["Title"] = "Add Deal";
 	ViewBag.ActiveLink = "AllDeal";
+	string action = Model.BarterId == null ? "Preview" : "FromOfferPreview";
+	string? routeId = Model.BarterId == null ? Model.ItemId.ToString() : Model.OfferId.ToString();
 }
 
-<form asp-area="" asp-controller="Deal" asp-action="Preview" asp-route-itemId="@Model.ItemId" method="post" class="mx-auto row">
+<form asp-area="" asp-controller="Deal" asp-action=@action asp-route-id=@routeId method="post" class="mx-auto row">
 	<div asp-validation-summary="ModelOnly" class="text-warning"></div>
 	<div class="col col">
 		<div class="mb-3 small">

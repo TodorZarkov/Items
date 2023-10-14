@@ -288,7 +288,9 @@
 					BarterDescription = offerData.BarterDescription,
 					BarterPictureUri = offerData.BarterPictureUri,
 					BarterQuantity = offerData.BarterQuantity,
-					BarterUnitSymbol = offerData.BarterUnitSymbol
+					BarterUnitSymbol = offerData.BarterUnitSymbol,
+
+					OfferId = offerId
 					
 					//DeliveryAddress = ...  TODO: get address from new user property Address (if set)
 

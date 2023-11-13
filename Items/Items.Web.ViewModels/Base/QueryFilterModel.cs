@@ -27,6 +27,7 @@
         public int HitsPerPage { get; set; }
 
 		// todo: async check with db (calc. max page from Hits and hits per page
+		[Range(1, int.MaxValue)]
 		public int CurrentPage { get; set; }
 
         public Sorting SortBy { get; set; }

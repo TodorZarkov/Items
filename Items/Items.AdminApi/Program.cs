@@ -2,12 +2,19 @@ namespace Items.AdminApi
 {
 	using Items.Data;
 	using Items.Data.Models;
+	using Items.Services.Common;
+	using Items.Services.Common.Interfaces;
+	using Items.Services.Data;
+	using Items.Services.Data.Interfaces;
+
 	using Microsoft.AspNetCore.Authentication.JwtBearer;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.Extensions.DependencyInjection;
 	using Microsoft.IdentityModel.Tokens;
+
 	using System.Text;
+	using System.Text.Json;
 
 	public class Program
 	{
@@ -16,10 +23,23 @@ namespace Items.AdminApi
 			var builder = WebApplication.CreateBuilder(args);
 
 
+			builder.Services.AddControllers();
+
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy(name: "CORSPolicy", p =>
+				{
+					p.WithOrigins("http://127.0.0.1:5173"
+									, "https://127.0.0.1:5173"
+									, "https://localhost:7229");
+				});
+			});
+
+
 			string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string DefaultConnection not found.");
 			builder.Services.AddDbContext<ItemsDbContext>(options =>
 			{
-				options.UseSqlServer(connectionString);
+				options.UseSqlServer(connectionString, x => x.UseNetTopologySuite());
 			});
 
 			builder.Services
@@ -64,32 +84,60 @@ namespace Items.AdminApi
 				})
 				.AddJwtBearer(options =>
 				{
-					options.SaveToken = true;
-					options.RequireHttpsMetadata = false;
+					options.SaveToken = builder.Configuration.GetValue<bool>("Jwt:SaveToken");
+					options.RequireHttpsMetadata = builder.Configuration.GetValue<bool>("Jwt:RequireHttpsMetadata");
 					options.TokenValidationParameters = new TokenValidationParameters()
 					{
 						ValidateIssuer = builder.Configuration.GetValue<bool>("Jwt:ValidateIssuer"),
 						ValidateAudience = builder.Configuration.GetValue<bool>("Jwt:ValidateAudience"),
 						ValidAudience = builder.Configuration["Jwt:Audience"],
 						ValidIssuer = builder.Configuration["Jwt:Issuer"],
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+						ValidateIssuerSigningKey = true,
+						ValidateLifetime = false,
+
+					};
+					options.Events = new JwtBearerEvents()
+					{
+						OnChallenge = context =>
+						{
+							context.HandleResponse();
+							context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+							context.Response.ContentType = "application/json";
+
+							// Ensure we always have an error and error description.
+							if (string.IsNullOrEmpty(context.Error))
+								context.Error = "invalid_token";
+							if (string.IsNullOrEmpty(context.ErrorDescription))
+								context.ErrorDescription = "This request requires a valid JWT access token to be provided";
+
+							// Add some extra context for expired tokens.
+							if (context.AuthenticateFailure != null && context.AuthenticateFailure.GetType() == typeof(SecurityTokenExpiredException))
+							{
+								var authenticationException = context.AuthenticateFailure as SecurityTokenExpiredException;
+								context.Response.Headers.Add("x-token-expired", authenticationException.Expires.ToString("o"));
+								context.ErrorDescription = $"The token expired on {authenticationException.Expires.ToString("o")}";
+							}
+
+							return context.Response.WriteAsync(JsonSerializer.Serialize(new
+							{
+								error = context.Error,
+								error_description = context.ErrorDescription
+							}));
+						}
 					};
 				});
+			builder.Services
+				.AddAuthorization();
 
-			builder.Services.AddControllers();
-
-			builder.Services.AddCors(options =>
-			{
-				options.AddPolicy(name: "CORSPolicy", p =>
-				{
-					p.WithOrigins("http://127.0.0.1:5173"
-									, "https://127.0.0.1:5173");
-				});
-			});
 
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
+
+			builder.Services.AddScoped<IDateTimeProvider, DateTimeUtcProvider>();
+			builder.Services.AddScoped<ITokenAuthService, JwtAuthService>();
+			builder.Services.AddScoped<IUserService, UserService>();
 
 
 			var app = builder.Build();
@@ -99,9 +147,9 @@ namespace Items.AdminApi
 			app.UseSwagger();
 			app.UseSwaggerUI();
 
+			app.UseCors("CORSPolicy");
 			app.UseHttpsRedirection();
 			app.UseRouting();
-			app.UseCors("CORSPolicy");
 			app.UseAuthentication();
 			app.UseAuthorization();
 

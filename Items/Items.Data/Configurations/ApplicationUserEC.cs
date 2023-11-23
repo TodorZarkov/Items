@@ -22,10 +22,10 @@
 			ApplicationUser user = new ApplicationUser
 			{
 				Id = Guid.Parse("04023B09-A38E-48E1-1082-08DB8D0DB110"),
-				UserName = "admin@items.bg",
-				NormalizedUserName = "ADMIN@ITEMS.BG",
-				Email = "admin@items.bg",
-				NormalizedEmail = "ADMIN@ITEMS.BG",
+				UserName = "superadmin@items.bg",
+				NormalizedUserName = "SUPERADMIN@ITEMS.BG",
+				Email = "superadmin@items.bg",
+				NormalizedEmail = "SUPERADMIN@ITEMS.BG",
 				PasswordHash = "AQAAAAEAACcQAAAAEFUS+MjcEzJ8yNttLlA2VAmOLDlrGAC3SVa8UbFU/rttk1Mq+6WeJbPg3o0U7TJVzQ==",
 				SecurityStamp = "VG5NFKHCN2YOVRDWKLO4OC2UC5RDSZC2",
 				EmailConfirmed = false,

@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Items.Services.Data.Models"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Items.Services.Mapping", "Items.Services.Mapping\Items.Services.Mapping.csproj", "{D1D4E296-915F-4752-BBBF-6D5679252E07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Items.AdminApi", "Items.AdminApi\Items.AdminApi.csproj", "{0794B758-66FF-48E8-89A1-E028DF232D35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Items.AdminApi", "Items.AdminApi\Items.AdminApi.csproj", "{0794B758-66FF-48E8-89A1-E028DF232D35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

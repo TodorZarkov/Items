@@ -21,7 +21,15 @@
 		private readonly IContractService contractService;
 		private readonly ILocationService locationService;
 
-		public ItemController(IItemService itemService, ICategoryService categoryService, IPlaceService placeService, ICurrencyService currencyService, IUnitService unitService, IContractService contractService, ILocationService locationService)
+		public ItemController(
+			  IItemService itemService
+			, ICategoryService categoryService
+			, IPlaceService placeService
+			, ICurrencyService currencyService
+			, IUnitService unitService
+			, IContractService contractService
+			, ILocationService locationService)
+
 		{
 			this.itemService = itemService;
 			this.categoryService = categoryService;

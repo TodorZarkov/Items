@@ -1,6 +1,7 @@
 ﻿namespace Items.Services.Data
 {
 	using Items.Data;
+	using Items.Data.Models;
 	using Items.Services.Data.Interfaces;
 	using Microsoft.EntityFrameworkCore;
 	using System;
@@ -13,6 +14,14 @@
 		public UserService(ItemsDbContext dbContext)
 		{
 			this.dbContext = dbContext;
+		}
+
+		public async Task<ApplicationUser?> GetByEmailAsync(string email)
+		{
+			ApplicationUser?  user = await dbContext.Users
+				.FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper());
+
+			return user;
 		}
 
 		public async Task<DateTime> GetRotationItemsDateAsync(Guid userId)

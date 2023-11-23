@@ -1,9 +1,14 @@
 namespace Items.AdminApi.Controllers
 {
-	using Microsoft.AspNetCore.Mvc;
+	using static Common.RoleConstants;
 
+	using Microsoft.AspNetCore.Authorization;
+	using Microsoft.AspNetCore.Mvc;
+	using Items.Data.Models;
+
+	
+	[Route("api/[controller]")]
 	[ApiController]
-	[Route("[controller]")]
 	public class WeatherForecastController : ControllerBase
 	{
 		private static readonly string[] Summaries = new[]
@@ -18,9 +23,11 @@ namespace Items.AdminApi.Controllers
 			_logger = logger;
 		}
 
-		[HttpGet(Name = "GetWeatherForecast")]
+		[HttpGet("wf")]
+		[Authorize(Roles = SuperAdmin)]
 		public IEnumerable<WeatherForecast> Get()
 		{
+			var user = User.Identity;
 			return Enumerable.Range(1, 5).Select(index => new WeatherForecast
 			{
 				Date = DateTime.Now.AddDays(index),

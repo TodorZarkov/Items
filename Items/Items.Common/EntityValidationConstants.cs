@@ -162,10 +162,10 @@
         {
 
 			public const int UserNameMinLength = 2;
-			public const int UserNameMaxLength = 200;
+			public const int UserNameMaxLength = 256;
 
 			public const int UserEmailMinLength = 2;
-			public const int UserEmailMaxLength = 200;
+			public const int UserEmailMaxLength = 256;
 
 			public const int UserPhoneMinLength = 2;
 			public const int UserPhoneMaxLength = 200;

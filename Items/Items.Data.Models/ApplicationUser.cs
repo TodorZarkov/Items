@@ -1,22 +1,31 @@
 ﻿namespace Items.Data.Models
 {
-    using Microsoft.AspNetCore.Identity;
+    using static Common.EntityValidationConstants.User;
 
+    using Microsoft.AspNetCore.Identity;
+	using System.ComponentModel.DataAnnotations;
+	using Microsoft.EntityFrameworkCore;
+
+	[Index(nameof(Email),IsUnique = true)]
     public class ApplicationUser : IdentityUser<Guid>
     {
-        public ApplicationUser() 
+        public ApplicationUser()
         {
             Items = new HashSet<Item>();
 
             Categories = new HashSet<Category>();
 
             Locations = new HashSet<Location>();
-             
+
             Offers = new HashSet<Offer>();
 
             ContractsAsBuyer = new HashSet<Contract>();
             ContractsAsSeller = new HashSet<Contract>();
         }
+
+        [Required]
+        [MaxLength(UserEmailMaxLength)]
+        override public string Email { get; set; } = null!;
 
         public DateTime RotationItemsDate { get; set; }
 

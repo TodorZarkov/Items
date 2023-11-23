@@ -169,6 +169,9 @@
 
 			public const int UserPhoneMinLength = 2;
 			public const int UserPhoneMaxLength = 200;
+
+			public const int UserRoleMinLength = 2;
+			public const int UserRoleMaxLength = 256;
 		}
 
         

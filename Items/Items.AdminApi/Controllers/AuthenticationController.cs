@@ -4,13 +4,13 @@
 	using Items.Services.Data.Interfaces;
 	using Items.Services.Data.Models.User;
 	using Services.Common.Interfaces;
+	using static Common.RoleConstants;
 
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.AspNetCore.Mvc;
 	using Microsoft.Extensions.Options;
-	using Items.Services.Common;
+
 	using System.Security.Claims;
-	using System.Reflection.Metadata.Ecma335;
 	using Microsoft.AspNetCore.Authorization;
 
 	[Route("api/[controller]")]
@@ -40,7 +40,7 @@
 
 
 		[HttpPost("Login")]
-		public async Task<IActionResult> Login(LoginUserServiceModel model)
+		public async Task<IActionResult> Login([FromBody] LoginUserServiceModel model)
 		{
 			try
 			{
@@ -79,5 +79,16 @@
 		}
 
 
+		[Authorize(Roles = SuperAdmin)]
+		[HttpPost("RegisterAdmin")]
+		public async Task<IActionResult> RegisterAdmin([FromBody] string userEmail)
+		{
+			ApplicationUser? user = await userService.GetByEmailAsync(userEmail);
+			if (user is null)
+			{
+				return BadRequest();
+			}
+			return Ok();
+		}
 	}
 }

@@ -4,7 +4,7 @@
 
 	using System.ComponentModel.DataAnnotations;
 
-	public class RegisterAdminServiceModel
+	public class AssignRoleServiceModel
 	{
 		[Required]
 		[EmailAddress]

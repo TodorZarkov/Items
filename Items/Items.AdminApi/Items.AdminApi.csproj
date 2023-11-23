@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Items.AdminApi.Infrastructure\Items.AdminApi.Infrastructure.csproj" />
     <ProjectReference Include="..\Items.Data\Items.Data.csproj" />
     <ProjectReference Include="..\Items.Services.Data.Models\Items.Services.Data.Models.csproj" />
     <ProjectReference Include="..\Items.Services.Data\Items.Services.Data.csproj" />

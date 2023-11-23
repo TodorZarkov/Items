@@ -24,6 +24,12 @@
 			return user;
 		}
 
+		public async Task<ApplicationUser?> GetByIdAsync(Guid userId)
+		{
+			ApplicationUser? user = await dbContext.Users.FindAsync(userId);
+			return user;
+		}
+
 		public async Task<DateTime> GetRotationItemsDateAsync(Guid userId)
 		{
 			DateTime date = await dbContext.Users
@@ -41,6 +47,8 @@
 
 			return result;
 		}
+
+		
 
 		public async Task SetRotationItemsDateAsync(Guid userId, DateTime newDateTime)
 		{

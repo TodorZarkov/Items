@@ -23,8 +23,38 @@
 		}
 		public ICollection<ModelError> ModelErrors { get; set; }
 
+		public async Task<bool> CanAssign(Guid userId, string roleName)
+		{
+			ModelError modelError = new ModelError();
+			ApplicationUser? user = await userService.GetByIdAsync(userId);
+			if (user is null)
+			{
+				modelError.PropertyName = nameof(userId);
+				modelError.Message = "User with That Id Doesn't exist!";
+				ModelErrors.Add(modelError);
+				return false;
+			}
 
-		public async Task<bool> IsRegisterAdminModelValid(RegisterAdminServiceModel model)
+			if ((await userManager.IsInRoleAsync(user, roleName)))
+			{
+				modelError.PropertyName = nameof(roleName);
+				modelError.Message = "The User is already in that Role!";
+				ModelErrors.Add(modelError);
+				return false;
+			}
+
+			if (!(await userService.RoleExistAsync(roleName)))
+			{
+				modelError.PropertyName = nameof(roleName);
+				modelError.Message = "No such Role.";
+				ModelErrors.Add(modelError);
+				return false;
+			}
+
+			return true;
+		}
+
+		public async Task<bool> IsRegisterAdminModelValid(AssignRoleServiceModel model)
 		{
 			ModelError modelError = new ModelError();
 			ApplicationUser? user = await userService.GetByEmailAsync(model.Email);

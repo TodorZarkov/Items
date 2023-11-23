@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Items.AdminApi", "Items.Adm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Items.Services.Validator", "Items.Services.Validator\Items.Services.Validator.csproj", "{E8CCEF98-8C02-41A0-B3D0-2D3659B66BC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Items.AdminApi.Infrastructure", "Items.AdminApi.Infrastructure\Items.AdminApi.Infrastructure.csproj", "{F16AEBE1-BB48-474F-81B8-1CB785D006ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{E8CCEF98-8C02-41A0-B3D0-2D3659B66BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8CCEF98-8C02-41A0-B3D0-2D3659B66BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8CCEF98-8C02-41A0-B3D0-2D3659B66BC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F16AEBE1-BB48-474F-81B8-1CB785D006ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F16AEBE1-BB48-474F-81B8-1CB785D006ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F16AEBE1-BB48-474F-81B8-1CB785D006ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F16AEBE1-BB48-474F-81B8-1CB785D006ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,6 +116,7 @@ Global
 		{D1D4E296-915F-4752-BBBF-6D5679252E07} = {AB82E736-6462-4FB9-B30A-8FA8834E5D7E}
 		{0794B758-66FF-48E8-89A1-E028DF232D35} = {6DE03281-8E90-421C-94DA-8F9C2CE248BE}
 		{E8CCEF98-8C02-41A0-B3D0-2D3659B66BC7} = {AB82E736-6462-4FB9-B30A-8FA8834E5D7E}
+		{F16AEBE1-BB48-474F-81B8-1CB785D006ED} = {6DE03281-8E90-421C-94DA-8F9C2CE248BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0DD1A993-763D-43D5-A4AF-200142024544}

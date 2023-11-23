@@ -6,7 +6,8 @@ namespace Items.AdminApi
 	using Items.Services.Common.Interfaces;
 	using Items.Services.Data;
 	using Items.Services.Data.Interfaces;
-
+	using Items.Services.Validator;
+	using Items.Services.Validator.Interfaces;
 	using Microsoft.AspNetCore.Authentication.JwtBearer;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
@@ -138,6 +139,7 @@ namespace Items.AdminApi
 			builder.Services.AddScoped<IDateTimeProvider, DateTimeUtcProvider>();
 			builder.Services.AddScoped<ITokenAuthService, JwtAuthService>();
 			builder.Services.AddScoped<IUserService, UserService>();
+			builder.Services.AddScoped<IUserValidatorService, UserValidatorService>();
 
 
 			var app = builder.Build();

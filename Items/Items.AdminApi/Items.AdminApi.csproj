@@ -23,6 +23,7 @@
     <ProjectReference Include="..\Items.Data\Items.Data.csproj" />
     <ProjectReference Include="..\Items.Services.Data.Models\Items.Services.Data.Models.csproj" />
     <ProjectReference Include="..\Items.Services.Data\Items.Services.Data.csproj" />
+    <ProjectReference Include="..\Items.Services.Validator\Items.Services.Validator.csproj" />
   </ItemGroup>
 
 </Project>

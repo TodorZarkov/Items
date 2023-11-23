@@ -34,6 +34,14 @@
 			return date;
 		}
 
+		public async Task<bool> RoleExistAsync(string role)
+		{
+			bool result = await dbContext.Roles
+				.AnyAsync(r => r.NormalizedName == role.ToUpper());
+
+			return result;
+		}
+
 		public async Task SetRotationItemsDateAsync(Guid userId, DateTime newDateTime)
 		{
 			dbContext.Users

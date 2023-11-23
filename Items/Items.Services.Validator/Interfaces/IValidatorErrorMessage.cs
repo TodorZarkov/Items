@@ -8,7 +8,7 @@
 
 	public class ModelError
 	{
-		public string? Message { get; set; }
-		public string? PropertyName { get; set; }
+		public string Message { get; set; } = null!;
+		public string PropertyName { get; set; } = null!;
 	}
 }

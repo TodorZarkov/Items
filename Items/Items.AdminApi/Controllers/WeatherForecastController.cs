@@ -24,7 +24,7 @@ namespace Items.AdminApi.Controllers
 		}
 
 		[HttpGet("wf")]
-		[Authorize(Roles = SuperAdmin)]
+		[Authorize(Roles = Admin)]
 		public IEnumerable<WeatherForecast> Get()
 		{
 			var user = User.Identity;

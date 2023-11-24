@@ -95,7 +95,7 @@ namespace Items.AdminApi
 						ValidIssuer = builder.Configuration["Jwt:Issuer"],
 						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
 						ValidateIssuerSigningKey = true,
-						ValidateLifetime = false,
+						ValidateLifetime = builder.Configuration.GetValue<bool>("Jwt:ValidateLifetime"),
 
 					};
 					options.Events = new JwtBearerEvents()

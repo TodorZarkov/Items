@@ -3,6 +3,8 @@
 	using Items.Data;
 	using Items.Data.Models;
 	using Items.Services.Data.Interfaces;
+	using Items.Services.Data.Models.User;
+	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
 	using System;
 	using System.Threading.Tasks;
@@ -10,10 +12,14 @@
 	public class UserService : IUserService
 	{
 		private readonly ItemsDbContext dbContext;
+		private readonly UserManager<ApplicationUser> userManager;
+		private readonly SignInManager<ApplicationUser> signInManager;
 
-		public UserService(ItemsDbContext dbContext)
+		public UserService(ItemsDbContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
 		{
 			this.dbContext = dbContext;
+			this.userManager = userManager;
+			this.signInManager = signInManager;
 		}
 
 		public async Task<ApplicationUser?> GetByEmailAsync(string email)
@@ -30,6 +36,36 @@
 			return user;
 		}
 
+		public async Task<AllRoleServiceModel[]> GetRolesAsync(ApplicationUser user)
+		{
+			var roleIds = await dbContext.UserRoles
+				.Where(ur => ur.UserId == user.Id)
+				.Select(ur => ur.RoleId)
+				.ToArrayAsync();
+			var roles = await dbContext.Roles
+				.Where(r => roleIds.Contains(r.Id))
+				.Select(r => new AllRoleServiceModel
+				{
+					Id = r.Id,
+					Name = r.Name
+				})
+				.ToArrayAsync();
+
+			return roles;
+		}
+
+		public async Task<string?> GetRoleAsync(Guid roleId)
+		{
+			IdentityRole<Guid>? role = await dbContext.Roles
+				.FindAsync(roleId);
+			if (role == null)
+			{
+				return null;
+			}
+
+			return role.Name;
+		}
+
 		public async Task<DateTime> GetRotationItemsDateAsync(Guid userId)
 		{
 			DateTime date = await dbContext.Users
@@ -38,6 +74,20 @@
 				.FirstAsync();
 
 			return date;
+		}
+
+		public async Task<IdentityResult> RegisterAsync(RegisterUserServiceModel model)
+		{
+			ApplicationUser user = new ApplicationUser
+			{
+				UserName = model.Email,
+				NormalizedUserName = model.Email.ToUpper(),
+				Email = model.Email,
+				NormalizedEmail = model.Email.ToUpper(),
+			};
+			IdentityResult result = await userManager.CreateAsync(user, model.Password);
+
+			return result;
 		}
 
 		public async Task<bool> RoleExistAsync(string role)

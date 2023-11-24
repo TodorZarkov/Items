@@ -56,16 +56,19 @@
 					return BadRequest();
 				}
 
-				string[] roles = (await userManager.GetRolesAsync(user)).ToArray();
+				AllRoleServiceModel[] roles = await userService.GetRolesAsync(user);
+
+
 
 				var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
 
 				if (result.Succeeded)
 				{
 					List<Claim> claims = new List<Claim>();
-					foreach (string role in roles)
+					foreach (var role in roles)
 					{
-						claims.Add(new Claim(ClaimTypes.Role, role));
+						claims.Add(new Claim(ClaimTypes.Role, role.Name));
+						claims.Add(new Claim($"role{role.Name}Id", role.Id.ToString()));
 					}
 					claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
 					claims.Add(new Claim(ClaimTypes.Name, user.UserName));
@@ -85,11 +88,23 @@
 		}
 
 
-
 		[HttpPost]
 		public async Task<IActionResult> Register([FromBody] RegisterUserServiceModel model)
 		{
-			return Ok(model);
+			IdentityResult result = await userService.RegisterAsync(model);
+
+			if (!result.Succeeded)
+			{
+				foreach (IdentityError error in result.Errors)
+				{
+					ModelState.AddModelError(error.Code, error.Description);
+				}
+
+				return apiBehaviorOptions
+						.Value.InvalidModelStateResponseFactory(ControllerContext);
+			}
+
+			return Ok();
 		}
 
 
@@ -116,27 +131,58 @@
 					.Value.InvalidModelStateResponseFactory(ControllerContext);
 			}
 
-			
 
-			var result = await userManager.AddToRoleAsync(user, roleName) ;
+
+			var result = await userManager.AddToRoleAsync(user, roleName);
 			if (result.Succeeded)
 			{
 				return Ok();
 			}
-
-			return StatusCode(StatusCodes.Status500InternalServerError);
+			else
+			{
+				foreach (var error in result.Errors)
+				{
+					ModelState.AddModelError(error.Code, error.Description);
+				}
+				return apiBehaviorOptions
+					.Value.InvalidModelStateResponseFactory(ControllerContext);
+			}
 		}
 
 
 		[Authorize(Roles = SuperAdmin)]
 		[HttpDelete("{userId}/Roles/{roleId}")]
-		public async Task<IActionResult> UnassignRole([FromRoute] Guid userId, [FromRoute] Guid roleId )
+		public async Task<IActionResult> UnassignRole([FromRoute] Guid userId, [FromRoute] Guid roleId)
 		{
-			Guid? currentUserId = User.GetId();
+			//todo: now a super admin can unassign itself from the rol. is it a problem?
+			//todo: consider temporary password for admin and super admin.
+			ApplicationUser? user = await userService.GetByIdAsync(userId);
+			if (user == null)
+			{
+				ModelState.AddModelError(nameof(userId), "Invalid User Id.");
+				return apiBehaviorOptions
+					.Value.InvalidModelStateResponseFactory(ControllerContext);
+			}
+			string? roleName =  await userService.GetRoleAsync(roleId);
+			if (string.IsNullOrEmpty(roleName))
+			{
+				ModelState.AddModelError(nameof(roleId), "Invalid Role Id.");
+				return apiBehaviorOptions
+					.Value.InvalidModelStateResponseFactory(ControllerContext);
+			}
 
+			IdentityResult result = await userManager.RemoveFromRoleAsync(user, roleName);
+			if (!result.Succeeded)
+			{
+				foreach (var error in result.Errors)
+				{
+					ModelState.AddModelError(error.Code, error.Description);
+				}
+				return apiBehaviorOptions
+					.Value.InvalidModelStateResponseFactory(ControllerContext);
+			}
 
-
-			return Ok(new { userId, currentUserId, roleId });
+			return Ok();
 		}
 	}
 }

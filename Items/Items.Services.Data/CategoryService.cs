@@ -3,6 +3,8 @@
 	using Items.Data;
 	using Items.Services.Data.Interfaces;
 	using Items.Web.ViewModels.Category;
+	using static Items.Common.RoleConstants;
+
 	using Microsoft.EntityFrameworkCore;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
@@ -20,13 +22,13 @@
         public async Task<ICollection<CategoryFilterViewModel>> GetAllPublicAsync()
 		{
 			var adminRoleId = await dbContext.Roles
-				.Where(r => r.NormalizedName == "ADMIN")
+				.Where(r => r.NormalizedName == SuperAdmin.ToUpper() || r.NormalizedName == Admin.ToUpper())
 				.Select(r => r.Id)
 				.ToArrayAsync();
 
 
 			var adminIds = await dbContext.UserRoles
-				.Where(ur => ur.RoleId == adminRoleId[0])
+				.Where(ur => adminRoleId.Contains(ur.RoleId))
 				.Select(ur => ur.UserId)
 				.ToArrayAsync();
 
@@ -60,13 +62,13 @@
 		public async Task<IEnumerable<CategoryFilterViewModel>> AllForSelectAsync(Guid userId)
 		{
 			var adminRoleId = await dbContext.Roles
-				.Where(r => r.NormalizedName == "ADMIN")
+				.Where(r => r.NormalizedName == SuperAdmin.ToUpper() || r.NormalizedName == Admin.ToUpper())
 				.Select(r => r.Id)
 				.ToArrayAsync();
 
 
 			var adminIds = await dbContext.UserRoles
-				.Where(ur => ur.RoleId == adminRoleId[0])
+				.Where(ur => adminRoleId.Contains(ur.RoleId))
 				.Select(ur => ur.UserId)
 				.ToArrayAsync();
 
@@ -87,13 +89,13 @@
 		public async Task<ICollection<int>> GetAllPublicIdsAsync()
 		{
 			var adminRoleId = await dbContext.Roles
-				.Where(r => r.NormalizedName == "ADMIN")
+				.Where(r => r.NormalizedName == SuperAdmin.ToUpper() || r.NormalizedName == Admin.ToUpper())
 				.Select(r => r.Id)
 				.ToArrayAsync();
 
 
 			var adminIds = await dbContext.UserRoles
-				.Where(ur => ur.RoleId == adminRoleId[0])
+				.Where(ur => adminRoleId.Contains(ur.RoleId))
 				.Select(ur => ur.UserId)
 				.ToArrayAsync();
 
@@ -120,13 +122,13 @@
 		public async Task<bool> IsAllowedIdsAsync(int[] ids, Guid userId)
 		{
 			var adminRoleId = await dbContext.Roles
-				.Where(r => r.NormalizedName == "ADMIN")
+				.Where(r => r.NormalizedName == SuperAdmin.ToUpper() || r.NormalizedName == Admin.ToUpper())
 				.Select(r => r.Id)
 				.ToArrayAsync();
 
 
 			var adminIds = await dbContext.UserRoles
-				.Where(ur => ur.RoleId == adminRoleId[0])
+				.Where(ur => adminRoleId.Contains(ur.RoleId))
 				.Select(ur => ur.UserId)
 				.ToArrayAsync();
 
@@ -157,13 +159,13 @@
 			if (userId == null)
 			{
 				var adminRoleId = await dbContext.Roles
-				.Where(r => r.NormalizedName == "ADMIN")
+				.Where(r => r.NormalizedName == SuperAdmin.ToUpper() || r.NormalizedName == Admin.ToUpper())
 				.Select(r => r.Id)
 				.ToArrayAsync();
 
 
 				var adminIds = await dbContext.UserRoles
-					.Where(ur => ur.RoleId == adminRoleId[0])
+					.Where(ur => adminRoleId.Contains(ur.RoleId))
 					.Select(ur => ur.UserId)
 					.ToArrayAsync();
 

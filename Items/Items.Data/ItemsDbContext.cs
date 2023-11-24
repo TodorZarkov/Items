@@ -42,6 +42,12 @@
 
         public DbSet<Unit> Units { get; set; } = null!;
 
+        public DbSet<Ticket> Tickets { get; set; } = null!;
+
+        public DbSet<TicketStatus> TicketStatuses { get; set; } = null!;
+
+        public DbSet<TicketType> TicketTypes { get; set; } = null!;
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -6,7 +6,6 @@
 	using Services.Common.Interfaces;
 	using static Common.RoleConstants;
 	using Items.Services.Validator.Interfaces;
-	using Items.AdminApi.Infrastructure.Extensions;
 
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,6 @@
 
 	using System.Security.Claims;
 	using Microsoft.AspNetCore.Authorization;
-	using Microsoft.Extensions.Configuration.UserSecrets;
 
 	[Route("api/[controller]")]
 	[ApiController]
@@ -108,9 +106,11 @@
 		}
 
 
+		//todo: how to forget user - to set deleted flag and to delete personal data. to set email as nullable. to break relations. to inform user of closing activities...
 		[HttpDelete("{userId}")]
 		public async Task<IActionResult> Unregister([FromRoute] Guid userId)
 		{
+			
 			return Ok(new { userId });
 		}
 

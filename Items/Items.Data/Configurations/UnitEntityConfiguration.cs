@@ -12,6 +12,7 @@
                 .HasData(GenerateUnits());
         }
 
+        //todo: set constants for the units
         private Unit[] GenerateUnits()
         {
             List<Unit> units = new List<Unit>();

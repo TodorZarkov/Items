@@ -174,6 +174,28 @@
 			public const int UserRoleMaxLength = 256;
 		}
 
+
+		public static class Ticket
+		{
+			public const int TitleMin = 1;
+			public const int TitleMax = 50;
+
+			public const int DescriptionMin = 10;
+			public const int DescriptionMax = 1000;
+		}
+
+
+        public static class TicketType
+        {
+            public const int NameMin = 2;
+            public const int NameMax = 50;
+        }
         
-    }
+
+        public static class TicketStatus
+		{
+            public const int NameMin = 2;
+            public const int NameMax = 50;
+        }
+	}
 }

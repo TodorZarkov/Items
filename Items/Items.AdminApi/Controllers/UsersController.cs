@@ -13,7 +13,9 @@
 
 	using System.Security.Claims;
 	using Microsoft.AspNetCore.Authorization;
+	using Items.AdminApi.Infrastructure.Extensions;
 
+	[Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class UsersController : ControllerBase
@@ -43,6 +45,7 @@
 
 
 
+		[AllowAnonymous]
 		[HttpPost("/api/Login")]
 		public async Task<IActionResult> Login([FromBody] LoginUserServiceModel model)
 		{
@@ -86,6 +89,7 @@
 		}
 
 
+		[AllowAnonymous]
 		[HttpPost]
 		public async Task<IActionResult> Register([FromBody] RegisterUserServiceModel model)
 		{
@@ -107,10 +111,9 @@
 
 
 		//todo: how to forget user - to set deleted flag and to delete personal data. to set email as nullable. to break relations. to inform user of closing activities...
-		[HttpDelete("{userId}")]
+		[HttpDelete("Me")]
 		public async Task<IActionResult> Unregister([FromRoute] Guid userId)
 		{
-			
 			return Ok(new { userId });
 		}
 
@@ -163,7 +166,7 @@
 				return apiBehaviorOptions
 					.Value.InvalidModelStateResponseFactory(ControllerContext);
 			}
-			string? roleName =  await userService.GetRoleAsync(roleId);
+			string? roleName = await userService.GetRoleAsync(roleId);
 			if (string.IsNullOrEmpty(roleName))
 			{
 				ModelState.AddModelError(nameof(roleId), "Invalid Role Id.");
@@ -183,6 +186,32 @@
 			}
 
 			return Ok();
+		}
+
+
+
+		[HttpPost("Me/Profile/Picture")]
+		public async Task<IActionResult> AddProfilePicture([FromForm] IFormFile profilePicture )
+		{
+			if (profilePicture == null || profilePicture.Length == 0)
+			{
+				ModelState.AddModelError(nameof(profilePicture), "Image file is required.");
+				return apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+			}
+			//todo: check the size of the picture
+
+			try
+			{
+
+				Guid? userId = User.GetId();
+				await userService.AddProfilePictureAsync((Guid)userId!, profilePicture);
+
+				return Ok();
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
 		}
 	}
 }

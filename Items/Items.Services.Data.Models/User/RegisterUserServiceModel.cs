@@ -3,6 +3,7 @@
 	using static Items.Common.EntityValidationConstants.User;
 
 	using System.ComponentModel.DataAnnotations;
+	using Microsoft.AspNetCore.Http;
 
 	public class RegisterUserServiceModel
 	{

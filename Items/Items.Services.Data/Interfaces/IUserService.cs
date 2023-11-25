@@ -2,6 +2,7 @@
 {
 	using Items.Data.Models;
 	using Items.Services.Data.Models.User;
+	using Microsoft.AspNetCore.Http;
 	using Microsoft.AspNetCore.Identity;
 
 	public interface IUserService
@@ -14,5 +15,6 @@
 		Task<IdentityResult> RegisterAsync(RegisterUserServiceModel model);
 		Task<bool> RoleExistAsync(string role);
 		Task SetRotationItemsDateAsync(Guid userId, DateTime utcNow);
+		Task AddProfilePictureAsync(Guid userId, IFormFile profilePicture);
 	}
 }

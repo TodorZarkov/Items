@@ -4,6 +4,7 @@
 	using Items.Data.Models;
 	using Items.Services.Data.Interfaces;
 	using Items.Services.Data.Models.User;
+	using Microsoft.AspNetCore.Http;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
 	using System;
@@ -107,6 +108,19 @@
 				.RotationItemsDate = newDateTime;
 
 			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task AddProfilePictureAsync(Guid userId, IFormFile profilePicture)
+		{
+			using (MemoryStream memoryStream = new MemoryStream())
+			{
+				await profilePicture.CopyToAsync(memoryStream);
+				ApplicationUser? user = await dbContext.Users.FindAsync(userId);
+
+				user!.ProfilePicture = memoryStream.ToArray();
+
+				await dbContext.SaveChangesAsync();
+			}
 		}
 	}
 }

@@ -23,9 +23,11 @@
             ContractsAsSeller = new HashSet<Contract>();
         }
 
-        [Required]
+        
         [MaxLength(UserEmailMaxLength)]
         override public string Email { get; set; } = null!;
+
+        public byte[]? ProfilePicture { get; set; }
 
         public DateTime RotationItemsDate { get; set; }
 

@@ -172,6 +172,8 @@
 
 			public const int UserRoleMinLength = 2;
 			public const int UserRoleMaxLength = 256;
+
+            public const int ProfilePictureMax = 2 - 000 - 000;
 		}
 
 
@@ -182,6 +184,8 @@
 
 			public const int DescriptionMin = 10;
 			public const int DescriptionMax = 1000;
+
+            public const int SnapshotMax = 2 - 000 - 000;
 		}
 
 

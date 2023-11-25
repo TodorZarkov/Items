@@ -25,6 +25,9 @@
         public string? Description { get; set; }
 
 
+        public byte[]? Snapshot { get; set; }
+
+
         [Required]
         [ForeignKey(nameof(TicketStatus))]
         public int StatusId { get; set; }

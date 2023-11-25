@@ -16,5 +16,7 @@
 		Task<bool> RoleExistAsync(string role);
 		Task SetRotationItemsDateAsync(Guid userId, DateTime utcNow);
 		Task AddProfilePictureAsync(Guid userId, IFormFile profilePicture);
+		Task<byte[]?> GetProfilePictureAsync(Guid userId);
+		Task DeleteProfilePictureAsync(Guid userId);
 	}
 }

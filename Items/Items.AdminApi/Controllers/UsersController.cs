@@ -14,6 +14,7 @@
 	using System.Security.Claims;
 	using Microsoft.AspNetCore.Authorization;
 	using Items.AdminApi.Infrastructure.Extensions;
+	using System.Net.Mime;
 
 	[Authorize]
 	[Route("api/[controller]")]
@@ -206,6 +207,40 @@
 				Guid? userId = User.GetId();
 				await userService.AddProfilePictureAsync((Guid)userId!, profilePicture);
 
+				return Ok();
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+		}
+
+
+		[HttpGet("Me/Profile/Picture")]
+		public async Task<IActionResult> GetProfilePicture()
+		{
+			try
+			{
+				Guid? userId = User.GetId();
+				byte[]? pictureBytes = await userService.GetProfilePictureAsync((Guid)userId!);
+				//todo: check null, return default picture
+				return File(pictureBytes, "image/png");
+			}
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status404NotFound);
+			}
+		}
+
+
+		[HttpDelete("Me/Profile/Picture")]
+		public async Task<IActionResult> RemoveProfilePicture()
+		{
+			try
+			{
+				Guid? userId = User.GetId();
+				await userService.DeleteProfilePictureAsync((Guid)userId!);
+				//todo: return default picture
 				return Ok();
 			}
 			catch (Exception)

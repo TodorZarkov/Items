@@ -122,5 +122,21 @@
 				await dbContext.SaveChangesAsync();
 			}
 		}
+
+		public async Task<byte[]?> GetProfilePictureAsync(Guid userId)
+		{
+			ApplicationUser user = (await dbContext.Users.FindAsync(userId))!;
+
+			return user.ProfilePicture;
+		}
+
+		public async Task DeleteProfilePictureAsync(Guid userId)
+		{
+			ApplicationUser user = (await dbContext.Users.FindAsync(userId))!;
+
+			user.ProfilePicture = null;
+
+			await dbContext.SaveChangesAsync();
+		}
 	}
 }

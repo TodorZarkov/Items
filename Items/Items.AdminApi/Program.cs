@@ -166,6 +166,7 @@ namespace Items.AdminApi
 			builder.Services.AddScoped<ITokenAuthService, JwtAuthService>();
 			builder.Services.AddScoped<IUserService, UserService>();
 			builder.Services.AddScoped<IUserValidatorService, UserValidatorService>();
+			builder.Services.AddScoped<ITicketService, TicketService>();
 
 
 			var app = builder.Build();

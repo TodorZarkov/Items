@@ -63,6 +63,7 @@
 
 				options.Lockout.MaxFailedAccessAttempts
 					= builder.Configuration.GetValue<int>("Lockout:MaxFailedAccessAttempts");
+
 			})
 				.AddRoles<IdentityRole<Guid>>()
 				.AddEntityFrameworkStores<ItemsDbContext>();

@@ -16,5 +16,11 @@
 			public const string NEW_CATEGORY = "NewCategory";
 			public const string NEW_CURRENCY = "NewCurrency";
 		}
+
+		public static class Query
+		{
+			public const int HitsPerPage = 20;
+			public const int CurrentPage = 1;
+		}
 	}
 }

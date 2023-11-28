@@ -23,7 +23,7 @@
 			throw new NotImplementedException();
 		}
 
-		public Task<AllTicketInfoServiceModel> GetAllAsync(TicketQueryModel? queryModel = null)
+		public async Task<AllTicketInfoServiceModel> GetAllAsync(TicketQueryModel? queryModel = null)
 		{
 			var query = dbContext.Tickets
 				.AsNoTracking()
@@ -42,10 +42,48 @@
 					);
 				}
 
+				string[]? statusesToInclude = queryModel.IncludeStatuses;
+				if (statusesToInclude != null && statusesToInclude.Length > 0)
+				{
+					query = query
+						.Where(t => statusesToInclude.Contains(t.TicketStatus.Name));
+				}
 
-
-
+				string[]? typesToInclude = queryModel.IncludeTypes;
+				if (typesToInclude != null && typesToInclude.Length > 0)
+				{
+					query = query
+						.Where(t => typesToInclude.Contains(t.TicketType.Name));
+				}
 			}
+			int totalCount = await query.CountAsync();
+
+
+			int hitsPerPage = queryModel?.HitsPerPage ?? Query.HitsPerPage;
+			int currentPage = queryModel?.CurrentPage ?? Query.CurrentPage;
+			query = query
+				.Skip((currentPage - 1) * hitsPerPage)
+				.Take(hitsPerPage);
+
+			AllTicketServiceModel[] tickets = await query
+				.Select(t => new AllTicketServiceModel
+				{
+					Id = t.Id,
+					Title = t.Title,
+					Type = t.TicketType.Name,
+					Status = t.TicketStatus.Name
+				})
+				.ToArrayAsync();
+
+
+			AllTicketInfoServiceModel result = new AllTicketInfoServiceModel
+			{
+				Tickets = tickets,
+				TotalCount = totalCount
+			};
+
+			return result;
+
 		}
 	}
 }

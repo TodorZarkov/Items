@@ -8,9 +8,9 @@
 
         public string[]? IncludeTypes { get; set; }
 
-        public int HitsPerPage { get; set; }
+        public int? HitsPerPage { get; set; }
 
-        public int CurrentPage { get; set; }
+        public int? CurrentPage { get; set; }
 
     }
 }

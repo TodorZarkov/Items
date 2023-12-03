@@ -4,10 +4,13 @@
 	using Items.Services.Data.Interfaces;
 	using Items.Services.Data.Models.Ticket;
 	using static Items.Common.TicketConstants;
+	using Items.Data.Models;
 
 	using System;
 	using System.Threading.Tasks;
+
 	using Microsoft.EntityFrameworkCore;
+
 
 	public class TicketService : ITicketService
 	{
@@ -18,7 +21,37 @@
 			this.dbContext = dbContext;
 		}
 
-		public Task<Guid> AddTicketServiceModel(TicketFormServiceModel model)
+		public async Task<Guid> AddAsync(Guid userId, TicketFormServiceModel model)
+		{
+			TicketStatus openStatus = await dbContext.TicketStatuses
+				.FirstAsync(s => s.Name == Statuses.OPEN);
+
+			Ticket ticket = new Ticket
+			{
+				AuthorId = userId,
+				Description = model.Description,
+				Title = model.Title,
+				TypeId = model.TypeId,
+				TicketStatus = openStatus
+			};
+
+			if (model.Snapshot != null)
+			{
+				using (MemoryStream stream = new MemoryStream())
+				{
+					await model.Snapshot.CopyToAsync(stream);
+					ticket.Snapshot = stream.ToArray();
+				}
+			}
+
+			await dbContext.Tickets.AddAsync(ticket);
+
+			await dbContext.SaveChangesAsync();
+
+			return ticket.Id;
+		}
+
+		public Task EditAsync(Guid guid, Guid ticketId, TicketEditServiceModel ticketEditModel)
 		{
 			throw new NotImplementedException();
 		}
@@ -84,6 +117,30 @@
 
 			return result;
 
+		}
+
+		public async Task<TicketDetailsServiceModel> GetAsync(Guid ticketId)
+		{
+			TicketDetailsServiceModel ticket = await dbContext.Tickets
+			.Where(t => t.Id == ticketId)
+			.Select(t => new TicketDetailsServiceModel
+			{
+				Title = t.Title,
+				Description = t.Description,
+				TicketType = t.TicketType.Name,
+				TicketStatus = t.TicketStatus.Name,
+				AssigneeId = t.AssigneeId,
+				AssigneeName = t.Assignee != null ? t.Assignee.UserName : null,
+				AssignerId = t.AssignerId,
+				AssignerName = t.Assigner != null ? t.Assigner.UserName : null,
+				AuthorId = t.AuthorId,
+				AuthorName = t.Author.UserName,
+				Snapshot = t.Snapshot
+
+			})
+			.FirstAsync();
+
+			return ticket;
 		}
 	}
 }

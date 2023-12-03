@@ -10,11 +10,13 @@
         [Key]
         public Guid Id { get; set; }
 
+
         [Required]
         [ForeignKey(nameof(TicketType))]
         public int TypeId { get; set; }
         [Required]
         public TicketType TicketType { get; set; } = null!;
+
 
         [Required]
         [MaxLength(TitleMax)]

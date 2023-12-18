@@ -46,7 +46,7 @@
 
 			content.Add(snapshotContent);
 
-			JsonContent ticketContent = JsonContent.Create<TicketDetailsServiceModel>(ticket);
+			JsonContent ticketContent = JsonContent.Create(ticket);
 
 			content.Add(ticketContent);
 

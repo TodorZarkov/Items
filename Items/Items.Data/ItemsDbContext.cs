@@ -48,6 +48,8 @@
 
         public DbSet<TicketType> TicketTypes { get; set; } = null!;
 
+        public DbSet<File> Files { get; set; } = null!;
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)

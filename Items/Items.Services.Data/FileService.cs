@@ -42,7 +42,17 @@
 
 		public async Task<IEnumerable<FileServiceModel>> GetAsync(IEnumerable<Guid> fileIds)
 		{
-			throw new NotImplementedException();
+			var models = await dbContext.Files
+				.Where(f => fileIds.Any(fid => fid == f.Id))
+				.Select(f => new FileServiceModel
+				{
+					Bytes = f.Bytes,
+					MimeType = f.MimeType,
+					Name = f.Name
+				})
+				.ToArrayAsync();
+
+			return models;
 		}
 
 		public Task ModifyAsync(Guid fileId, FileServiceModel fileModel)

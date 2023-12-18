@@ -10,15 +10,18 @@
 	using System.Threading.Tasks;
 
 	using Microsoft.EntityFrameworkCore;
-
+	using Items.Services.Data.Models.File;
+	using System.Net.Mime;
 
 	public class TicketService : ITicketService
 	{
 		private readonly ItemsDbContext dbContext;
+		private readonly IFileService fileService;
 
-		public TicketService(ItemsDbContext dbContext)
+		public TicketService(ItemsDbContext dbContext, IFileService fileService)
 		{
 			this.dbContext = dbContext;
+			this.fileService = fileService;
 		}
 
 		public async Task<Guid> AddAsync(Guid userId, TicketFormServiceModel model)
@@ -40,7 +43,12 @@
 				using (MemoryStream stream = new MemoryStream())
 				{
 					await model.Snapshot.CopyToAsync(stream);
-					ticket.Snapshot = stream.ToArray();
+					var fileModel = new FileServiceModel
+					{
+						Bytes = stream.ToArray(),
+						MimeType = MediaTypeNames.Image.Jpeg
+					};
+					ticket.SnapshotId = await fileService.SaveAsync(fileModel);
 				}
 			}
 
@@ -135,10 +143,10 @@
 				AssignerName = t.Assigner != null ? t.Assigner.UserName : null,
 				AuthorId = t.AuthorId,
 				AuthorName = t.Author.UserName,
-				Snapshot = t.Snapshot
-
+				Snapshot = t.Snapshot != null ? t.Snapshot.Bytes : null
 			})
 			.FirstAsync();
+
 
 			return ticket;
 		}

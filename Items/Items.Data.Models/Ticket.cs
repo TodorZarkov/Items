@@ -27,7 +27,9 @@
         public string? Description { get; set; }
 
 
-        public byte[]? Snapshot { get; set; }
+        [ForeignKey(nameof(Snapshot))]
+        public Guid? SnapshotId { get; set; }
+        public File? Snapshot { get; set; }
 
 
         [Required]

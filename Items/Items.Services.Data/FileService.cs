@@ -55,9 +55,15 @@
 			return models;
 		}
 
-		public Task ModifyAsync(Guid fileId, FileServiceModel fileModel)
+		public async Task ModifyAsync(Guid fileId, FileServiceModel fileModel)
 		{
-			throw new NotImplementedException();
+			var file = await dbContext.Files.FirstAsync(f => f.Id == fileId);
+
+			file.Name = fileModel.Name;
+			file.Bytes = fileModel.Bytes;
+			file.MimeType = fileModel.MimeType;
+
+			await dbContext.SaveChangesAsync();
 		}
 
 		public Task<Guid> SaveAsync(FileServiceModel fileModel)

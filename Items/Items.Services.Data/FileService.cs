@@ -66,9 +66,18 @@
 			await dbContext.SaveChangesAsync();
 		}
 
-		public Task<Guid> SaveAsync(FileServiceModel fileModel)
+		public async Task<Guid> SaveAsync(FileServiceModel fileModel)
 		{
-			throw new NotImplementedException();
+			var file = new File
+			{
+				Bytes = fileModel.Bytes,
+				MimeType = fileModel.MimeType,
+				Name = fileModel.Name
+			};
+
+			await dbContext.Files.AddAsync(file);
+
+			return file.Id;
 		}
 	}
 }

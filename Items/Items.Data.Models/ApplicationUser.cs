@@ -5,6 +5,7 @@
     using Microsoft.AspNetCore.Identity;
 	using System.ComponentModel.DataAnnotations;
 	using Microsoft.EntityFrameworkCore;
+	using System.ComponentModel.DataAnnotations.Schema;
 
 	[Index(nameof(Email),IsUnique = true)]
     public class ApplicationUser : IdentityUser<Guid>
@@ -27,7 +28,10 @@
         [MaxLength(UserEmailMaxLength)]
         override public string Email { get; set; } = null!;
 
-        public byte[]? ProfilePicture { get; set; }
+
+        [ForeignKey(nameof(ProfilePicture))]
+        public Guid? ProfilePictureId { get; set; }
+        public File? ProfilePicture { get; set; }
 
         public DateTime RotationItemsDate { get; set; }
 

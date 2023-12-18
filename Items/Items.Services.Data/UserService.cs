@@ -3,11 +3,14 @@
 	using Items.Data;
 	using Items.Data.Models;
 	using Items.Services.Data.Interfaces;
+	using Items.Services.Data.Models.File;
 	using Items.Services.Data.Models.User;
 	using Microsoft.AspNetCore.Http;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.EntityFrameworkCore;
+	using Microsoft.Extensions.Caching.Memory;
 	using System;
+	using System.Net.Mime;
 	using System.Threading.Tasks;
 
 	public class UserService : IUserService
@@ -15,12 +18,14 @@
 		private readonly ItemsDbContext dbContext;
 		private readonly UserManager<ApplicationUser> userManager;
 		private readonly SignInManager<ApplicationUser> signInManager;
+		private readonly IFileService fileService;
 
-		public UserService(ItemsDbContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+		public UserService(ItemsDbContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IFileService fileService)
 		{
 			this.dbContext = dbContext;
 			this.userManager = userManager;
 			this.signInManager = signInManager;
+			this.fileService = fileService;
 		}
 
 		public async Task<ApplicationUser?> GetByEmailAsync(string email)
@@ -117,7 +122,13 @@
 				await profilePicture.CopyToAsync(memoryStream);
 				ApplicationUser? user = await dbContext.Users.FindAsync(userId);
 
-				user!.ProfilePicture = memoryStream.ToArray();
+				var fileModel = new FileServiceModel
+				{
+					Bytes = memoryStream.ToArray(),
+					MimeType = MediaTypeNames.Image.Jpeg
+				};
+
+				user!.ProfilePictureId = await fileService.SaveAsync(fileModel);
 
 				await dbContext.SaveChangesAsync();
 			}
@@ -127,7 +138,7 @@
 		{
 			ApplicationUser user = (await dbContext.Users.FindAsync(userId))!;
 
-			return user.ProfilePicture;
+			return user.ProfilePicture?.Bytes;
 		}
 
 		public async Task DeleteProfilePictureAsync(Guid userId)

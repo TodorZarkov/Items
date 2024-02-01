@@ -66,7 +66,7 @@
 			await dbContext.SaveChangesAsync();
 		}
 
-		public async Task<Guid> SaveAsync(FileServiceModel fileModel)
+		public async Task<Guid> AddAsync(FileServiceModel fileModel)
 		{
 			var file = new File
 			{
@@ -78,6 +78,11 @@
 			await dbContext.Files.AddAsync(file);
 
 			return file.Id;
+		}
+
+		public Task<string> GetPath(Guid fileId)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

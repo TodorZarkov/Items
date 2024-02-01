@@ -135,7 +135,7 @@ namespace Items.AdminApi
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(option =>
 			{
-				option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+				option.SwaggerDoc("v1", new OpenApiInfo { Title = "Items-AdminAPI", Version = "v1" });
 				option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 				{
 					In = ParameterLocation.Header,
@@ -146,19 +146,19 @@ namespace Items.AdminApi
 					Scheme = "Bearer"
 				});
 				option.AddSecurityRequirement(new OpenApiSecurityRequirement
-	{
-		{
-			new OpenApiSecurityScheme
-			{
-				Reference = new OpenApiReference
 				{
-					Type=ReferenceType.SecurityScheme,
-					Id="Bearer"
-				}
-			},
-			new string[]{}
-		}
-	});
+					{
+						new OpenApiSecurityScheme
+						{
+							Reference = new OpenApiReference
+							{
+								Type=ReferenceType.SecurityScheme,
+								Id="Bearer"
+							}
+						},
+						new string[] {}
+					}
+				});
 			});
 
 
@@ -167,7 +167,7 @@ namespace Items.AdminApi
 			builder.Services.AddScoped<IUserService, UserService>();
 			builder.Services.AddScoped<IUserValidatorService, UserValidatorService>();
 			builder.Services.AddScoped<ITicketService, TicketService>();
-			builder.Services.AddScoped<IFileService, FileService>();
+			builder.Services.AddScoped<IFileService, InDbFileService>();
 
 
 			var app = builder.Build();

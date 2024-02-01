@@ -111,10 +111,11 @@
 		}
 
 
-		//todo: how to forget user - to set deleted flag and to delete personal data. to set email as nullable. to break relations. to inform user of closing activities...
+		//todo: how to forget user - to set deleted flag and to delete personal data. to set email as nullable. to break relations. to inform user of closing activities, to transfer all personal data if the user  requires ...
 		[HttpDelete("Me")]
-		public async Task<IActionResult> Unregister([FromRoute] Guid userId)
+		public async Task<IActionResult> Unregister()
 		{
+			Guid? userId = User.GetId();
 			return Ok(new { userId });
 		}
 

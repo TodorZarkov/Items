@@ -128,7 +128,7 @@
 					MimeType = MediaTypeNames.Image.Jpeg
 				};
 
-				user!.ProfilePictureId = await fileService.SaveAsync(fileModel);
+				user!.ProfilePictureId = await fileService.AddAsync(fileModel);
 
 				await dbContext.SaveChangesAsync();
 			}

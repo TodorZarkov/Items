@@ -48,7 +48,7 @@
 						Bytes = stream.ToArray(),
 						MimeType = MediaTypeNames.Image.Jpeg
 					};
-					ticket.SnapshotId = await fileService.SaveAsync(fileModel);
+					ticket.SnapshotId = await fileService.AddAsync(fileModel);
 				}
 			}
 

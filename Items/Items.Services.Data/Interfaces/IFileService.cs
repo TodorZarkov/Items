@@ -6,16 +6,23 @@
 	public interface IFileService
 	{
 		Task<Guid> AddAsync(FileServiceModel fileModel);
+		Task<IEnumerable<Guid>> AddManyAsync(IEnumerable<FileServiceModel> fileModels);
+
 
 		Task ModifyAsync(Guid fileId, FileServiceModel fileModel);
 
+
 		Task<FileServiceModel> GetAsync(Guid fileId);
 
-		Task<IEnumerable<FileServiceModel>> GetAsync(IEnumerable<Guid> fileIds);
+		Task<IEnumerable<FileServiceModel>> GetManyAsync(IEnumerable<Guid> fileIds);
+
 
 		Task DeleteAsync(Guid fileId);
 
-		Task<String> GetPath(Guid fileId);
+		Task<long> DeleteManyAsync(IEnumerable<Guid> ids);
+
+
+		Task<string?> GetPath(Guid fileId);
 
 	}
 }

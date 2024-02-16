@@ -9,11 +9,11 @@
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 
-	public class FileService : IFileService
+	public class InDbFileService : IFileService
 	{
 		private readonly ItemsDbContext dbContext;
 
-		public FileService(ItemsDbContext dbContext)
+		public InDbFileService(ItemsDbContext dbContext)
 		{
 			this.dbContext = dbContext;
 		}
@@ -40,7 +40,7 @@
 			return model;
 		}
 
-		public async Task<IEnumerable<FileServiceModel>> GetAsync(IEnumerable<Guid> fileIds)
+		public async Task<IEnumerable<FileServiceModel>> GetManyAsync(IEnumerable<Guid> fileIds)
 		{
 			var models = await dbContext.Files
 				.Where(f => fileIds.Any(fid => fid == f.Id))
@@ -81,6 +81,16 @@
 		}
 
 		public Task<string> GetPath(Guid fileId)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<IEnumerable<Guid>> AddManyAsync(IEnumerable<FileServiceModel> fileModels)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<long> DeleteManyAsync(IEnumerable<Guid> ids)
 		{
 			throw new NotImplementedException();
 		}

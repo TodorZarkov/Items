@@ -76,23 +76,46 @@
 			};
 
 			await dbContext.Files.AddAsync(file);
+			await dbContext.SaveChangesAsync();
 
 			return file.Id;
 		}
 
 		public Task<string> GetPath(Guid fileId)
 		{
-			throw new NotImplementedException();
+			return Task.FromResult(string.Empty);
 		}
 
-		public Task<IEnumerable<Guid>> AddManyAsync(IEnumerable<FileServiceModel> fileModels)
+		public async Task<IEnumerable<Guid>> AddManyAsync(IEnumerable<FileServiceModel> fileModels)
 		{
-			throw new NotImplementedException();
+			List<Guid> result = new List<Guid>() ;
+			foreach(var fileModel in fileModels)
+			{
+				File file = new File()
+				{
+					Id = Guid.NewGuid(),
+					Name = fileModel.Name,
+					Bytes = fileModel.Bytes,
+					MimeType = fileModel.MimeType
+				};
+				await dbContext.Files.AddAsync(file);
+				result.Add(file.Id);
+			}
+			await dbContext.SaveChangesAsync();
+
+			return result;
 		}
 
-		public Task<long> DeleteManyAsync(IEnumerable<Guid> ids)
+		public async Task<long> DeleteManyAsync(IEnumerable<Guid> ids)
 		{
-			throw new NotImplementedException();
+			File[] files = await dbContext.Files
+				.Where(f => ids.Contains(f.Id))
+				.ToArrayAsync();
+			dbContext.RemoveRange(files);
+
+			await dbContext.SaveChangesAsync();
+
+			return files.Length;
 		}
 	}
 }

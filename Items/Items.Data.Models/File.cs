@@ -4,6 +4,11 @@
 
 	public class File
 	{
+        //public File()
+        //{
+        //    Id = Guid.NewGuid();
+        //}
+
         [Key]
         public Guid Id { get; set; }
 

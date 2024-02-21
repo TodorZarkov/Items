@@ -89,6 +89,7 @@
 		public async Task<IEnumerable<Guid>> AddManyAsync(IEnumerable<FileServiceModel> fileModels)
 		{
 			List<Guid> result = new List<Guid>() ;
+			List<File> files = new List<File>();
 			foreach(var fileModel in fileModels)
 			{
 				File file = new File()
@@ -98,9 +99,10 @@
 					Bytes = fileModel.Bytes,
 					MimeType = fileModel.MimeType
 				};
-				await dbContext.Files.AddAsync(file);
+				files.Add(file);
 				result.Add(file.Id);
 			}
+			await dbContext.Files.AddRangeAsync(files);
 			await dbContext.SaveChangesAsync();
 
 			return result;

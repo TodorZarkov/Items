@@ -103,6 +103,7 @@
 
         [Required]
         [MaxLength(UriMaxLength)]
+        //todo(fc): change to guid and name to MainPictureId
         public string MainPictureUri { get; set; } = null!;
 
 

@@ -266,6 +266,7 @@
 				{
 					Id = i.Id,
 					Name = i.Name,
+					//todo(fc): consolidate metadata and base64 encoded binary image content from the file service
 					MainPictureUri = i.MainPictureUri,
 
 					IsMine = userId == i.OwnerId,

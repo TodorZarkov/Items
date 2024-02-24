@@ -5,6 +5,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    //todo(fc): remove this entity
     public class Picture
     {
         public Picture()

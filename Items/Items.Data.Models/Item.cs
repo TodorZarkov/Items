@@ -99,12 +99,15 @@
 		public Location Location { get; set; } = null!;
 
 
+        //todo(fc): change these as collections of guids
 		public ICollection<Picture> Pictures { get; set; }
 
         [Required]
         [MaxLength(UriMaxLength)]
         //todo(fc): change to guid and name to MainPictureId
         public string MainPictureUri { get; set; } = null!;
+
+        public Guid MainPictureId { get; set; }
 
 
 

@@ -23,6 +23,7 @@
 	using Items.Common.Enums;
 	using AutoMapper;
 	using System.Reflection.Metadata.Ecma335;
+	using Items.Services.Data.Models.File;
 
 	public class ItemService : IItemService
 	{
@@ -30,13 +31,15 @@
 		private readonly IHelper helper;
 		private readonly IDateTimeProvider dateTimeProvider;
 		private readonly IMapper mapper;
+		private readonly IFileService fileService;
 
-		public ItemService(ItemsDbContext dbContext, IHelper helper, IDateTimeProvider dateTimeProvider, IMapper mapper)
+		public ItemService(ItemsDbContext dbContext, IHelper helper, IDateTimeProvider dateTimeProvider, IMapper mapper, IFileService fileService)
 		{
 			this.dbContext = dbContext;
 			this.helper = helper;
 			this.dateTimeProvider = dateTimeProvider;
 			this.mapper = mapper;
+			this.fileService = fileService;
 		}
 
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
@@ -1052,7 +1055,7 @@
 				OwnerId = userId,
 
 
-
+				//todo(fc): delete MainPictureUri from here
 				MainPictureUri = model.MainPictureUri,//1.1
 
 				StartSell = model.StartSell,//4.3
@@ -1092,9 +1095,28 @@
 				item.ItemsCategories.Add(itemCategory);
 			}
 
+			//todo: lower the size and rate limits before the file upload itself for further evaluation!!!
+			//todo: check the IFormFile for: 
+			//- size against zero byte[] (the content length actually)
+			//- size against the concrete entity max size limit (for the item that will be the max size for Item picture)
+			//- size against the given disk amount to the concrete user
+			//- xss (html encode the file name)
+			//- extension in the name to match file signature
+			//- virus and malware
+			//if everything above is fine proceed with the IFileService
+			using (var memoryStream = new MemoryStream())
+			{
+				await model.MainImage.CopyToAsync(memoryStream);
+				item.MainPictureId = await fileService.AddAsync(new FileServiceModel
+				{
+					Bytes = memoryStream.ToArray(),
+					Name = model.MainImage.FileName,
+					MimeType = model.MainImage.ContentType
+				});
+			}
 
 
-			dbContext.Items.Add(item);
+				dbContext.Items.Add(item);
 			await dbContext.SaveChangesAsync();
 
 			return item.Id;

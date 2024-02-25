@@ -44,12 +44,6 @@
             public const int UriMaxLength = 2048;
         }
 
-        public static class Picture
-        {
-            public const int UriMinLength = 1;
-            public const int UriMaxLength = 2048;
-        }
-
         public static class Category
         {
             public const int NameMinLength = 2;
@@ -94,6 +88,8 @@
 
 			public const int UriMinLength = 1;
 			public const int UriMaxLength = 2048;
+
+            public const long ImageSizeMaxLength = 5000000;
 
 		}
 

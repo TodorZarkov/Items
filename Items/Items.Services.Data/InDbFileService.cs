@@ -76,6 +76,7 @@
 			};
 
 			await dbContext.Files.AddAsync(file);
+			//todo: Is it appropriate to call save changes here? It produces two db transactions if this service is called in other db changing service. to remove it - document that this service requires save changes; 
 			await dbContext.SaveChangesAsync();
 
 			return file.Id;

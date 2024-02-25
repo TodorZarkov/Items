@@ -129,26 +129,35 @@
 
 		public async Task<TicketDetailsServiceModel> GetAsync(Guid ticketId)
 		{
-			TicketDetailsServiceModel ticket = await dbContext.Tickets
-			.Where(t => t.Id == ticketId)
-			.Select(t => new TicketDetailsServiceModel
+			Ticket ticket = await dbContext.Tickets.FindAsync(ticketId) ??
+				throw new ArgumentNullException(nameof(ticketId), "The ticket id doesn't match any Ticket.");
+
+
+			TicketDetailsServiceModel ticketModel =
+				new TicketDetailsServiceModel
+				{
+					Title = ticket.Title,
+					Description = ticket.Description,
+					TicketType = ticket.TicketType.Name,
+					TicketStatus = ticket.TicketStatus.Name,
+					AssigneeId = ticket.AssigneeId,
+					AssigneeName = ticket.Assignee != null ? ticket.Assignee.UserName : null,
+					AssignerId = ticket.AssignerId,
+					AssignerName = ticket.Assigner != null ? ticket.Assigner.UserName : null,
+					AuthorId = ticket.AuthorId,
+					AuthorName = ticket.Author.UserName,
+					Snapshot = null
+				};
+
+			if (ticket.SnapshotId != null)
 			{
-				Title = t.Title,
-				Description = t.Description,
-				TicketType = t.TicketType.Name,
-				TicketStatus = t.TicketStatus.Name,
-				AssigneeId = t.AssigneeId,
-				AssigneeName = t.Assignee != null ? t.Assignee.UserName : null,
-				AssignerId = t.AssignerId,
-				AssignerName = t.Assigner != null ? t.Assigner.UserName : null,
-				AuthorId = t.AuthorId,
-				AuthorName = t.Author.UserName,
-				Snapshot = t.Snapshot != null ? t.Snapshot.Bytes : null
-			})
-			.FirstAsync();
+				FileServiceModel snapshot =
+					await fileService.GetAsync((Guid)ticket.SnapshotId);
+				ticketModel.Snapshot = snapshot.Bytes;
+			}
 
 
-			return ticket;
+			return ticketModel;
 		}
 	}
 }

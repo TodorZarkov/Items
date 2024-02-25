@@ -30,7 +30,7 @@
 
 		public async Task<ApplicationUser?> GetByEmailAsync(string email)
 		{
-			ApplicationUser?  user = await dbContext.Users
+			ApplicationUser? user = await dbContext.Users
 				.FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper());
 
 			return user;
@@ -104,7 +104,7 @@
 			return result;
 		}
 
-		
+
 
 		public async Task SetRotationItemsDateAsync(Guid userId, DateTime newDateTime)
 		{
@@ -137,15 +137,28 @@
 		public async Task<byte[]?> GetProfilePictureAsync(Guid userId)
 		{
 			ApplicationUser user = (await dbContext.Users.FindAsync(userId))!;
+			Guid? userProfilePictureId = user.ProfilePictureId;
+			if (userProfilePictureId != null)
+			{
+				FileServiceModel picture = 
+					await fileService.GetAsync((Guid)user.ProfilePictureId!);
+				return picture.Bytes;
+			}
 
-			return user.ProfilePicture?.Bytes;
+			return null;
 		}
 
 		public async Task DeleteProfilePictureAsync(Guid userId)
 		{
 			ApplicationUser user = (await dbContext.Users.FindAsync(userId))!;
 
-			user.ProfilePicture = null;
+			if (user.ProfilePictureId == null)
+			{
+				return;
+			}
+
+			await fileService.DeleteAsync((Guid)user.ProfilePictureId!);
+			user.ProfilePictureId = null;
 
 			await dbContext.SaveChangesAsync();
 		}

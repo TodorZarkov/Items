@@ -28,10 +28,7 @@
         [MaxLength(UserEmailMaxLength)]
         override public string Email { get; set; } = null!;
 
-
-        [ForeignKey(nameof(ProfilePicture))]
         public Guid? ProfilePictureId { get; set; }
-        public File? ProfilePicture { get; set; }
 
         public DateTime RotationItemsDate { get; set; }
 

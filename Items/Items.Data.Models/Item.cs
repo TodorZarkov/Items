@@ -14,7 +14,7 @@
             AddedOn = DateTime.UtcNow;
             ModifiedOn = DateTime.UtcNow;
             ItemsCategories = new HashSet<ItemCategory>();
-            Pictures = new HashSet<Picture>();
+            ItemPictures = new HashSet<FileIdentifier>();
             Offers = new HashSet<Offer>();
             AsBarterForOffers = new HashSet<Offer>();
             Contracts = new HashSet<Contract>();
@@ -99,8 +99,8 @@
 		public Location Location { get; set; } = null!;
 
 
-        //todo(fc): change these as collections of guids
-		public ICollection<Picture> Pictures { get; set; }
+
+        public ICollection<FileIdentifier> ItemPictures { get; set; }
 
         [Required]
         [MaxLength(UriMaxLength)]
@@ -108,7 +108,6 @@
         public string MainPictureUri { get; set; } = null!;
 
         public Guid MainPictureId { get; set; }
-
 
 
         [Precision(ValuePrecision, ValueScale)]

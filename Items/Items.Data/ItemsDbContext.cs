@@ -36,7 +36,7 @@
 
         public DbSet<Offer> Offers { get; set; } = null!;
 
-        public DbSet<Picture> Pictures { get; set; } = null!;
+        public DbSet<FileIdentifier> FileIdentifiers { get; set; } = null!;
 
         public DbSet<Place> Places { get; set; } = null!;
 

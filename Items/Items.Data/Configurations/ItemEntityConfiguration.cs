@@ -34,12 +34,6 @@
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder
-                .HasMany(e => e.Pictures)
-                .WithOne(e => e.Item)
-                .HasForeignKey(e => e.ItemId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder
                 .HasOne(e => e.Unit)
                 .WithMany()
                 .HasForeignKey(e => e.UnitId)
@@ -60,6 +54,12 @@
                 .HasMany(i => i.Contracts)
                 .WithOne(c => c.Item)
                 .HasForeignKey(c => c.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasMany(i => i.ItemPictures)
+                .WithOne(f => f.Item)
+                .HasForeignKey(f => f.ItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder

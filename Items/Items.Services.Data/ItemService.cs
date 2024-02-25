@@ -1092,6 +1092,8 @@
 				item.ItemsCategories.Add(itemCategory);
 			}
 
+
+
 			dbContext.Items.Add(item);
 			await dbContext.SaveChangesAsync();
 

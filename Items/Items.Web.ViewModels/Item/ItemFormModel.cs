@@ -11,6 +11,7 @@
 
 	using System.ComponentModel.DataAnnotations;
 	using Items.Web.ViewModels.Location;
+	using Microsoft.AspNetCore.Http;
 
 	public class ItemFormModel //: IValidatableObject
 	{
@@ -72,14 +73,16 @@
 
 
 
-		// TODO: manage client picture files
+		// todo(fc): remove mainpictureuri
 		[Required]
 		[StringLength(UriMaxLength, MinimumLength = UriMinLength)]
 		public string MainPictureUri { get; set; } = null!;
 
+		[Required]
+		public IFormFile MainImage { get; set; } = null!;
 
 
-		[Range(ValueMinValue, ValueMaxValue)]
+        [Range(ValueMinValue, ValueMaxValue)]
 		public decimal? CurrentPrice { get; set; }
 
 

@@ -27,7 +27,9 @@
 							<span asp-validation-for="@Model.MainPictureUri" class="text-danger text-sm-start"></span>
 
 						</div>
-
+						<div>
+							<input asp-for="@Model.MainImage" type="file" />
+						</div>
 						<div class="col-sm">
 							<input asp-for="@Model.Name" type="text" class="form-control" placeholder="Item Name">
 							<span asp-validation-for="@Model.Name" class="text-danger text-sm-start"></span>

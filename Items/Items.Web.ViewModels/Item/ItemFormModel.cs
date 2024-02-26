@@ -74,12 +74,12 @@
 
 
 		// todo(fc): remove mainpictureuri
-		[Required]
-		[StringLength(UriMaxLength, MinimumLength = UriMinLength)]
-		public string MainPictureUri { get; set; } = null!;
+		//[Required]
+		//[StringLength(UriMaxLength, MinimumLength = UriMinLength)]
+		public string? MainPictureUri { get; set; } //= null!;
 
 		[Required]
-		public IFormFile MainImage { get; set; } = null!;
+		public IEnumerable<IFormFile> Images { get; set; } = null!;
 
 
         [Range(ValueMinValue, ValueMaxValue)]

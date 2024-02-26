@@ -24,6 +24,7 @@
 	using AutoMapper;
 	using System.Reflection.Metadata.Ecma335;
 	using Items.Services.Data.Models.File;
+	using Microsoft.AspNetCore.Http;
 
 	public class ItemService : IItemService
 	{
@@ -1056,7 +1057,7 @@
 
 
 				//todo(fc): delete MainPictureUri from here
-				MainPictureUri = model.MainPictureUri,//1.1
+				//MainPictureUri = model.MainPictureUri,//1.1
 
 				StartSell = model.StartSell,//4.3
 				EndSell = model.EndSell,//4.4
@@ -1104,16 +1105,28 @@
 			//- extension in the name to match file signature
 			//- virus and malware
 			//if everything above is fine proceed with the IFileService
-			using (var memoryStream = new MemoryStream())
+			List<Guid> pictureIds = new List<Guid>();
+			foreach (IFormFile image in model.Images)
 			{
-				await model.MainImage.CopyToAsync(memoryStream);
-				item.MainPictureId = await fileService.AddAsync(new FileServiceModel
+				using (var memoryStream = new MemoryStream())
 				{
-					Bytes = memoryStream.ToArray(),
-					Name = model.MainImage.FileName,
-					MimeType = model.MainImage.ContentType
-				});
+					await image.CopyToAsync(memoryStream);
+					Guid pictureId = await fileService.AddAsync(new FileServiceModel
+					{
+						Bytes = memoryStream.ToArray(),
+						Name = image.FileName,
+						MimeType = image.ContentType
+					});
+					pictureIds.Add(pictureId);
+					FileIdentifier fi = new FileIdentifier
+					{
+						Item = item,
+						FileId = pictureId
+					};
+					item.ItemPictures.Add(fi);
+				}
 			}
+			item.MainPictureId = pictureIds.First();
 
 
 				dbContext.Items.Add(item);

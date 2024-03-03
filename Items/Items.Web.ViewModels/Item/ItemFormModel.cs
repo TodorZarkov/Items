@@ -106,9 +106,5 @@
 
 
 		//public Document? AcquireDocument { get; set; }
-
-		//public ICollection<Picture> Pictures { get; set; }
-
-
 	}
 }

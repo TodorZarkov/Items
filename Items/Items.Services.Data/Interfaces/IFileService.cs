@@ -1,7 +1,6 @@
 ﻿namespace Items.Services.Data.Interfaces
 {
 	using Items.Services.Data.Models.File;
-	using Microsoft.Extensions.FileProviders;
 
 	public interface IFileService
 	{

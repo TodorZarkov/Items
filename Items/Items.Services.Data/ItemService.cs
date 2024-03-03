@@ -725,6 +725,8 @@
 				}
 			};
 
+			
+
 			return model;
 		}
 
@@ -1054,10 +1056,7 @@
 				CurrentPrice = model.CurrentPrice,//4.1
 				IsAuction = model.IsAuction,//4.2
 				OwnerId = userId,
-
-
-				//todo(fc): delete MainPictureUri from here
-				//MainPictureUri = model.MainPictureUri,//1.1
+				
 
 				StartSell = model.StartSell,//4.3
 				EndSell = model.EndSell,//4.4
@@ -1118,10 +1117,13 @@
 						MimeType = image.ContentType
 					});
 					pictureIds.Add(pictureId);
+					
 					FileIdentifier fi = new FileIdentifier
 					{
 						Item = item,
-						FileId = pictureId
+						FileId = pictureId,
+						OwnerId = userId,
+						IsPublic = model.EndSell != null && model.EndSell > dateTimeProvider.GetCurrentDateTime()
 					};
 					item.ItemPictures.Add(fi);
 				}

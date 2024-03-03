@@ -10,18 +10,24 @@
 	using Microsoft.AspNetCore.Mvc;
 
 	using System.Diagnostics;
+	using Items.Services.Data.Models.File;
+	using Items.Services.Data;
 
 	public class HomeController : BaseController
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
 		private readonly IItemService itemService;
 		private readonly IUserService userService;
+		private readonly IFileService fileService;
+		private readonly IFileIdentifierService fileIdentifierService;
 
-		public HomeController(IDateTimeProvider dateTimeProvider, IItemService itemService, IUserService userService)
+		public HomeController(IDateTimeProvider dateTimeProvider, IItemService itemService, IUserService userService, IFileIdentifierService fileIdentifierService, IFileService fileService)
 		{
 			this.dateTimeProvider = dateTimeProvider;
 			this.itemService = itemService;
 			this.userService = userService;
+			this.fileIdentifierService = fileIdentifierService;
+			this.fileService = fileService;
 		}
 
 		[AllowAnonymous]
@@ -87,6 +93,23 @@
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+
+
+		
+		public async Task<IActionResult> File(Guid id)
+		{
+			Guid userId = Guid.Parse(User.GetId());
+			bool canAccess = await fileIdentifierService.CanAccess(userId, id);
+			if (!canAccess)
+			{
+				return StatusCode(StatusCodes.Status403Forbidden);
+			}
+
+
+			FileServiceModel file = await fileService.GetAsync(id);
+
+			return File(file.Bytes, file.MimeType);
 		}
 	}
 }

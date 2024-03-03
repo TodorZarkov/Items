@@ -98,6 +98,7 @@
 			builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 			builder.Services.AddScoped<IUnitService, UnitService>();
 			builder.Services.AddScoped<IFileService, InDbFileService>();
+			builder.Services.AddScoped<IFileIdentifierService, FileIdentifierService>();
 
 			builder.Services.AddScoped<IHelper, Helper>();
 			builder.Services.AddScoped<IDateTimeProvider, DateTimeUtcProvider>();

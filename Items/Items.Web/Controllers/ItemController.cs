@@ -177,7 +177,7 @@
 					return RedirectToAction("All", "Sell");
 				}
 
-				ItemFormModel model = await itemService.GetByIdForEditAsync(id);
+				ItemEditFormModel model = await itemService.GetByIdForEditAsync(id);
 				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 				model.AvailableUnits = await unitService.AllForSelectAsync();
@@ -193,7 +193,7 @@
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Edit(ItemFormModel model, Guid id)
+		public async Task<IActionResult> Edit(ItemEditFormModel model, Guid id)
 		{
 			try
 			{

@@ -2,14 +2,14 @@
 @using Items.Web.ViewModels.Currency;
 @using Items.Web.ViewModels.Unit;
 @using static Items.Common.EntityValidationConstants.Item;
-@model ItemFormModel
+@model ItemEditFormModel
 
 @{
 	ViewData["Title"] = "Edit Item";
 	ViewBag.ActiveLink = "MineItem";
 }
 @* TODO: add form partial*@
-<form asp-area="" asp-controller="Item" asp-action="Edit" method="post">
+<form asp-area="" asp-controller="Item" asp-action="Edit" method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-warning"></div>
 	<div class="accordion" id="accordionPanelsStayOpenExample">
 		<div class="accordion-item">
@@ -22,10 +22,40 @@
 				<div class="accordion-body">
 					<div class="row g-3">
 
-						<div class="col-sm-6">
-							<input asp-for="@Model.MainPictureUri" type="url" class="form-control" placeholder="Picture URL">
-							<span asp-validation-for="@Model.MainPictureUri" class="text-danger text-sm-start"></span>
+						<div class="container-fluid py-2">
+							<div class="d-flex flex-row flex-nowrap overflow-auto g-1">
+								@foreach (var imageId in Model.CurrentImages)
+								{
+									<div class="col-2">
+										<div class="card m-1">
+											<img src="@Url.Action("File","Home",new{id = imageId})" class="card-img-top" alt="...">
+											<div class="card-body">
+												<input name="Model.ImagesToDelete" type="checkbox" value="@imageId" />
+												<label asp-for="@Model.ImagesToDelete">Delete Image</label>
+												<br /><br />
+												<input 
+													name="Model.MainImageId" 
+													type="radio" 
+													value="@imageId" 
+													class="ps-2"
+													@(Model.MainImageId == imageId ? "checked" : string.Empty)/>
+												<label asp-for="@Model.MainImageId">Main Image</label>
+											</div>
+										</div>
+									</div>
+									
+								}
+							</div>
+							
+						</div>
+						
+						
 
+
+
+						<div class="col-sm-6">
+							<input asp-for="@Model.Images" type="file" class="form-control" multiple />
+							<span asp-validation-for="@Model.Images" class="text-danger text-sm-start"></span>
 						</div>
 
 						<div class="col-sm">

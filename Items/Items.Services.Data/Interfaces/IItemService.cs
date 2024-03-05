@@ -31,7 +31,7 @@
 
 		Task<Guid> CreateItemAsync(ItemFormModel itemFormViewModel, Guid userId);
 
-		Task<ItemFormModel> GetByIdForEditAsync(Guid itemId);
+		Task<ItemEditFormModel> GetByIdForEditAsync(Guid itemId);
 
 		Task<ItemViewModel> GetByIdForViewAsync(Guid itemId);
 		Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId);

@@ -7,11 +7,11 @@
             ImagesToDelete = new HashSet<Guid>();
             CurrentImages = new HashSet<Guid>();
         }
-        public Guid MainImageId { get; set; } //<>
+        public Guid MainImageId { get; set; } //io
 
-        public ICollection<Guid> CurrentImages { get; set; } //<
+        public ICollection<Guid> CurrentImages { get; set; } //o
 
-        public ICollection<Guid> ImagesToDelete { get; set; } //>
+        public ICollection<Guid> ImagesToDelete { get; set; } //i
 
 
     }

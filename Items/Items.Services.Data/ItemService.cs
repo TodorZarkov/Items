@@ -676,13 +676,14 @@
 		}
 
 
-		public async Task<ItemFormModel> GetByIdForEditAsync(Guid itemId)
+		public async Task<ItemEditFormModel> GetByIdForEditAsync(Guid itemId)
 		{
 			// TODO: instead of many queries, use Include! In all similar places.
 			// TODO: implement auto mapper in all similar places!
 
 			Item item = await dbContext.Items
 				.Where(i => !i.Deleted)
+				.Include(i => i.ItemPictures)
 				.SingleAsync(i => i.Id == itemId);
 
 			int[] categoryIds = await dbContext.ItemsCategories
@@ -693,7 +694,7 @@
 			ItemVisibility itemVisibility = await dbContext.ItemVisibilities
 				.SingleAsync(iv => iv.Item.Id == itemId);
 
-			ItemFormModel model = new ItemFormModel
+			ItemEditFormModel model = new ItemEditFormModel
 			{
 				Name = item.Name,
 				MainPictureUri = item.MainPictureUri,
@@ -710,6 +711,11 @@
 				StartSell = item.StartSell,
 				UnitId = item.UnitId,
 				CategoryIds = categoryIds,
+				MainImageId = item.MainPictureId,
+				CurrentImages = item.ItemPictures.
+					Select(ip => ip.FileId)
+					.ToArray(),
+
 				ItemVisibility = new ItemFormVisibilityModel
 				{
 					Description = itemVisibility.Description,

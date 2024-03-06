@@ -26,30 +26,42 @@
 							<div class="d-flex flex-row flex-nowrap overflow-auto g-1">
 								@foreach (var imageId in Model.CurrentImages)
 								{
-									<div class="col-2">
+									<div class="col-3">
 										<div class="card m-1">
 											<img src="@Url.Action("File","Home",new{id = imageId})" class="card-img-top" alt="...">
+
 											<div class="card-body">
-												<input name="Model.ImagesToDelete" type="checkbox" value="@imageId" />
-												<label asp-for="@Model.ImagesToDelete">Delete Image</label>
-												<br /><br />
-												<input 
-													name="Model.MainImageId" 
-													type="radio" 
-													value="@imageId" 
-													class="ps-2"
-													@(Model.MainImageId == imageId ? "checked" : string.Empty)/>
-												<label asp-for="@Model.MainImageId">Main Image</label>
+												<div class="d-grid d-md-flex justify-content-md-between">
+													<input name="MainImageId"
+														   type="radio"
+														   value="@imageId"
+														   class="btn-check"
+														   autocomplete="off"
+														   id="forMain-@(imageId)"
+													@(Model.MainImageId == imageId ? "checked" : string.Empty) />
+													<label for="forMain-@(imageId)" class="btn btn-outline-primary btn-sm">Default</label>
+
+													<input name="ImagesToDelete"
+														   type="checkbox"
+														   value="@imageId"
+														   class="btn-check ms-auto"
+														   autocomplete="off"
+														   id="@imageId" />
+													<label for="@imageId"
+														   class="btn btn-outline-danger btn-sm">Delete</label>
+												</div>
+												
+
 											</div>
 										</div>
 									</div>
-									
+
 								}
 							</div>
-							
+
 						</div>
-						
-						
+
+
 
 
 

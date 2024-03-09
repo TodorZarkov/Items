@@ -37,6 +37,7 @@
 		Task<ItemViewModel> GetByIdForViewAsOwnerAsync(Guid itemId);
 		Task<DateTime?> GetEndSellDateTime(Guid itemId);
 		Task<int?> GetCurrencyIdAsync(Guid itemId);
+		Task<IEnumerable<Guid>> GetCurrentImagesByIdAsync(Guid itemId);
 
 
 		Task<bool> IsOwnerAsync(Guid itemId, Guid userId);

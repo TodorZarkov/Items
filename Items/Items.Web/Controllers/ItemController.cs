@@ -178,6 +178,7 @@
 				}
 
 				ItemEditFormModel model = await itemService.GetByIdForEditAsync(id);
+				model.CurrentImages = await itemService.GetCurrentImagesByIdAsync(id);
 				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 				model.AvailableUnits = await unitService.AllForSelectAsync();
@@ -225,6 +226,7 @@
 
 				if (!(ModelState.IsValid && isValidAsync))
 				{
+					model.CurrentImages = await itemService.GetCurrentImagesByIdAsync(id);
 					model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 					model.AvailableUnits = await unitService.AllForSelectAsync();

@@ -16,10 +16,10 @@
         [Required]
         public Guid MainImageId { get; set; } //io
 
-        public ICollection<Guid> CurrentImages { get; set; } //o
+        public IEnumerable<Guid> CurrentImages { get; set; } //o
 
         [CannotContain(nameof(MainImageId),"Cannot delete the current image!")]
-        public ICollection<Guid> ImagesToDelete { get; set; } //i
+        public IEnumerable<Guid> ImagesToDelete { get; set; } //i
 
         
 	}

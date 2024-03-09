@@ -712,9 +712,9 @@
 				UnitId = item.UnitId,
 				CategoryIds = categoryIds,
 				MainImageId = item.MainPictureId,
-				CurrentImages = item.ItemPictures.
-					Select(ip => ip.FileId)
-					.ToArray(),
+				//CurrentImages = item.ItemPictures.
+				//	Select(ip => ip.FileId)
+				//	.ToArray(),
 
 				ItemVisibility = new ItemFormVisibilityModel
 				{
@@ -939,6 +939,16 @@
 				.Where(i => i.Id == itemId)
 				.Select(i => i.CurrencyId)
 				.SingleAsync();
+
+			return result;
+		}
+
+		public async Task<IEnumerable<Guid>> GetCurrentImagesByIdAsync(Guid itemId)
+		{
+			Guid[] result = await dbContext.FileIdentifiers
+				.Where(fi => fi.ItemId == itemId)
+				.Select(fi => fi.FileId)
+				.ToArrayAsync();
 
 			return result;
 		}

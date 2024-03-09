@@ -78,8 +78,8 @@
 		//[StringLength(UriMaxLength, MinimumLength = UriMinLength)]
 		public string? MainPictureUri { get; set; } //= null!;
 
-		[Required]
-		public IEnumerable<IFormFile> Images { get; set; } = null!;
+		[RequiredFor(typeof(ItemFormModel))]
+		virtual public IEnumerable<IFormFile?>? Images { get; set; }
 
 
         [Range(ValueMinValue, ValueMaxValue)]

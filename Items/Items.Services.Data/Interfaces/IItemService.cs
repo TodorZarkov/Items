@@ -65,5 +65,7 @@
 		/// <returns>True if an item is not included.True if an item is included and it is present in db. False if is included in the offer
 		/// but is not present in db.</returns>
 		Task<bool> ExistBarterItemByOfferIdAsync(Guid offerId);
+		Task<bool> IsValidMainImageAsync(Guid mainImageId, Guid userId, Guid itemId);
+		Task<bool> IsAllowedImagesToDeleteAsync(IEnumerable<Guid> imagesToDelete, Guid mainImageId, Guid userId, Guid itemId);
 	}
 }

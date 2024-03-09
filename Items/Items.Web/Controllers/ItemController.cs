@@ -218,7 +218,11 @@
 				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
 				bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
 				bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
-				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
+				bool isValidMainImage = 
+					await itemService.IsValidMainImageAsync(model.MainImageId, userId, id);
+				bool isValidImagesToDelete = 
+					await itemService.IsAllowedImagesToDeleteAsync(model.ImagesToDelete, model.MainImageId, userId, id);
+				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories && isValidMainImage && isValidImagesToDelete))
 				{
 					isValidAsync = false;
 					ModelState.AddModelError("", GeneralFormError);

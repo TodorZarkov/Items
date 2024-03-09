@@ -683,7 +683,6 @@
 
 			Item item = await dbContext.Items
 				.Where(i => !i.Deleted)
-				.Include(i => i.ItemPictures)
 				.SingleAsync(i => i.Id == itemId);
 
 			int[] categoryIds = await dbContext.ItemsCategories
@@ -697,7 +696,6 @@
 			ItemEditFormModel model = new ItemEditFormModel
 			{
 				Name = item.Name,
-				MainPictureUri = item.MainPictureUri,
 				Description = item.Description,
 				CurrencyId = item.CurrencyId,
 				CurrentPrice = item.CurrentPrice,
@@ -712,9 +710,6 @@
 				UnitId = item.UnitId,
 				CategoryIds = categoryIds,
 				MainImageId = item.MainPictureId,
-				//CurrentImages = item.ItemPictures.
-				//	Select(ip => ip.FileId)
-				//	.ToArray(),
 
 				ItemVisibility = new ItemFormVisibilityModel
 				{
@@ -1054,6 +1049,38 @@
 			bool result = await ExistAsync((Guid)barterId);
 
 			return result;
+		}
+
+		public async Task<bool> IsValidMainImageAsync(Guid mainImageId, Guid userId, Guid itemId)
+		{
+			FileIdentifier? result = await dbContext.FileIdentifiers.FindAsync(mainImageId);
+			if (result != null && result.ItemId == itemId && result.OwnerId == userId)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		public async Task<bool> IsAllowedImagesToDeleteAsync(IEnumerable<Guid> imagesToDelete, Guid mainImageId, Guid userId, Guid itemId)
+		{
+			if (imagesToDelete.Contains(mainImageId))
+			{
+				return false;
+			}
+
+			int numberOfImagesToDelete = await dbContext.FileIdentifiers
+				.Where(fi => imagesToDelete.Contains(fi.FileId))
+				.Where(fi => fi.OwnerId == userId)
+				.Where(fi => fi.ItemId == itemId)
+				.CountAsync();
+
+			if (numberOfImagesToDelete != imagesToDelete.Count())
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 

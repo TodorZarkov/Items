@@ -943,6 +943,7 @@
 		{
 			Guid[] result = await dbContext.FileIdentifiers
 				.Where(fi => fi.ItemId == itemId)
+				.OrderByDescending(fi => fi.FileId == fi.Item!.MainPictureId)
 				.Select(fi => fi.FileId)
 				.ToArrayAsync();
 

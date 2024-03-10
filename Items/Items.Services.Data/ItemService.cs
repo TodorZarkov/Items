@@ -453,7 +453,7 @@
 				{
 					Id = i.Id,
 					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 
 					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,
 					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,

@@ -6,9 +6,9 @@
 
 		public string Name { get; set; } = null!;
 
-		public string MainPictureUri { get; set; } = null!;
+        public Guid MainPictureId { get; set; }
 
-		public string? Quantity { get; set; }
+        public string? Quantity { get; set; }
 
 		public string? Unit { get; set; }
 

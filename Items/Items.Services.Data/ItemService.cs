@@ -270,8 +270,7 @@
 				{
 					Id = i.Id,
 					Name = i.Name,
-					//todo(fc): consolidate metadata and base64 encoded binary image content from the file service
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 
 					IsMine = userId == i.OwnerId,
 					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,

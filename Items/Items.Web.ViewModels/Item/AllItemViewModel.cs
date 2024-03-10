@@ -7,9 +7,9 @@
 
 		public string Name { get; set; } = null!;
 
-		public string MainPictureUri { get; set; } = null!;
+        public Guid MainPictureId { get; set; }
 
-		public string? EndSell { get; set; }
+        public string? EndSell { get; set; }
 
 		public string? HighestBid { get; set; }
         public int? BarterOffers { get; set; }

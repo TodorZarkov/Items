@@ -1277,6 +1277,7 @@
 			Items.Data.Models.Item item = await dbContext.Items
 				.Where(i => i.Id == id)
 				.Include(i => i.Offers)
+				.Include(i => i.ItemPictures)
 				.SingleAsync();
 
 			item.StartSell = null;
@@ -1290,6 +1291,11 @@
 				.ToArrayAsync();
 
 			dbContext.Offers.RemoveRange(offers);
+
+			foreach (FileIdentifier ip in item.ItemPictures)
+			{
+				ip.IsPublic = false;
+			}
 
 			await dbContext.SaveChangesAsync();
 		}

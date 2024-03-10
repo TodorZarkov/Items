@@ -638,7 +638,7 @@
 				{
 					ItemId = i.Id,
 					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 					Location = i.Location.Name,
 					Place = i.Place.Name,
 					Quantity = i.Quantity,

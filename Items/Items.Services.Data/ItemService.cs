@@ -56,8 +56,7 @@
 				{
 					Id = i.Id,
 					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
-
+					MainPictureId = i.MainPictureId,
 					CurrentPrice = !i.CurrentPrice.HasValue ? "No Price Set" : ((decimal)i.CurrentPrice).ToString("N2"),
 					CurrencySymbol =
 						!i.CurrentPrice.HasValue ||
@@ -88,7 +87,7 @@
 				.Select(i => new OnRotationViewModel
 				{
 					Id = i.Id,
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 					Name = i.Name,
 					Quantity = i.Quantity.ToString("N2"),
 					Unit = i.Unit.Symbol,
@@ -1187,6 +1186,7 @@
 		{
 			Items.Data.Models.Item? item = await dbContext.Items
 				.Where(i => !i.Deleted && i.Id == itemId)
+				.Include(i => i.ItemPictures)
 				.SingleAsync() ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, "", ""));
 
 			ItemVisibility? itemVisibility = await dbContext
@@ -1220,7 +1220,15 @@
 			itemVisibility.Quantity = model.ItemVisibility.Quantity;
 			itemVisibility.Owner = model.ItemVisibility.Owner;
 
-			
+
+			if (model.EndSell != null && model.EndSell > dateTimeProvider.GetCurrentDateTime())
+			{
+				foreach (FileIdentifier ip in item.ItemPictures)
+				{
+					ip.IsPublic = true;
+				}
+			}
+
 			foreach (IFormFile image in model.Images)
 			{
 				using (var memoryStream = new MemoryStream())
@@ -1255,6 +1263,7 @@
 				await fileService.DeleteManyAsync(model.ImagesToDelete);
 			}
 
+			
 
 			await dbContext.SaveChangesAsync();
 			await fileService.SaveChangesAsync();

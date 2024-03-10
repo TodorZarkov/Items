@@ -96,10 +96,14 @@
 		}
 
 
-		
+		[AllowAnonymous]
 		public async Task<IActionResult> File(Guid id)
 		{
-			Guid userId = Guid.Parse(User.GetId());
+			Guid userId = new Guid();
+			if (User.Identity?.IsAuthenticated ?? false)
+			{
+				userId = Guid.Parse(User.GetId());
+			}
 			bool canAccess = await fileIdentifierService.CanAccess(userId, id);
 			if (!canAccess)
 			{

@@ -29,7 +29,7 @@
 			{
 				<div class="carousel-item @(i==0?"active":string.Empty)">
 					<div class="d-flex">
-						<img src="@Items[i].MainPictureUri"
+						<img src="@Url.Action("File","Home",new{id = Items[i].MainPictureId})"
 							 alt="..."
 							 style="height: 500px;">
 						<div style="width: 300px;"

@@ -6,9 +6,15 @@
 	<div class="card mb-3 border border- border-danger" style="max-width: 1200px;">
 		<div class="row g-0">
 			<div class="col-md-4">
-				<img src="@Url.Action("File", "Home", new {id = @Model.MainPictureId})" class="img-fluid rounded-start" alt="...">
+				<div class="d-flex flex-col flex-wrap overflow-auto g-2 vh-100">
+					@foreach (var imageId in Model.Images)
+					{
+						<img src="@Url.Action("File","Home",new{id = imageId})" class="card-img-top" alt="...">
+
+					}
+				</div>
 			</div>
-			<div class="col-md-8">
+			<div class="col-md-8 vh-100 overflow-auto">
 				<div class="card-body">
 					<h4 class="card-title">@Model.Name</h4>
 					<p class="card-text"><partial name="_AccessSign" model="@Public" /><strong>Categories: </strong>@Model.Categories</p>
@@ -27,7 +33,7 @@
 					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Owner" /><strong>Owner Email: </strong>@Model.OwnerEmail</p>
 
 
-                   @if (Model.ItemVisibility.Location == AccessModifier.Public)
+					@if (Model.ItemVisibility.Location == AccessModifier.Public)
 					{
 						<div class="accordion" id="accordionExample">
 							<div class="accordion-item">
@@ -47,7 +53,9 @@
 					}
 					else
 					{
-						<partial name="_AccessSign" model="@Model.ItemVisibility.Location" /><strong>Location: </strong>
+						<partial name="_AccessSign" model="@Model.ItemVisibility.Location" />
+
+						<strong>Location: </strong>
 					}
 
 
@@ -55,9 +63,9 @@
 
 				</div>
 			</div>
-		</div>
-	</div>
 
-</div>
+		</div>
+
+	</div>
 
 

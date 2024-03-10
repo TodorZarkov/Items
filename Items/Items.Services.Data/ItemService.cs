@@ -740,6 +740,9 @@
 				{
 					Id = i.Id,
 					MainPictureId = i.MainPictureId,
+					Images = i.ItemPictures
+						.Select(ip => ip.FileId)
+						.ToArray(),
 					Name = i.Name,
 					CurrentPrice = i.CurrentPrice != null ? ((decimal)i.CurrentPrice).ToString("N2") : null,
 					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,
@@ -827,6 +830,9 @@
 				{
 					Id = i.Id,
 					MainPictureId = i.MainPictureId,
+					Images = i.ItemPictures
+						.Select(ip => ip.FileId)
+						.ToArray(),
 					Name = i.Name,
 					CurrentPrice = i.CurrentPrice != null ? ((decimal)i.CurrentPrice).ToString("N2") : null,
 					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,

@@ -6,11 +6,21 @@
 	<div class="card mb-3 border border- border-danger" style="max-width: 1200px;">
 		<div class="row g-0">
 			<div class="col-md-4">
-				<img src="@Url.Action("File", "Home", new {id = @Model.MainPictureId})" class="img-fluid rounded-start" alt="...">
+				<div class="d-flex flex-col flex-wrap overflow-auto g-2 vh-100">
+					@foreach (var imageId in Model.Images)
+					{
+						<img src="@Url.Action("File","Home",new{id = imageId})" class="card-img-top" alt="...">
+
+					}
+				</div>
 			</div>
-			<div class="col-md-8">
+			<div class="col-md-8 vh-100 overflow-auto">
 				<div class="card-body">
-					<h4 class="card-title">@Model.Name</h4>
+					<div class="d-flex flex-row flex-nowrap justify-content-between">
+						<h3 class="card-title">@Model.Name</h3>
+						<a asp-controller="Item" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+					</div>
+					
 					<p class="card-text"><partial name="_AccessSign" model="@Public" /><strong>Categories: </strong>@Model.Categories</p>
 					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Description" /><strong>Description: </strong>@Model.Description</p>
 					<p class="card-text"><partial name="_AccessSign" model="@Model.ItemVisibility.Quantity" /><strong>Quantity: </strong>@Model.Quantity @Model.UnitSymbol</p>
@@ -47,7 +57,7 @@
 							<partial name="_AccessSign" model="@Model.ItemVisibility.ModifiedOn" />Last Update:  @Model.ModifiedOn
 						</small>
 					</p>
-					<a asp-controller="Item" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+					
 				</div>
 			</div>
 		</div>

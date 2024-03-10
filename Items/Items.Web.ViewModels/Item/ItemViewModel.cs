@@ -13,8 +13,8 @@
 		public DateTime? StartSell { get; set; }
 		public DateTime? EndSell { get; set; }
 		public string Categories { get; set; } = null!;
-		public string MainPictureUri { get; set; } = null!;
-		public bool? IsAuction { get; set; }
+        public Guid MainPictureId { get; set; }
+        public bool? IsAuction { get; set; }
 		public ItemFormVisibilityModel ItemVisibility { get; set; } = null!;
 
 

@@ -739,7 +739,7 @@
 				.Select(i => new ItemViewModel
 				{
 					Id = i.Id,
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 					Name = i.Name,
 					CurrentPrice = i.CurrentPrice != null ? ((decimal)i.CurrentPrice).ToString("N2") : null,
 					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,
@@ -826,7 +826,7 @@
 				.Select(i => new ItemViewModel
 				{
 					Id = i.Id,
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 					Name = i.Name,
 					CurrentPrice = i.CurrentPrice != null ? ((decimal)i.CurrentPrice).ToString("N2") : null,
 					CurrencySymbol = i.Currency != null ? i.Currency.Symbol : null,

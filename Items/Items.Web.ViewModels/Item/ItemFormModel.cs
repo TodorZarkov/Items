@@ -1,6 +1,5 @@
 ﻿namespace Items.Web.ViewModels.Item
 {
-	using Items.Common.Enums;
 	using Items.Web.Validators.Attributes;
 	using Items.Web.ViewModels.Category;
 	using Items.Web.ViewModels.Currency;

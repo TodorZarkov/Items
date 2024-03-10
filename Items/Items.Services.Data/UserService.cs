@@ -131,6 +131,7 @@
 				user!.ProfilePictureId = await fileService.AddAsync(fileModel);
 
 				await dbContext.SaveChangesAsync();
+				await fileService.SaveChangesAsync();
 			}
 		}
 
@@ -161,6 +162,7 @@
 			user.ProfilePictureId = null;
 
 			await dbContext.SaveChangesAsync();
+			await fileService.SaveChangesAsync();
 		}
 	}
 }

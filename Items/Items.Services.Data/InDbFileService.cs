@@ -23,12 +23,15 @@
 			File file = await dbContext.Files.FirstAsync(f => f.Id == fileId);
 			dbContext.Files.Remove(file);
 
-			await dbContext.SaveChangesAsync();
+			//await dbContext.SaveChangesAsync();
 		}
 
 		public async Task<FileServiceModel> GetAsync(Guid fileId)
 		{
-			var file = await dbContext.Files.FirstAsync(f => f.Id == fileId);
+			var file = await dbContext
+				.Files
+				.AsNoTracking()
+				.FirstAsync(f => f.Id == fileId);
 
 			var model = new FileServiceModel
 			{
@@ -43,6 +46,7 @@
 		public async Task<IEnumerable<FileServiceModel>> GetManyAsync(IEnumerable<Guid> fileIds)
 		{
 			var models = await dbContext.Files
+				.AsNoTracking()
 				.Where(f => fileIds.Any(fid => fid == f.Id))
 				.Select(f => new FileServiceModel
 				{
@@ -63,7 +67,7 @@
 			file.Bytes = fileModel.Bytes;
 			file.MimeType = fileModel.MimeType;
 
-			await dbContext.SaveChangesAsync();
+			//await dbContext.SaveChangesAsync();
 		}
 
 		public async Task<Guid> AddAsync(FileServiceModel fileModel)
@@ -77,7 +81,7 @@
 
 			await dbContext.Files.AddAsync(file);
 			//todo: Is it appropriate to call save changes here? It produces two db transactions if this service is called in other db changing service. to remove it - document that this service requires save changes; 
-			await dbContext.SaveChangesAsync();
+			//await dbContext.SaveChangesAsync();
 
 			return file.Id;
 		}
@@ -104,7 +108,7 @@
 				result.Add(file.Id);
 			}
 			await dbContext.Files.AddRangeAsync(files);
-			await dbContext.SaveChangesAsync();
+			//await dbContext.SaveChangesAsync();
 
 			return result;
 		}
@@ -116,9 +120,14 @@
 				.ToArrayAsync();
 			dbContext.RemoveRange(files);
 
-			await dbContext.SaveChangesAsync();
+			//await dbContext.SaveChangesAsync();
 
 			return files.Length;
+		}
+
+		public async Task<int> SaveChangesAsync()
+		{
+			return await dbContext.SaveChangesAsync();
 		}
 	}
 }

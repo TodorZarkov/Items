@@ -55,7 +55,7 @@
 			await dbContext.Tickets.AddAsync(ticket);
 
 			await dbContext.SaveChangesAsync();
-
+			await fileService.SaveChangesAsync();
 			return ticket.Id;
 		}
 

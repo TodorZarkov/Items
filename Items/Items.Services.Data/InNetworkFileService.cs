@@ -56,5 +56,10 @@
 		{
 			throw new NotImplementedException();
 		}
+
+		public Task<int> SaveChangesAsync()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

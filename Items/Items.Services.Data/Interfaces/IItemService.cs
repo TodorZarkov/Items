@@ -43,7 +43,7 @@
 		Task<bool> IsOwnerAsync(Guid itemId, Guid userId);
 
 
-		Task UpdateItemAsync(ItemFormModel model, Guid itemId);
+		Task UpdateItemAsync(ItemEditFormModel model, Guid itemId);
 		Task<bool> IsOnMarketAsync(Guid id);
 		Task<PreDeleteItemViewModel> GetForDeleteByIdAsync(Guid id);
 		Task DeleteByIdAsync(Guid id);

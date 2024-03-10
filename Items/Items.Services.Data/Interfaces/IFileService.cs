@@ -23,5 +23,8 @@
 
 		Task<string?> GetPath(Guid fileId);
 
+
+		Task<int> SaveChangesAsync();
+
 	}
 }

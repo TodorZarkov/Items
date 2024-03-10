@@ -25,6 +25,7 @@
 	using System.Reflection.Metadata.Ecma335;
 	using Items.Services.Data.Models.File;
 	using Microsoft.AspNetCore.Http;
+	using static Items.Common.EntityValidationConstants;
 
 	public class ItemService : IItemService
 	{
@@ -681,7 +682,7 @@
 			// TODO: instead of many queries, use Include! In all similar places.
 			// TODO: implement auto mapper in all similar places!
 
-			Item item = await dbContext.Items
+			Items.Data.Models.Item item = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.SingleAsync(i => i.Id == itemId);
 
@@ -1087,7 +1088,7 @@
 
 		public async Task<Guid> CreateItemAsync(ItemFormModel model, Guid userId)
 		{
-			Item item = new Item
+			Items.Data.Models.Item item = new Items.Data.Models.Item
 			{
 				Name = model.Name,//1.2
 				Quantity = model.Quantity,//1.3
@@ -1126,7 +1127,7 @@
 				}
 			};
 
-			Place? theChosenPlace = await dbContext.Places.FindAsync(model.PlaceId);
+			Items.Data.Models.Place? theChosenPlace = await dbContext.Places.FindAsync(model.PlaceId);
 			item.LocationId = theChosenPlace!.LocationId;
 
 			foreach (int categoryId in model.CategoryIds)
@@ -1147,6 +1148,7 @@
 			//- extension in the name to match file signature
 			//- virus and malware
 			//if everything above is fine proceed with the IFileService
+			//todo it in Update method!
 			List<Guid> pictureIds = new List<Guid>();
 			foreach (IFormFile image in model.Images)
 			{
@@ -1176,13 +1178,13 @@
 
 				dbContext.Items.Add(item);
 			await dbContext.SaveChangesAsync();
-
+			await fileService.SaveChangesAsync();
 			return item.Id;
 		}
 
-		public async Task UpdateItemAsync(ItemFormModel model, Guid itemId)
+		public async Task UpdateItemAsync(ItemEditFormModel model, Guid itemId)
 		{
-			Item? item = await dbContext.Items
+			Items.Data.Models.Item? item = await dbContext.Items
 				.Where(i => !i.Deleted && i.Id == itemId)
 				.SingleAsync() ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, "", ""));
 
@@ -1199,7 +1201,6 @@
 			item.AcquiredDate = model.AcquiredDate;//3.2
 			item.CurrentPrice = model.CurrentPrice;//4.1
 			item.IsAuction = model.IsAuction;//4.2
-			item.MainPictureUri = model.MainPictureUri;//1.1
 			item.StartSell = model.StartSell;//4.3
 			item.EndSell = model.EndSell;//4.4
 			item.UnitId = model.UnitId;//1.4
@@ -1218,12 +1219,49 @@
 			itemVisibility.Quantity = model.ItemVisibility.Quantity;
 			itemVisibility.Owner = model.ItemVisibility.Owner;
 
+			
+			foreach (IFormFile image in model.Images)
+			{
+				using (var memoryStream = new MemoryStream())
+				{
+					await image.CopyToAsync(memoryStream);
+					Guid pictureId = await fileService.AddAsync(new FileServiceModel
+					{
+						Bytes = memoryStream.ToArray(),
+						Name = image.FileName,
+						MimeType = image.ContentType
+					});
+
+					FileIdentifier fi = new FileIdentifier
+					{
+						ItemId = itemId,
+						FileId = pictureId,
+						OwnerId = item.OwnerId,
+						IsPublic = model.EndSell != null && model.EndSell > dateTimeProvider.GetCurrentDateTime()
+					};
+					await dbContext.FileIdentifiers.AddAsync(fi);
+				}
+			}
+			item.MainPictureId = model.MainImageId;
+
+			if (model.ImagesToDelete.Any())
+			{
+				FileIdentifier[] fiToDelete = await dbContext.FileIdentifiers
+				.Where(fi => model.ImagesToDelete.Contains(fi.FileId))
+				.ToArrayAsync();
+				dbContext.FileIdentifiers.RemoveRange(fiToDelete);
+				
+				await fileService.DeleteManyAsync(model.ImagesToDelete);
+			}
+
+
 			await dbContext.SaveChangesAsync();
+			await fileService.SaveChangesAsync();
 		}
 
 		public async Task DeleteByIdAsync(Guid id)
 		{
-			Item item = await dbContext.Items
+			Items.Data.Models.Item item = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.SingleAsync(i => i.Id == id);
 
@@ -1235,7 +1273,7 @@
 
 		public async Task StopSellByItemIdAsync(Guid id)
 		{
-			Item item = await dbContext.Items
+			Items.Data.Models.Item item = await dbContext.Items
 				.Where(i => i.Id == id)
 				.Include(i => i.Offers)
 				.SingleAsync();
@@ -1246,7 +1284,7 @@
 			item.IsAuction = false;
 			item.PromisedQuantity = 0;
 
-			Offer[] offers = await dbContext.Offers
+			Items.Data.Models.Offer[] offers = await dbContext.Offers
 				.Where(o => o.ItemId == id)
 				.ToArrayAsync();
 
@@ -1257,7 +1295,7 @@
 
 		public async Task AuctionUpdateAsync(AuctionFormModel model, Guid id)
 		{
-			Item item = await dbContext.Items
+			Items.Data.Models.Item item = await dbContext.Items
 				.FindAsync(id) ?? throw new ArgumentException(string.Format(ItemNotPresentInDb, id.ToString(), ""));
 
 			item.EndSell = model.EndSell;

@@ -739,7 +739,6 @@
 				.Select(i => new ItemViewModel
 				{
 					Id = i.Id,
-					MainPictureId = i.MainPictureId,
 					Images = i.ItemPictures
 						.Select(ip => ip.FileId)
 						.ToArray(),
@@ -829,7 +828,6 @@
 				.Select(i => new ItemViewModel
 				{
 					Id = i.Id,
-					MainPictureId = i.MainPictureId,
 					Images = i.ItemPictures
 						.Select(ip => ip.FileId)
 						.ToArray(),

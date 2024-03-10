@@ -6,7 +6,7 @@
 	<div class="card mb-3 border border- border-danger" style="max-width: 1200px;">
 		<div class="row g-0">
 			<div class="col-md-4">
-				<div class="d-flex flex-col flex-wrap overflow-auto g-2 vh-100">
+				<div class="d-flex flex-wrap overflow-auto vh-100  gap-1">
 					@foreach (var imageId in Model.Images)
 					{
 						<img src="@Url.Action("File","Home",new{id = imageId})" class="card-img-top" alt="...">

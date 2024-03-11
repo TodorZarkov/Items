@@ -12,7 +12,7 @@
 
 	public class AddBidFormModel
 	{
-        public string? ItemPictureUri { get; set; }
+        public Guid ItemPictureId { get; set; }
 
 
         [StringLength(MessageMaxLength, MinimumLength = MessageMinLength)]

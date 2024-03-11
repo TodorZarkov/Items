@@ -58,6 +58,7 @@
 		[Required]
 		public string ItemName { get; set; } = null!;
 
+		//todo (fc): remove ItemPictureUri
 		[Required]
 		public string ItemPictureUri { get; set; } = null!;
         public Guid ItemPictureId { get; set; }

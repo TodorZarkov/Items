@@ -6,7 +6,7 @@
 }
 
 <div class="w-50 mx-auto">
-	<img class="me-auto d-inline-block" src="@Model.ItemPictureUri" style="width: 100px;" />
+	<img class="me-auto d-inline-block" src="@Url.Action("File", "Home", new {id = @Model.ItemPictureId})" style="width: 100px;" />
 	<h3 class="ms-auto d-inline-block">Add Offer</h3>
 </div>
 

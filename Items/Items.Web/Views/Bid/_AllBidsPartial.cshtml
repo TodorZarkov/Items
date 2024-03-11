@@ -21,7 +21,7 @@
 
 			<td style="height: 70px">
 				<div class="d-flex flex-nowrap align-items-center">
-					<img style="height: 50px; border-radius: 2px;" src="@bid.Item.MainPictureUri">
+					<img style="height: 50px; border-radius: 2px;" src="@Url.Action("File", "Home", new {id = bid.Item.MainPictureId})">
 				</div>
 			</td>
 

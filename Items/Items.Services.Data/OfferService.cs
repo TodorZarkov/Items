@@ -136,7 +136,7 @@
 					Item = new ItemBidViewModel
 					{
 						Name = o.Item.Name,
-						MainPictureUri = o.Item.MainPictureUri,
+						MainPictureId = o.Item.MainPictureId,
 						HighestBid = o.Item.Offers.Count != 0 ? o.Item.Offers.Max(io => io.Value).ToString("N2") : string.Empty,
 						BarterOffers = o.Item.Offers.Count(io => io.BarterItemId != null),
 						Country = o.Item.ItemVisibility.Location == Public &&
@@ -295,7 +295,7 @@
 
 			model.CurrencyId = (int)item.CurrencyId!;
 
-			model.ItemPictureUri = item.MainPictureUri;
+			model.ItemPictureId = item.MainPictureId;
 
 
 			return model;

@@ -128,7 +128,7 @@
 					BarterQuantity = o.BarterQuantity.HasValue ? ((decimal)o.BarterQuantity).ToString("N2") : null,
 					BarterUnit = o.BarterItem != null ? o.BarterItem.Unit.Symbol : null,
 					BarterName = o.BarterItem != null ? o.BarterItem.Name : null,
-					BarterPictureUri = o.BarterItem != null ? o.BarterItem.MainPictureUri : null,
+					BarterPictureId = o.BarterItem != null ? o.BarterItem.MainPictureId : null,
 
 
 					ItemId = o.ItemId,

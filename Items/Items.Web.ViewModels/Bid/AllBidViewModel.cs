@@ -24,7 +24,8 @@
 		public string? BarterQuantity { get; set; }
 		public string? BarterUnit { get; set; }
 		public Guid? BarterItemId { get; set; }
-		public string? BarterPictureUri { get; set; }
+		//todo: to use the barterPicture in the dropdown
+		public Guid? BarterPictureId { get; set; }
 		public string? BarterName { get; set; }
 	}
 }

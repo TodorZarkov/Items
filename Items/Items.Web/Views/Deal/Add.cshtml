@@ -56,8 +56,8 @@
 
 
 	<div class="col col">
-		<img src="@Model.ItemPictureUri" style="width: 300px;" class="img-thumbnail mb-3" />
-		<input type="text" asp-for="@Model.ItemPictureUri" hidden />
+		<img src="@Url.Action("File", "Home", new {id = @Model.ItemPictureId})" style="width: 300px;" class="img-thumbnail mb-3" />
+		<input type="text" asp-for="@Model.ItemPictureId" hidden />
 
 		<div class="mb-3">
 			<label asp-for="@Model.ItemName" class="form-label">Item name</label>

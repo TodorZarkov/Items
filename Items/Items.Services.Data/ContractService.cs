@@ -206,7 +206,7 @@
 					CurrencySymbol = i.Currency!.Symbol,
 					UnitSymbol = i.Unit.Symbol,
 					ItemName = i.Name,
-					ItemPictureUri = i.MainPictureUri,
+					ItemPictureId = i.MainPictureId,
 					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
 					SendDue = dateTimeProvider.GetCurrentDate()
 						.AddDays(SendDueDateDaysAfterNow),
@@ -274,7 +274,7 @@
 					CurrencySymbol = i.Currency!.Symbol,
 					UnitSymbol = i.Unit.Symbol,
 					ItemName = i.Name,
-					ItemPictureUri = i.MainPictureUri,
+					ItemPictureId = i.MainPictureId,
 					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
 					SendDue = dateTimeProvider.GetCurrentDate()
 						.AddDays(SendDueDateDaysAfterNow),
@@ -322,7 +322,7 @@
 					CurrencySymbol = i.Currency!.Symbol,
 					UnitSymbol = i.Unit.Symbol,
 					ItemName = i.Name,
-					ItemPictureUri = i.MainPictureUri,
+					ItemPictureId = i.MainPictureId,
 					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
 
 					ConsentBuyerInfo = model.ConsentBuyerInfo,

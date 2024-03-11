@@ -60,8 +60,9 @@
 
 		[Required]
 		public string ItemPictureUri { get; set; } = null!;
+        public Guid ItemPictureId { get; set; }
 
-		public string? ItemDescription { get; set; }
+        public string? ItemDescription { get; set; }
 
 
         public string? TotalPrice { get; set; }

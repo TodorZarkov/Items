@@ -508,7 +508,7 @@
 				.Select(i => new ItemForBarterViewModel
 				{
 					Id = i.Id,
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 					Name = i.Name,
 					Unit = i.Unit.Symbol,
 					QuantityCanBarter =
@@ -908,7 +908,7 @@
 				.Where(i => i.Id == id)
 				.Select(i => new AuctionFormModel
 				{
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 					Name = i.Name,
 					StartSell = (DateTime)i.StartSell!,
 					EndSell = (DateTime)i.EndSell!,
@@ -1280,6 +1280,9 @@
 
 			item.Deleted = true;
 			item.ModifiedOn = dateTimeProvider.GetCurrentDateTime();
+
+			//todo: to consider deleting the actual pictures or to leave only the main one.
+			//todo: to consider deleting the actual entity permanently.
 
 			await dbContext.SaveChangesAsync();
 		}

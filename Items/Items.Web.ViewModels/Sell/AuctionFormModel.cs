@@ -13,7 +13,7 @@
 
 		public string Name { get; set; } = null!;
 
-		public string? MainPictureUri { get; set; } = null!;
+        public Guid MainPictureId { get; set; }
 
-	}
+    }
 }

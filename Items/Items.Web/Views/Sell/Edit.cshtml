@@ -12,8 +12,8 @@
 
 <form asp-area="" asp-controller="Sell" asp-action="Edit" method="post" style="width: 300px;" class="mx-auto">
 	<div asp-validation-summary="ModelOnly" class="text-warning"></div>
-	<img src="@Model.MainPictureUri" style="width: 300px;" class="img-thumbnail mb-3" />
-	<input type="hidden" asp-for="@Model.MainPictureUri" />
+	<img src="@Url.Action("File", "Home", new {id = @Model.MainPictureId})" style="width: 300px;" class="img-thumbnail mb-3" />
+	<input type="hidden" asp-for="@Model.MainPictureId" />
 
 
 	<div class="mb-3">

@@ -6,7 +6,8 @@
 
 		public string Name { get; set; } = null!;
 
-		public string MainPictureUri { get; set; } = null!;
+		//todo: it would be appropriate to show the picture in the dropdown.
+		public Guid MainPictureId { get; set; }
 
 		public string QuantityCanBarter { get; set; } = null!;
 

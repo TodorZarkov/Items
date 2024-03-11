@@ -891,7 +891,7 @@
 				.Select(i => new PreDeleteItemViewModel
 				{
 					Name = i.Name,
-					MainPictureUri = i.MainPictureUri,
+					MainPictureId = i.MainPictureId,
 					Quantity = i.Quantity.ToString("N3"),
 					Unit = i.Unit.Symbol,
 					Categories = string.Join(", ", i.ItemsCategories.Select(ic => ic.Category.Name))

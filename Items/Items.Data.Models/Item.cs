@@ -109,6 +109,7 @@
 
 
 
+
         [Precision(ValuePrecision, ValueScale)]
         public decimal? CurrentPrice { get; set; }
         

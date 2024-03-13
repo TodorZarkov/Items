@@ -67,10 +67,19 @@
 		[MaxLength(ItemNameMaxLength)]
 		public string? BarterName { get; set; } = null!;
 
+
+
+        //todo (fc): replace BarterPictureUri with bpId
 		[MaxLength(UriMaxLength)]
 		public string? BarterPictureUri { get; set; } = null!;
+        public Guid? BarterMainPictureId { get; set; }
+        public ICollection<FileIdentifier>? BarterImages { get; set; }
 
-		[MaxLength(ItemDescriptionMaxLength)]
+
+
+
+
+        [MaxLength(ItemDescriptionMaxLength)]
 		public string? BarterDescription { get; set; }
 
 		[Precision(QuantityPrecision, QuantityScale)]
@@ -110,9 +119,18 @@
         [MaxLength(ItemNameMaxLength)]
         public string ItemName { get; set; } = null!;
 
-        [Required]
+
+
+		//todo (fc): replace ItemPictureUri with impId
+		[Required]
         [MaxLength(UriMaxLength)]
         public string ItemPictureUri { get; set; } = null!;
+        public Guid ItemMainPictureId { get; set; }
+        public ICollection<FileIdentifier> ItemImages { get; set; } = null!;
+
+
+
+
 
         [MaxLength(ItemDescriptionMaxLength)]
         public string? ItemDescription { get; set; }

@@ -27,7 +27,7 @@
 
 			if (!fi.IsPublic)
 			{
-				if (fi.OwnerId != userId)
+				if (fi.OwnerId != userId && fi.CoOwnerId != userId)
 				{
 					return false;
 				}

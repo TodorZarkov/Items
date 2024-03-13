@@ -15,8 +15,6 @@
         [Required]
         public bool IsPublic { get; set; }
 
-        //public Guid AccessGroup { get; set; }
-
 
 
         [ForeignKey(nameof(Item))]

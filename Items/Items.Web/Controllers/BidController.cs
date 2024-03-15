@@ -175,7 +175,6 @@
 					await itemService.MyAvailableForBarterAsync(userId);
 					model.AvailableCurrencies =
 						await currencyService.AllForSelectAsync();
-					//HERE LOAD THE MAIN PICTURE OR GET IT FROM INPUT HIDDEN FROM THE FORM.
 
 					return View(model);
 				}

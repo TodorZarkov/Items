@@ -17,8 +17,7 @@
 
 
         [Required]
-        [MaxLength(UriMaxLength)]
-        public string Uri { get; set; } = null!;
+        public ICollection<FileIdentifier> DocumentFiles { get; set; } = null!;
 
 
         public ICollection<Item> Items { get; set; } = null!;

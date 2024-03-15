@@ -29,9 +29,20 @@
 
 		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public string? BarterName { get; set; } = null!;
+
+
+
+		//todo(fc): remove BarterPictureUri
 		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterDescription", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
-		public string? BarterPictureUri { get; set; } = null!;
-		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+		public string? BarterPictureUri { get; set; }
+
+        public Guid? BarterPictureId { get; set; }
+
+
+
+
+
+        [RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public string? BarterDescription { get; set; }
 		[RequiredIfPresent("BarterUnitSymbol", "BarterDescription", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public decimal? BarterQuantity { get; set; }
@@ -58,10 +69,15 @@
 		[Required]
 		public string ItemName { get; set; } = null!;
 
+
+
 		//todo (fc): remove ItemPictureUri
 		[Required]
 		public string ItemPictureUri { get; set; } = null!;
+		[Required]
         public Guid ItemPictureId { get; set; }
+
+
 
         public string? ItemDescription { get; set; }
 

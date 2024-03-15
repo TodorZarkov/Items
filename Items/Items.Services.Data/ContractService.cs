@@ -243,7 +243,7 @@
 					o.BarterQuantity,
 					BarterName = o.BarterItem != null ? o.BarterItem.Name : null,
 					BarterUnitSymbol = o.BarterItem != null ? o.BarterItem.Unit.Symbol : null,
-					BarterPictureUri = o.BarterItem != null ? o.BarterItem.MainPictureUri : null,
+					BarterPictureId = o.BarterItem != null ? (Guid?)o.BarterItem.MainPictureId : null,
 					BarterDescription = o.BarterItem != null ? o.BarterItem.Description : null,
 					MessageFromBuyer = o.Message,
 					OfferQuantity = o.Quantity,
@@ -286,7 +286,7 @@
 					BarterId = offerData.BarterItemId,
 					BarterName = offerData.BarterName,
 					BarterDescription = offerData.BarterDescription,
-					BarterPictureUri = offerData.BarterPictureUri,
+					BarterPictureId = offerData.BarterPictureId,
 					BarterQuantity = offerData.BarterQuantity,
 					BarterUnitSymbol = offerData.BarterUnitSymbol,
 

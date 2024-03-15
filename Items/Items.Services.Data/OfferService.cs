@@ -283,7 +283,7 @@
 			return result;
 		}
 
-		public async Task<AddBidFormModel> GetForCreate(Guid itemId)
+		public async Task<AddBidFormModel> GetForCreateAsync(Guid itemId)
 		{
 			AddBidFormModel model = new AddBidFormModel();
 

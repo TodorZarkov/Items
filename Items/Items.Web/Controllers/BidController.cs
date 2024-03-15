@@ -85,7 +85,7 @@
 					return RedirectToAction("All", "Bid");
 				}
 
-				AddBidFormModel model = await offerService.GetForCreate(itemId);
+				AddBidFormModel model = await offerService.GetForCreateAsync(itemId);
 				model.AvailableBarters =
 					await itemService.MyAvailableForBarterAsync(userId);
 				model.AvailableCurrencies =
@@ -175,7 +175,7 @@
 					await itemService.MyAvailableForBarterAsync(userId);
 					model.AvailableCurrencies =
 						await currencyService.AllForSelectAsync();
-					
+					//HERE LOAD THE MAIN PICTURE OR GET IT FROM INPUT HIDDEN FROM THE FORM.
 
 					return View(model);
 				}

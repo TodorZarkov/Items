@@ -17,7 +17,7 @@
 		Task<bool> ExistAsync(Guid id);
 		Task<bool> ExistByItemIdUserId(Guid itemId, Guid userId);
 		Task<bool> ExpiredAsync(Guid id);
-		Task<AddBidFormModel> GetForCreate(Guid itemId);
+		Task<AddBidFormModel> GetForCreateAsync(Guid itemId);
 		Task<decimal?> GetHighestBidByItemIdAsync(Guid itemId);
 		Task<decimal?> GetHighestBidByOfferIdAsync(Guid id);
 		Task<Guid> GetItemIdFromOfferIdAsync(Guid id);

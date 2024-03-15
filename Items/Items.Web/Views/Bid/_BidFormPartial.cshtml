@@ -5,6 +5,8 @@
 	  class="w-50 mx-auto form-floating mb-3"
 	  id="BidFormId">
 
+	<input type="hidden" name="ItemPictureId" value="@Model.ItemPictureId"/>
+
 	<div class="form-floating mb-3 ">
 		<textarea asp-for="@Model.Message" type="text" class="form-control form-control-sm"></textarea>
 		<label asp-for="@Model.Message"></label>

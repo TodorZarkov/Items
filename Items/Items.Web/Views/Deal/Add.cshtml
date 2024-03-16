@@ -95,6 +95,7 @@
 		{
 			<img src="@Url.Action("File", "Home", new{id = @Model.BarterPictureId})" style="width: 300px;" class="img-thumbnail mb-3" />
 			<input type="text" asp-for="@Model.BarterPictureId" hidden />
+			<input type="hidden" asp-for="@Model.BarterId" value="@Model.BarterId"/>
 
 			<div class="mb-3">
 				<label asp-for="@Model.BarterName" class="form-label">Barter Item name</label>

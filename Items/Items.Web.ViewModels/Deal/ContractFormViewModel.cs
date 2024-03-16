@@ -27,29 +27,30 @@
 		public string? BuyerPhone { get; set; }// permission from  Form user consent    - got from db
 
 
-		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterDescription", "BarterPictureId", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public string? BarterName { get; set; } = null!;
 
 
-
-		//todo(fc): remove BarterPictureUri
 		[RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterDescription", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
-		public string? BarterPictureUri { get; set; }
-
         public Guid? BarterPictureId { get; set; }
 
 
-
-
-
-        [RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+        [RequiredIfPresent("BarterUnitSymbol", "BarterQuantity", "BarterPictureId", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public string? BarterDescription { get; set; }
-		[RequiredIfPresent("BarterUnitSymbol", "BarterDescription", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+
+
+		[RequiredIfPresent("BarterUnitSymbol", "BarterDescription", "BarterPictureId", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public decimal? BarterQuantity { get; set; }
-		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+
+
+		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureId", "BarterName", "BarterId", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public string? BarterUnitSymbol { get; set; }
-		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureUri", "BarterName", "BarterUnitSymbol", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
+
+
+		[RequiredIfPresent("BarterQuantity", "BarterDescription", "BarterPictureId", "BarterName", "BarterUnitSymbol", ErrorMessage = BarterItemRequiredIfPresentAnyBarterProperty)]
 		public Guid? BarterId { get; set; }
+
+
 		public Guid? OfferId { get; set; }
 
 

@@ -323,7 +323,7 @@
 
 					ItemId = i.Id,
 					Price = (decimal)i.CurrentPrice!,
-					TotalPrice = (((decimal)i.CurrentPrice!) * model.Quantity).ToString("N2"),
+					TotalPrice = (((decimal)i.CurrentPrice!) * model.Quantity).ToString("N2"),//
 					CurrencySymbol = i.Currency!.Symbol,
 					UnitSymbol = i.Unit.Symbol,
 					ItemName = i.Name,
@@ -331,7 +331,7 @@
 					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
 
 					ConsentBuyerInfo = model.ConsentBuyerInfo,
-					Quantity = model.Quantity,
+					Quantity = model.Quantity,//
 					SendDue = model.SendDue,
 					DeliverDue = model.DeliverDue,
 					SellerComment = model.SellerComment,
@@ -341,6 +341,88 @@
 				.SingleAsync();
 
 			return previewModel;
+		}
+
+		public async Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId, Guid offerId)
+		{
+			var buyerData = await dbContext.Users
+				.Where(u => u.Id == buyerId)
+				.Select(u => new
+				{
+					Name = u.UserName,
+					Email = u.EmailConfirmed ? u.Email : null,
+					Phone = u.PhoneNumberConfirmed ? u.PhoneNumber : null
+				})
+				.SingleAsync();
+
+			var offerData = await dbContext.Offers
+				.AsNoTracking()
+				.Where(o => o.Id == offerId)
+				.Select(o => new
+				{
+					o.BarterItemId,
+					o.BarterQuantity,
+					BarterName = o.BarterItem != null ? o.BarterItem.Name : null,
+					BarterUnitSymbol = o.BarterItem != null ? o.BarterItem.Unit.Symbol : null,
+					BarterPictureId = o.BarterItem != null ? (Guid?)o.BarterItem.MainPictureId : null,
+					BarterDescription = o.BarterItem != null ? o.BarterItem.Description : null,
+					MessageFromBuyer = o.Message,
+					OfferQuantity = o.Quantity,
+					OfferValue = o.Value,
+					o.UseBuyerEmail,
+					o.UseBuyerName,
+					o.UseBuyerPhone
+				})
+				.SingleAsync();
+
+			ContractFormViewModel previewModel = await dbContext.Items
+				.AsNoTracking()
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.Select(i => new ContractFormViewModel
+				{
+					SellerName = i.ItemVisibility.Owner == Public ? i.Owner.UserName : null,
+					SellerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
+					SellerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
+
+					
+					ItemId = i.Id,
+					Price = offerData.OfferValue,
+					Quantity = offerData.OfferQuantity,
+					CurrencySymbol = i.Currency!.Symbol,
+					UnitSymbol = i.Unit.Symbol,
+					ItemName = i.Name,
+					ItemPictureId = i.MainPictureId,
+					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
+					
+					
+					
+					BarterId = offerData.BarterItemId,
+					BarterName = offerData.BarterName,
+					BarterDescription = offerData.BarterDescription,
+					BarterPictureId = offerData.BarterPictureId,
+					BarterQuantity = offerData.BarterQuantity,
+					BarterUnitSymbol = offerData.BarterUnitSymbol,
+
+					OfferId = offerId,
+
+					//DeliveryAddress = ...  TODO: get address from new user property Address (if set)
+					BuyerName = model.ConsentBuyerInfo ? model.BuyerName : null,
+					BuyerEmail = model.ConsentBuyerInfo ? model.BuyerEmail : null,
+					BuyerPhone = model.ConsentBuyerInfo ? model.BuyerPhone : null,
+					TotalPrice = (offerData.OfferValue * offerData.OfferQuantity).ToString("N2"),//
+					ConsentBuyerInfo = model.ConsentBuyerInfo,
+					
+					SendDue = model.SendDue,
+					DeliverDue = model.DeliverDue,
+					SellerComment = model.SellerComment,
+					BuyerComment = model.BuyerComment,
+					DeliveryAddress = model.DeliveryAddress
+
+				})
+				.SingleAsync();
+
+			return previewModel ;
 		}
 
 		public async Task CreateAsync(ContractFormViewModel previewModel, Guid itemId, Guid buyerId)
@@ -419,6 +501,7 @@
 
 			await dbContext.SaveChangesAsync();
 		}
+		//override Create to work with offer
 
 		public async Task<ContractViewModel> GetForDetailsAsync(Guid contractId)
 		{
@@ -678,5 +761,7 @@
 			await dbContext.SaveChangesAsync();
 			
 		}
+
+		
 	}
 }

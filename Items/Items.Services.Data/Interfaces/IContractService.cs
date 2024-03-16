@@ -15,6 +15,7 @@
 		Task CopyBuyerContractImagesToItemAsync(Guid contractId, Guid itemId);
 		Task CreateAsync(ContractFormViewModel previewModel, Guid itemId, Guid buyerId);
 		Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId);
+		Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId, Guid offerId);
 		Task<ContractViewModel> GetForDetailsAsync(Guid contractId);
 		Task<ContractFormViewModel> GetForPreviewAsync(Guid itemId, Guid buyerId);
 		Task<ContractFormViewModel> GetForPreviewAsync(Guid itemId, Guid buyerId, Guid offerId);

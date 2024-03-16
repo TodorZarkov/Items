@@ -221,7 +221,6 @@
 				TempData[WarningMessage] = "The Offer has expired.";
 				return RedirectToAction("All", "Bid");
 			}
-			// todo: Lock the barter item until auction is finished. can use PromisedQuantity != 0 to Lock Barter.
 			
 			Guid itemId = await offerService.GetItemIdFromOfferIdAsync(id);
 			bool itemExist = await itemService.ExistAsync(itemId);
@@ -238,6 +237,7 @@
 				TempData[ErrorMessage] = "Barter Item you have proposed no longer available. Auction cannot be competed.";
 				return RedirectToAction("All", "Sell");
 			}
+			// todo: Lock the barter item until auction is finished. can use PromisedQuantity != 0 to Lock Barter.
 
 			bool validQuantitiesInOffer = await offerService.ValidQuantitiesInOffer(id);
 			if (!validQuantitiesInOffer)
@@ -253,8 +253,58 @@
 		[HttpPost]
 		public async Task<IActionResult> FromOfferPreview(ContractFormViewModel model, Guid id)
 		{
-			// todo: implement
-			return View();
+			bool offerExist = await offerService.ExistAsync(id);
+			if (!offerExist)
+			{
+				return GeneralError();
+			}
+
+			Guid buyerId = Guid.Parse(User.GetId());
+			bool isMine = await offerService.IsOwnerAsync(id, buyerId);
+			if (!isMine)
+			{
+				return GeneralError();
+			}
+
+			bool isWinner = await offerService.IsWinnerAsync(id);
+			if (!isWinner)
+			{
+				return GeneralError();
+			}
+
+			bool expired = await offerService.ExpiredAsync(id);
+			if (expired)
+			{
+				TempData[WarningMessage] = "The Offer has expired.";
+				return RedirectToAction("All", "Bid");
+			}
+
+			Guid itemId = await offerService.GetItemIdFromOfferIdAsync(id);
+			bool itemExist = await itemService.ExistAsync(itemId);
+			bool isMyItem = await itemService.IsOwnerAsync(itemId, buyerId);
+			bool isAuction = await itemService.IsAuctionAsync(itemId);
+			bool isEndSellOk = (await itemService.GetEndSellDateTime(itemId)) < dateTimeProvider.GetCurrentDateTime();
+			if (!itemExist || isMyItem || !isAuction || !isEndSellOk)
+			{
+				return GeneralError();
+			}
+			bool barterExist = await itemService.ExistBarterItemByOfferIdAsync(id);
+			if (!barterExist)
+			{
+				TempData[ErrorMessage] = "Barter Item you have proposed no longer available. Auction cannot be competed.";
+				return RedirectToAction("All", "Sell");
+			}
+			// todo: Lock the barter item until auction is finished. can use PromisedQuantity != 0 to Lock Barter.
+
+			bool validQuantitiesInOffer = await offerService.ValidQuantitiesInOffer(id);
+			if (!validQuantitiesInOffer)
+			{
+				return GeneralError();
+			}
+
+			ContractFormViewModel previewModel = await contractService.GetForCreate(model, itemId, buyerId, id);
+
+			return View("Preview", previewModel);
 		}
 
 		[HttpPost]

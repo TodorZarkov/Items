@@ -69,9 +69,6 @@
 
 
 
-        //todo (fc): replace BarterPictureUri with bpId
-		[MaxLength(UriMaxLength)]
-		public string? BarterPictureUri { get; set; } = null!;
         public Guid? BarterMainPictureId { get; set; }
         public ICollection<FileIdentifier>? BarterImages { get; set; }
 

@@ -9,7 +9,7 @@
 	ViewBag.ActiveLink = "MineItem";
 }
 @* TODO: add form partial*@
-<form asp-area="" asp-controller="Item" asp-action="Edit" method="post" enctype="multipart/form-data">
+<form  method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-warning"></div>
 	<div class="accordion" id="accordionPanelsStayOpenExample">
 		<div class="accordion-item">
@@ -99,7 +99,7 @@
 											   type="checkbox"
 											   name="@nameof(Model.CategoryIds)"
 											   value="@category.Id"
-										@(Model.CategoryIds.Contains(category.Id) ? "checked" : string.Empty)>
+										@((Model.CategoryIds != null && Model.CategoryIds.Contains(category.Id)) ? "checked" : string.Empty)>
 										@category.Name
 									</li>
 								}

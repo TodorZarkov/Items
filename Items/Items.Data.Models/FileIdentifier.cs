@@ -27,11 +27,17 @@
         public ApplicationUser? User { get; set; }
 
 
+        /// <summary>
+        /// It is for the Item images
+        /// </summary>
         [ForeignKey(nameof(BuyerContract))]
         public Guid? BuyerContractId { get; set; }
         public Contract? BuyerContract { get; set; }
 
 
+        /// <summary>
+        /// It is for the Barter Item images
+        /// </summary>
 		[ForeignKey(nameof(SellerContract))]
 		public Guid? SellerContractId { get; set; }
 		public Contract? SellerContract { get; set; }

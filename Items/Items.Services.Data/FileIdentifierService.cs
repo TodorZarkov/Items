@@ -3,6 +3,7 @@
 	using Items.Data;
 	using Items.Data.Models;
 	using Items.Services.Data.Interfaces;
+	using Microsoft.EntityFrameworkCore;
 	using System;
 	using System.Threading.Tasks;
 
@@ -15,8 +16,8 @@
 		}
 
 
-		//todo: must perform fast. to CACHE the FileIdentifiers table in the ram!!!
-		public async Task<bool> CanAccess(Guid userId, Guid fileId)
+		//todo: must perform fast. To CACHE the FileIdentifiers table in the ram!!!
+		public async Task<bool> CanAccessAsync(Guid userId, Guid fileId)
 		{
 			FileIdentifier? fi = await dbContext.FileIdentifiers
 				.FindAsync(fileId);
@@ -34,6 +35,18 @@
 			}
 
 			return true;
+		}
+
+		public async Task<IEnumerable<Guid>> PublicFilesByItemIdAsync(Guid itemId)
+		{
+			Guid[] itemImageIds = await dbContext.FileIdentifiers
+				.AsNoTracking()
+				.Where(fi => fi.ItemId == itemId)
+				.Where(fi => fi.IsPublic)
+				.Select(fi => fi.FileId)
+				.ToArrayAsync();
+
+			return itemImageIds;
 		}
 
 	}

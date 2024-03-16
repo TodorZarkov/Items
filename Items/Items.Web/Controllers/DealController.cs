@@ -253,7 +253,7 @@
 		[HttpPost]
 		public async Task<IActionResult> FromOfferPreview(ContractFormViewModel model, Guid id)
 		{
-
+			// todo: implement
 			return View();
 		}
 

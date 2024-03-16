@@ -18,7 +18,7 @@
 
 		public Guid? ItemId { get; set; }
 		public string ItemName { get; set; } = null!;
-		public string ItemPicture { get; set; } = null!;
+		public Guid ItemMainPictureId { get; set; }
 
         public string Price { get; set; } = null!;
 

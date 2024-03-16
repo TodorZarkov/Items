@@ -2,6 +2,8 @@
 {
 	public interface IFileIdentifierService
 	{
-		Task<bool> CanAccess(Guid userId, Guid fileId);
+		Task<bool> CanAccessAsync(Guid userId, Guid fileId);
+
+		Task<IEnumerable<Guid>> PublicFilesByItemIdAsync(Guid itemId);
 	}
 }

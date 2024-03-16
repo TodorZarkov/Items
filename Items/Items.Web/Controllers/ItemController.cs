@@ -20,6 +20,7 @@
 		private readonly IUnitService unitService;
 		private readonly IContractService contractService;
 		private readonly ILocationService locationService;
+		private readonly IFileService fileService;
 
 		public ItemController(
 			  IItemService itemService
@@ -28,7 +29,8 @@
 			, ICurrencyService currencyService
 			, IUnitService unitService
 			, IContractService contractService
-			, ILocationService locationService)
+			, ILocationService locationService
+			, IFileService fileService)
 
 		{
 			this.itemService = itemService;
@@ -38,6 +40,7 @@
 			this.unitService = unitService;
 			this.contractService = contractService;
 			this.locationService = locationService;
+			this.fileService = fileService;
 		}
 
 		[HttpGet]
@@ -121,7 +124,7 @@
 
 				bool isValidAsync = true;
 				bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
-				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId,model.LocationId, userId);
+				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, model.LocationId, userId);
 				bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
 				bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
 				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
@@ -140,6 +143,7 @@
 				}
 
 				Guid itemId = await itemService.CreateItemAsync(model, userId);
+
 				// todo: replace all messages with constants from Common
 				TempData[SuccessMessage] = "Item successfully Created!";
 
@@ -148,6 +152,54 @@
 				{
 					return RedirectToAction("Add", "Item", new { placeId = model.PlaceId });
 				}
+
+				return RedirectToAction("Details", "Item", new { id = itemId });
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> CreateFromDeal(ItemEditFormModel model, Guid id)
+		{
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				bool isBuyer = await contractService.IsBuyerAsync(id, userId);
+				if (!isBuyer)
+				{
+					TempData[ErrorMessage] = "You must be The Buyer to Create from Deal!";
+					return RedirectToAction("All", "Item");
+				}
+
+				bool isValidAsync = true;
+				bool isValidUnitId = await unitService.IsValidIdAsync(model.UnitId);
+				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, model.LocationId, userId);
+				bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
+				bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
+				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories))
+				{
+					isValidAsync = false;
+					ModelState.AddModelError("", GeneralFormError);
+				}
+				if (!(ModelState.IsValid && isValidAsync))
+				{
+					model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+					model.AvailableUnits = await unitService.AllForSelectAsync();
+					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+					model.AvailableLocations = await locationService.GetForSelectAsync(userId);
+					return View(model);
+				}
+
+
+				Guid itemId = await itemService.CreateItemAsync(model, userId);
+				await contractService.CopyBuyerContractImagesToItemAsync(id, itemId);
+
+				// todo: replace all messages with constants from Common
+				TempData[SuccessMessage] = "Item successfully Created!";
 
 				return RedirectToAction("Details", "Item", new { id = itemId });
 			}
@@ -178,7 +230,7 @@
 				}
 
 				ItemEditFormModel model = await itemService.GetByIdForEditAsync(id);
-				model.CurrentImages = await itemService.GetCurrentImagesByIdAsync(id);
+				model.CurrentImages = await itemService.GetImagesByIdAsync(id);
 				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 				model.AvailableUnits = await unitService.AllForSelectAsync();
@@ -218,9 +270,9 @@
 				bool isValidPlaceId = await placeService.IsAllowedIdAsync(model.PlaceId, userId);
 				bool isValidCurrencyId = model.CurrencyId == null || await currencyService.ExistsByIdAsync((int)model.CurrencyId);
 				bool isValidCategories = await categoryService.IsAllowedIdsAsync(model.CategoryIds, userId);
-				bool isValidMainImage = 
+				bool isValidMainImage =
 					await itemService.IsValidMainImageAsync(model.MainImageId, userId, id);
-				bool isValidImagesToDelete = 
+				bool isValidImagesToDelete =
 					await itemService.IsAllowedImagesToDeleteAsync(model.ImagesToDelete, model.MainImageId, userId, id);
 				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories && isValidMainImage && isValidImagesToDelete))
 				{
@@ -230,7 +282,7 @@
 
 				if (!(ModelState.IsValid && isValidAsync))
 				{
-					model.CurrentImages = await itemService.GetCurrentImagesByIdAsync(id);
+					model.CurrentImages = await itemService.GetImagesByIdAsync(id);
 					model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 					model.AvailableUnits = await unitService.AllForSelectAsync();
@@ -243,7 +295,7 @@
 
 				return RedirectToAction("Details", "Item", new { id });
 			}
-			catch (Exception  e)
+			catch (Exception e)
 			{
 				return GeneralError(e);
 			}
@@ -426,15 +478,16 @@
 					return RedirectToAction("All", "Item");
 				}
 
-				ItemFormModel model = await itemService.CopyFromContract(id, userId);
+				ItemEditFormModel model = await itemService.CopyFromContract(id, userId);
 
 				model.ItemVisibility = new ItemFormVisibilityModel();
 				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 				model.AvailableUnits = await unitService.AllForSelectAsync();
 				model.AvailableLocations = await locationService.GetForSelectAsync(userId);
+				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
 
-				return View("Add", model);
+				return View("Edit", model);
 			}
 			catch (Exception e)
 			{
@@ -443,6 +496,6 @@
 		}
 
 
-		
+
 	}
 }

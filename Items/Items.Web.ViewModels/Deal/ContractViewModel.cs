@@ -21,7 +21,7 @@
 
 		public string ItemName { get; set; } = null!;
 
-		public string ItemPictureUri { get; set; } = null!;
+		public Guid ItemMainPictureId { get; set; }
 
 		public string? ItemDescription { get; set; }
 

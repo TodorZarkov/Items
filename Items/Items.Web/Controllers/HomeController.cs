@@ -104,7 +104,7 @@
 			{
 				userId = Guid.Parse(User.GetId());
 			}
-			bool canAccess = await fileIdentifierService.CanAccess(userId, id);
+			bool canAccess = await fileIdentifierService.CanAccessAsync(userId, id);
 			if (!canAccess)
 			{
 				return StatusCode(StatusCodes.Status403Forbidden);

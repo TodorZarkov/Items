@@ -740,6 +740,7 @@
 				{
 					Id = i.Id,
 					Images = i.ItemPictures
+						.OrderByDescending(ip => ip.FileId == i.MainPictureId)
 						.Select(ip => ip.FileId)
 						.ToArray(),
 					Name = i.Name,
@@ -829,6 +830,7 @@
 				{
 					Id = i.Id,
 					Images = i.ItemPictures
+						.OrderByDescending(ip => ip.FileId == i.MainPictureId)
 						.Select(ip => ip.FileId)
 						.ToArray(),
 					Name = i.Name,
@@ -941,7 +943,7 @@
 			return result;
 		}
 
-		public async Task<IEnumerable<Guid>> GetCurrentImagesByIdAsync(Guid itemId)
+		public async Task<IEnumerable<Guid>> GetImagesByIdAsync(Guid itemId)
 		{
 			Guid[] result = await dbContext.FileIdentifiers
 				.Where(fi => fi.ItemId == itemId)
@@ -951,6 +953,7 @@
 
 			return result;
 		}
+
 
 
 
@@ -1326,20 +1329,21 @@
 
 		}
 
-		public async Task<ItemFormModel> CopyFromContract(Guid id, Guid userId)
+		public async Task<ItemEditFormModel> CopyFromContract(Guid id, Guid userId)
 		{
-			ItemFormModel model = await dbContext.Contracts
+			ItemEditFormModel model = await dbContext.Contracts
 				.Where(c => c.Id == id && c.BuyerId == userId)
-				.Select(c => new ItemFormModel
+				.Select(c => new ItemEditFormModel
 				{
-					MainPictureUri = c.ItemPictureUri,
 					Name = c.ItemName,
 					Description = c.ItemDescription,
 					AcquiredDate = c.ContractDate,
 					AcquiredPrice = c.Price,
 					CurrencyId = c.CurrencyId,
 					Quantity = c.Quantity,
-					UnitId = c.UnitId
+					UnitId = c.UnitId,
+					CurrentImages = c.ItemImages.Select(fi => fi.FileId),
+					MainImageId = c.ItemMainPictureId
 				})
 				.SingleAsync();
 

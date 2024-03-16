@@ -55,7 +55,7 @@
 
 
 
-		public Guid? ItemId { get; set; }
+		public Guid ItemId { get; set; }
 
         [Range(ValueMinValue, ValueMaxValue)]
         public decimal Price { get; set; }
@@ -70,10 +70,6 @@
 		public string ItemName { get; set; } = null!;
 
 
-
-		//todo (fc): remove ItemPictureUri
-		[Required]
-		public string ItemPictureUri { get; set; } = null!;
 		[Required]
         public Guid ItemPictureId { get; set; }
 

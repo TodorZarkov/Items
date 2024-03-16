@@ -17,18 +17,23 @@
 	using Items.Web.ViewModels.Base;
 	using Items.Common.Enums;
 	using Items.Services.Data.Models.Contract;
+	using Items.Services.Data.Models.File;
 
 	public class ContractService : IContractService
 	{
 		private readonly ItemsDbContext dbContext;
 		private readonly IDateTimeProvider dateTimeProvider;
 		private readonly IHelper helper;
+		private readonly IFileService fileService;
+		private readonly IFileIdentifierService fileIdentifierService;
 
-		public ContractService(ItemsDbContext dbContext, IDateTimeProvider dateTimeProvider, IHelper helper)
+		public ContractService(ItemsDbContext dbContext, IDateTimeProvider dateTimeProvider, IHelper helper, IFileService fileService, IFileIdentifierService fileIdentifierService)
 		{
 			this.dbContext = dbContext;
 			this.dateTimeProvider = dateTimeProvider;
 			this.helper = helper;
+			this.fileService = fileService;
+			this.fileIdentifierService = fileIdentifierService;
 		}
 
 
@@ -138,7 +143,7 @@
 
 					ItemId = c.ItemId,
 					ItemName = c.ItemName,
-					ItemPicture = c.ItemPictureUri,
+					ItemMainPictureId = c.ItemMainPictureId,
 
 					SellerOk = c.SellerOk,
 					BuyerOk = c.BuyerOk,
@@ -369,7 +374,7 @@
 				CurrencyId = (int)item.CurrencyId!,//  WARNING: observe the risk of changing model currency in the interval between the model check and the save changes! - it's practically zero due to isOnTheMarketCheck and Forbidding to Edit When on market;
 				UnitId = item.UnitId,//  WARNING: observe the risk of changing model currency in the interval between the model check and the save changes!- it's practically zero due to isOnTheMarketCheck and Forbidding to Edit When on market;
 				ItemName = previewModel.ItemName,
-				ItemPictureUri = previewModel.ItemPictureUri,
+
 				ItemDescription = previewModel.ItemDescription,
 
 				Quantity = previewModel.Quantity,
@@ -380,7 +385,37 @@
 				DeliveryAddress = previewModel.DeliveryAddress
 			};
 
+			
+			var publicItemImageIds = await fileIdentifierService.PublicFilesByItemIdAsync(itemId);
+			var mainItemPictureId = previewModel.ItemPictureId;
+
+			IEnumerable<FileServiceModel> itemFiles = 
+				await fileService.GetManyAsync(publicItemImageIds.Except(new List<Guid> { mainItemPictureId}));
+			var copiedItemImageIds = (await fileService.AddManyAsync(itemFiles)).ToList();
+
+			var itemMainPicture = await fileService.GetAsync(mainItemPictureId);
+			var copiedItemMainPictureId = await fileService.AddAsync(itemMainPicture);
+
+			copiedItemImageIds.Add(copiedItemMainPictureId);
+			contract.ItemMainPictureId = copiedItemMainPictureId;
+
+			foreach (var copiedItemImageId in copiedItemImageIds)
+			{
+				FileIdentifier fi = new FileIdentifier
+				{
+					BuyerContractId = contract.Id,
+					FileId = copiedItemImageId,
+					OwnerId = contract.SellerId,
+					CoOwnerId = contract.BuyerId
+				};
+				dbContext.FileIdentifiers.Add(fi);
+			}
+
 			dbContext.Contracts.Add(contract);
+
+
+
+			await fileService.SaveChangesAsync();
 
 			await dbContext.SaveChangesAsync();
 		}
@@ -408,7 +443,7 @@
 					Quantity = c.Quantity,
 					UnitSymbol = c.Unit.Symbol,
 					ItemName = c.ItemName,
-					ItemPictureUri = c.ItemPictureUri,
+					ItemMainPictureId = c.ItemMainPictureId,
 					ItemDescription = c.ItemDescription,
 					SendDue = c.SendDue,
 					DeliverDue = c.DeliverDue,
@@ -475,7 +510,7 @@
 					Quantity = c.Quantity,
 					UnitSymbol = c.Unit.Symbol,
 					ItemName = c.ItemName,
-					ItemPictureUri = c.ItemPictureUri,
+					ItemPictureId = c.ItemMainPictureId,
 					ItemDescription = c.ItemDescription,
 					SendDue = c.SendDue,
 					DeliverDue = c.DeliverDue,
@@ -612,6 +647,36 @@
 			return result;
 		}
 
-		
+		public async Task CopyBuyerContractImagesToItemAsync(Guid contractId, Guid itemId)
+		{
+			var item = await dbContext.Items
+				.FindAsync(itemId) ?? throw new ArgumentNullException("Item id doesn't exist!");
+
+			var contractItemImageIds = await dbContext.FileIdentifiers
+				.Where(fi => fi.BuyerContractId == contractId)
+				.Select(fi => fi.FileId)
+				.ToArrayAsync();
+			var contractItemImages = await fileService.GetManyAsync(contractItemImageIds);
+
+			var copiedItemImageIds = await fileService.AddManyAsync(contractItemImages);
+
+			foreach (var copiedItemImageId in copiedItemImageIds)
+			{
+				FileIdentifier fi = new FileIdentifier
+				{
+					IsPublic = false,
+					OwnerId = item.OwnerId,
+					CoOwnerId = null,
+					ItemId = item.Id,
+					FileId = copiedItemImageId
+				};
+				await dbContext.FileIdentifiers.AddAsync(fi);
+			}
+
+
+			await fileService.SaveChangesAsync();
+			await dbContext.SaveChangesAsync();
+			
+		}
 	}
 }

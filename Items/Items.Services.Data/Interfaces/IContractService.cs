@@ -12,6 +12,7 @@
 		Task<bool> CanReviseAsync(Guid id, Guid userId);
 		Task ChangeReviserAsync(Guid id);
 		Task CompleteAsync(Guid id, Guid userId);
+		Task CopyBuyerContractImagesToItemAsync(Guid contractId, Guid itemId);
 		Task CreateAsync(ContractFormViewModel previewModel, Guid itemId, Guid buyerId);
 		Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId);
 		Task<ContractViewModel> GetForDetailsAsync(Guid contractId);

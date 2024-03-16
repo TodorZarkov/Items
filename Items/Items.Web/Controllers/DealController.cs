@@ -79,7 +79,7 @@
 				TempData[InformationMessage] = "Item Is Not On The  Market Anymore!";
 				return RedirectToAction("All", "Item");
 			}
-			 
+
 
 			ContractFormViewModel model = await contractService.GetForPreviewAsync(itemId, buyerId);
 
@@ -118,7 +118,7 @@
 				return RedirectToAction("All", "Item");
 			}
 
-			ContractFormViewModel previewModel = await contractService.GetForCreate(model, id, buyerId);
+			ContractFormViewModel previewModel = await contractService.GetForCreateAsync(model, id, buyerId);
 
 
 			return View(previewModel);
@@ -221,7 +221,7 @@
 				TempData[WarningMessage] = "The Offer has expired.";
 				return RedirectToAction("All", "Bid");
 			}
-			
+
 			Guid itemId = await offerService.GetItemIdFromOfferIdAsync(id);
 			bool itemExist = await itemService.ExistAsync(itemId);
 			bool isMyItem = await itemService.IsOwnerAsync(itemId, buyerId);
@@ -246,7 +246,7 @@
 			}
 
 			ContractFormViewModel model = await contractService.GetForPreviewAsync(itemId, buyerId, id);
-			 
+
 			return View("Add", model);
 		}
 
@@ -302,20 +302,91 @@
 				return GeneralError();
 			}
 
-			ContractFormViewModel previewModel = await contractService.GetForCreate(model, itemId, buyerId, id);
+			ContractFormViewModel previewModel = await contractService.GetForCreateAsync(model, itemId, buyerId, id);
 
 			return View("Preview", previewModel);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> AddFromOffer(Guid offerId, ContractFormViewModel previewModel)
-		{
-			// todo: implement
-			//on create Deal
-			//also must reduce the promisedQuantity as much as the Quantity of the item and of the barter.
-			//delete offer itself
+		public async Task<IActionResult> AddFromOffer(ContractFormViewModel model, Guid id)
+		{	
 			//implement copy barter to the seller deal panel
-			return RedirectToAction("All", "Deal");//with query for the newly created deal!
+			try
+			{
+
+
+				bool offerExist = await offerService.ExistAsync(id);
+				if (!offerExist)
+				{
+					return GeneralError();
+				}
+
+				Guid buyerId = Guid.Parse(User.GetId());
+				bool isMine = await offerService.IsOwnerAsync(id, buyerId);
+				if (!isMine)
+				{
+					return GeneralError();
+				}
+
+				bool isWinner = await offerService.IsWinnerAsync(id);
+				if (!isWinner)
+				{
+					return GeneralError();
+				}
+
+				bool expired = await offerService.ExpiredAsync(id);
+				if (expired)
+				{
+					TempData[WarningMessage] = "The Offer has expired.";
+					return RedirectToAction("All", "Bid");
+				}
+
+				Guid itemId = await offerService.GetItemIdFromOfferIdAsync(id);
+				bool itemExist = await itemService.ExistAsync(itemId);
+				bool isMyItem = await itemService.IsOwnerAsync(itemId, buyerId);
+				bool isAuction = await itemService.IsAuctionAsync(itemId);
+				bool isEndSellOk = (await itemService.GetEndSellDateTime(itemId)) < dateTimeProvider.GetCurrentDateTime();
+				if (!itemExist || isMyItem || !isAuction || !isEndSellOk)
+				{
+					return GeneralError();
+				}
+				bool barterExist = await itemService.ExistBarterItemByOfferIdAsync(id);
+				if (!barterExist)
+				{
+					TempData[ErrorMessage] = "Barter Item you have proposed no longer available. Auction cannot be competed.";
+					return RedirectToAction("All", "Sell");
+				}
+				// todo: Lock the barter item until auction is finished. can use PromisedQuantity != 0 to Lock Barter.
+
+				bool validQuantitiesInOffer = await offerService.ValidQuantitiesInOffer(id);
+				if (!validQuantitiesInOffer)
+				{
+					return GeneralError();
+				}
+
+				if (!ModelState.IsValid)
+				{
+					return View(model);
+				}
+
+				Guid dealId;
+				try
+				{
+					dealId = await contractService.CreateAsync(model, itemId, buyerId, id);
+				}
+				catch (Exception)
+				{
+					TempData[ErrorMessage] = "Something Went Wrong! Order Canceled!";
+				}
+
+
+
+				return RedirectToAction("All", "Deal");//with query for the newly created deal!
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
 		}
 
 		[HttpGet]
@@ -390,7 +461,7 @@
 					if (!ModelState.IsValid)
 					{
 						model = await contractService.GetForRevise(id, userId);
-						return View(model); 
+						return View(model);
 					}
 
 					await contractService.UpdateAsync(id, model);

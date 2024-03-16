@@ -494,14 +494,19 @@
 
 		public async Task AcceptOfferAsync(Guid id)
 		{
-			Item item = await dbContext.Offers
-				.Where(o => o.Id == id)
-				.Select(o => o.Item)
-				.SingleAsync();
 			Offer offer = await dbContext.Offers
-				.SingleAsync(o => o.Id == id);
+				.Include(o => o.Item)
+				.Include(o => o.BarterItem)
+				.FirstAsync(o => o.Id == id);
+
+			Item item = offer.Item;
+			Item? barter = offer.BarterItem;
 
 			item.PromisedQuantity += offer.Quantity;
+			if (barter != null && offer.BarterQuantity != null)
+			{
+				barter.PromisedQuantity += (decimal)offer.BarterQuantity;
+			}
 			offer.Win = true;
 			offer.Expires = dateTimeProvider.GetCurrentDateTime().AddHours(AcceptedOfferExpirationsHours);
 

@@ -18,6 +18,7 @@
 	using Items.Common.Enums;
 	using Items.Services.Data.Models.Contract;
 	using Items.Services.Data.Models.File;
+	using System.Diagnostics.Contracts;
 
 	public class ContractService : IContractService
 	{
@@ -305,7 +306,7 @@
 			return model;
 		}
 
-		public async Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId)
+		public async Task<ContractFormViewModel> GetForCreateAsync(ContractFormViewModel model, Guid itemId, Guid buyerId)
 		{
 			ContractFormViewModel previewModel = await dbContext.Items
 				.AsNoTracking()
@@ -343,7 +344,7 @@
 			return previewModel;
 		}
 
-		public async Task<ContractFormViewModel> GetForCreate(ContractFormViewModel model, Guid itemId, Guid buyerId, Guid offerId)
+		public async Task<ContractFormViewModel> GetForCreateAsync(ContractFormViewModel model, Guid itemId, Guid buyerId, Guid offerId)
 		{
 			var buyerData = await dbContext.Users
 				.Where(u => u.Id == buyerId)
@@ -436,7 +437,7 @@
 
 			item.Quantity = itemQuantity - previewModel.Quantity; // TODO: extract to different service
 
-			Contract contract = new Contract
+			Items.Data.Models.Contract contract = new Items.Data.Models.Contract
 			{
 				BuyerOk = true,
 
@@ -501,7 +502,159 @@
 
 			await dbContext.SaveChangesAsync();
 		}
-		//override Create to work with offer
+
+		public async Task<Guid> CreateAsync(ContractFormViewModel model, Guid itemId, Guid buyerId, Guid offerId)
+		{
+			var buyerData = await dbContext.Users
+				.Where(u => u.Id == buyerId)
+				.Select(u => new
+				{
+					Name = u.UserName,
+					Email = u.EmailConfirmed ? u.Email : null,
+					Phone = u.PhoneNumberConfirmed ? u.PhoneNumber : null
+				})
+				.FirstAsync();
+
+
+			var offerData = await dbContext.Offers
+				.AsNoTracking()
+				.Where(o => o.Id == offerId)
+				.Select(o => new
+				{
+					o.BarterItemId,
+					o.BarterQuantity,
+					BarterName = o.BarterItem != null ? o.BarterItem.Name : null,
+					BarterUnitSymbol = o.BarterItem != null ? o.BarterItem.Unit.Symbol : null,
+					BarterPictureId = o.BarterItem != null ? (Guid?)o.BarterItem.MainPictureId : null,
+					BarterDescription = o.BarterItem != null ? o.BarterItem.Description : null,
+					MessageFromBuyer = o.Message,
+					OfferQuantity = o.Quantity,
+					OfferValue = o.Value,
+					o.UseBuyerEmail,
+					o.UseBuyerName,
+					o.UseBuyerPhone
+				})
+				.FirstAsync();
+			Offer offer = (await dbContext.Offers.FindAsync(offerId))!;
+
+			Item item = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == itemId)
+				.FirstAsync();
+			Item barterItem = await dbContext.Items
+				.Where(i => !i.Deleted)
+				.Where(i => i.Id == offerData.BarterItemId)
+				.FirstAsync();
+
+			
+			item.Quantity -= offerData.OfferQuantity; // TODO: extract to different service
+			item.PromisedQuantity -= offerData.OfferQuantity;
+
+			barterItem.Quantity -= (decimal)offerData.BarterQuantity!;
+			barterItem.PromisedQuantity -= (decimal)offerData.BarterQuantity!;
+
+			dbContext.Offers.Remove(offer);
+
+			Items.Data.Models.Contract contract = new Items.Data.Models.Contract
+			{
+				BuyerOk = true,
+
+				SellerId = item.OwnerId, // TODO: as long as there's soft delete the item owner can be extracted
+				BuyerId = buyerId,
+
+				SellerName = model.SellerName,
+				SellerEmail = model.SellerEmail,
+				SellerPhone = model.SellerPhone,
+
+				BuyerName = model.ConsentBuyerInfo ? model.BuyerName : null,
+				BuyerEmail = model.ConsentBuyerInfo ? model.BuyerEmail : null,
+				BuyerPhone = model.ConsentBuyerInfo ? model.BuyerPhone : null,
+
+				ItemId = itemId,
+				Price = offerData.OfferValue,
+				CurrencyId = (int)item.CurrencyId!,//  WARNING: observe the risk of changing model currency in the interval between the model check and the save changes! - it's practically zero due to isOnTheMarketCheck and Forbidding to Edit When on market;
+				UnitId = item.UnitId,//  WARNING: observe the risk of changing model currency in the interval between the model check and the save changes!- it's practically zero due to isOnTheMarketCheck and Forbidding to Edit When on market;
+				ItemName = model.ItemName,
+
+				ItemDescription = model.ItemDescription,
+
+				Quantity = model.Quantity,
+				SendDue = model.SendDue,
+				DeliverDue = model.DeliverDue,
+				SellerComment = model.SellerComment,
+				BuyerComment = model.BuyerComment,
+				DeliveryAddress = model.DeliveryAddress,
+
+				BarterId = offerData.BarterItemId,
+				BarterDescription = offerData.BarterDescription,
+				BarterName = offerData.BarterName,
+				BarterQuantity = (decimal)offerData.BarterQuantity,
+				BarterUnitId = barterItem.UnitId,
+				
+			};
+
+
+			//--------copy item images to contract-----------
+			var publicItemImageIds = await fileIdentifierService.PublicFilesByItemIdAsync(itemId);
+			var mainItemPictureId = model.ItemPictureId;
+
+			IEnumerable<FileServiceModel> itemFiles =
+				await fileService.GetManyAsync(publicItemImageIds.Except(new List<Guid> { mainItemPictureId }));
+			var copiedItemImageIds = (await fileService.AddManyAsync(itemFiles)).ToList();
+
+			var itemMainPicture = await fileService.GetAsync(mainItemPictureId);
+			var copiedItemMainPictureId = await fileService.AddAsync(itemMainPicture);
+
+			copiedItemImageIds.Add(copiedItemMainPictureId);
+			contract.ItemMainPictureId = copiedItemMainPictureId;
+
+			foreach (var copiedItemImageId in copiedItemImageIds)
+			{
+				FileIdentifier fi = new FileIdentifier
+				{
+					BuyerContractId = contract.Id,
+					FileId = copiedItemImageId,
+					OwnerId = contract.SellerId,
+					CoOwnerId = contract.BuyerId
+				};
+				dbContext.FileIdentifiers.Add(fi);
+			}
+			//------------copy barter images to  contract------------
+			var publicBarterImageIds = await fileIdentifierService.PublicFilesByItemIdAsync(barterItem.Id);
+			var mainBarterPictureId = (Guid)offerData.BarterPictureId!;
+
+			IEnumerable<FileServiceModel> barterFiles =
+				await fileService.GetManyAsync(publicBarterImageIds.Except(new List<Guid> { mainBarterPictureId }));
+			var copiedBarterImageIds = (await fileService.AddManyAsync(barterFiles)).ToList();
+
+			var barterMainPicture = await fileService.GetAsync(mainBarterPictureId);
+			var copiedBarterMainPictureId = await fileService.AddAsync(barterMainPicture);
+
+			copiedBarterImageIds.Add(copiedBarterMainPictureId);
+			contract.BarterMainPictureId = copiedBarterMainPictureId;
+
+			foreach (var copiedBarterImageId in copiedBarterImageIds)
+			{
+				FileIdentifier fi = new FileIdentifier
+				{
+					SellerContractId = contract.Id,
+					FileId = copiedBarterImageId,
+					OwnerId = contract.BuyerId,
+					CoOwnerId = contract.SellerId
+				};
+				dbContext.FileIdentifiers.Add(fi);
+			}
+			//-----------------------------
+
+			dbContext.Contracts.Add(contract);
+
+
+
+			await fileService.SaveChangesAsync();
+
+			await dbContext.SaveChangesAsync();
+			return contract.Id;
+		}
 
 		public async Task<ContractViewModel> GetForDetailsAsync(Guid contractId)
 		{
@@ -534,7 +687,14 @@
 					SellerComment = c.SellerComment,
 					BuyerComment = c.BuyerComment,
 
-					DeliveryAddress = c.DeliveryAddress
+					DeliveryAddress = c.DeliveryAddress,
+
+					BarterId = c.BarterId,
+					BarterPictureId = c.BarterMainPictureId,
+					BarterDescription = c.BarterDescription,
+					BarterName = c.BarterName,
+					BarterQuantity = c.BarterQuantity,
+					BarterUnitSymbol = c.BarterUnit!.Symbol
 				})
 				.SingleAsync();
 
@@ -601,7 +761,14 @@
 					SellerComment = c.SellerComment,
 					BuyerComment = c.BuyerComment,
 
-					DeliveryAddress = c.DeliveryAddress
+					DeliveryAddress = c.DeliveryAddress,
+
+					BarterId = c.BarterId,
+					BarterPictureId = c.BarterMainPictureId,
+					BarterDescription = c.BarterDescription,
+					BarterName = c.BarterName,
+					BarterQuantity = c.BarterQuantity,
+					BarterUnitSymbol = c.BarterUnit!.Symbol
 				})
 				.SingleAsync();
 
@@ -610,24 +777,30 @@
 
 		public async Task CancelAsync(Guid id, Guid userId)
 		{
-			Contract deal = await dbContext.Contracts
-				.SingleAsync(c => c.Id == id);//&& c.SellerId == userId || c.BuyerId == userId);
+			Items.Data.Models.Contract contract = await dbContext.Contracts
+				.Include(c => c.Item)
+				.Include(c => c.Barter)
+				.FirstAsync(c => c.Id == id);//&& c.SellerId == userId || c.BuyerId == userId);
 
-			deal.BuyerOk = false;
-			deal.SellerOk = false;
+			contract.BuyerOk = false;
+			contract.SellerOk = false;
 
 			// TODO: move this block to separate service method!
 			try
 			{
-				Item item = await dbContext.Items
-				.Where(i => !i.Deleted)
-				.Where(i => i.Id == (Guid)deal.ItemId!)
-				.SingleAsync();
-				decimal currentItemQuantity = item.Quantity;
+				Item item = contract.Item!;
+				item.Quantity += contract.Quantity;
 
-				item.Quantity = currentItemQuantity + deal.Quantity;
+				Item? barter = contract.Barter;
+				if (barter != null)
+				{
+					barter.Quantity += contract.BarterQuantity;
+				}
+				
 
-				deal.ItemId = null;
+
+				contract.ItemId = null;
+				contract.BarterId = null;
 			}
 			catch (Exception e)
 			{
@@ -639,7 +812,7 @@
 
 		public async Task SetSignedAsync(Guid id)
 		{
-			Contract deal = await dbContext.Contracts
+			Items.Data.Models.Contract deal = await dbContext.Contracts
 				.SingleAsync(c => c.Id == id );
 
 			deal.BuyerOk = true;
@@ -651,7 +824,7 @@
 
 		public async Task UpdateAsync(Guid id, ContractFormViewModel model)
 		{
-			Contract contract = await dbContext.Contracts
+			Items.Data.Models.Contract contract = await dbContext.Contracts
 				.SingleAsync(c => c.Id == id);
 
 			contract.DeliverDue = model.DeliverDue;
@@ -677,7 +850,7 @@
 
 		public async Task ChangeReviserAsync(Guid id)
 		{
-			Contract contract = await dbContext.Contracts
+			Items.Data.Models.Contract contract = await dbContext.Contracts
 				.SingleAsync(c => c.Id == id);
 
 			contract.BuyerOk = !contract.BuyerOk;
@@ -696,7 +869,7 @@
 
 		public async Task CompleteAsync(Guid id, Guid userId)
 		{
-			Contract contract = await dbContext.Contracts
+			Items.Data.Models.Contract contract = await dbContext.Contracts
 				.SingleAsync(c => c.Id == id);
 
 			if (contract.SellerId == userId)

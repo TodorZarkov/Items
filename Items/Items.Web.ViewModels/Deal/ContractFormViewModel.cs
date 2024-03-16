@@ -88,7 +88,6 @@
         [Required]
 		public bool ConsentBuyerInfo { get; set; }
 
-
 		[Required]
 		[Range(QuantityMinValue, QuantityMaxValue)]
 		public decimal Quantity { get; set; }

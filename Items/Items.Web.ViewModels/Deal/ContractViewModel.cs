@@ -1,5 +1,7 @@
 ﻿namespace Items.Web.ViewModels.Deal
 {
+	using Items.Web.Validators.Attributes;
+
 	public class ContractViewModel
 	{
 		public bool? IsSeller { get; set; }
@@ -37,5 +39,19 @@
 		public string? BuyerComment { get; set; } //modifiable
 
 		public string DeliveryAddress { get; set; } = null!; //modifiable
+
+
+		
+		public string? BarterName { get; set; } = null!;
+
+		public Guid? BarterPictureId { get; set; }
+
+		public string? BarterDescription { get; set; }
+
+		public decimal? BarterQuantity { get; set; }
+
+		public string? BarterUnitSymbol { get; set; }
+
+		public Guid? BarterId { get; set; }
 	}
 }

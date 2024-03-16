@@ -120,10 +120,6 @@
         public string ItemName { get; set; } = null!;
 
 
-
-		//todo (fc): replace ItemPictureUri with impId
-        [MaxLength(UriMaxLength)]
-        public string? ItemPictureUri { get; set; }
         public Guid ItemMainPictureId { get; set; }
         public ICollection<FileIdentifier> ItemImages { get; set; } = null!;
 

@@ -43,8 +43,8 @@
 					cfg => cfg.MapFrom(s => s.UseBuyerPhone && s.Buyer.PhoneNumberConfirmed ? s.Buyer.PhoneNumber : null))
 				.ForMember(d => d.BarterUnit,
 					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Unit.Symbol : null))
-				.ForMember(d => d.BarterPictureUri,
-					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.MainPictureUri : null))
+				.ForMember(d => d.BarterPictureId,
+					cfg => cfg.MapFrom(s => s.BarterItem != null ? (Guid?)s.BarterItem.MainPictureId : null))
 				.ForMember(d => d.BarterName,
 					cfg => cfg.MapFrom(s => s.BarterItem != null ? s.BarterItem.Name : null))
 				.ForMember(d => d.BarterDescription,

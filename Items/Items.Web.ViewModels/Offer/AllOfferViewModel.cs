@@ -19,8 +19,8 @@
 		public string CurrencySymbol { get; set; } = null!;
 
 
-		public string? BarterPictureUri { get; set; }
-		public string? BarterName { get; set; }
+        public Guid? BarterPictureId { get; set; }
+        public string? BarterName { get; set; }
 		public string? BarterQuantity { get; set; }
 		public string? BarterUnit { get; set; }
         public string? BarterDescription { get; set; }

@@ -103,11 +103,6 @@
         public ICollection<FileIdentifier> ItemPictures { get; set; }
         public Guid MainPictureId { get; set; }
 
-        [MaxLength(UriMaxLength)]
-        //todo(fc): change to guid and name to MainPictureId / remove MainPictureUri
-        public string? MainPictureUri { get; set; }
-
-
 
 
         [Precision(ValuePrecision, ValueScale)]

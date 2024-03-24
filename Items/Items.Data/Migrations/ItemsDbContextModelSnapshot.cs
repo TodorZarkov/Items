@@ -97,6 +97,59 @@ namespace Items.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("04023b09-a38e-48e1-1082-08db8d0db110"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c9037b4e-9232-4448-bf59-2e340aac49c6",
+                            Email = "superadmin@items.bg",
+                            EmailConfirmed = false,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "SUPERADMIN@ITEMS.BG",
+                            NormalizedUserName = "SUPERADMIN@ITEMS.BG",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFUS+MjcEzJ8yNttLlA2VAmOLDlrGAC3SVa8UbFU/rttk1Mq+6WeJbPg3o0U7TJVzQ==",
+                            PhoneNumberConfirmed = false,
+                            RotationItemsDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "VG5NFKHCN2YOVRDWKLO4OC2UC5RDSZC2",
+                            TwoFactorEnabled = false,
+                            UserName = "superadmin@items.bg"
+                        },
+                        new
+                        {
+                            Id = new Guid("7bee3220-a1a1-4502-efea-08db9037bc59"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "aea9a9f8-e1bb-40b5-a8d4-48ba39c8e336",
+                            Email = "pesho@items.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "PESHO@ITEMS.COM",
+                            NormalizedUserName = "PESHO@ITEMS.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFIzHhinhyWRtQCiiJEFDwFMJw+PlFiYdlQ1hL5W2W5E15lL1VLQbETklj++X/y1tg==",
+                            PhoneNumberConfirmed = false,
+                            RotationItemsDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "JMCTVP5CHQTQAB4TCG25FN2NPAKIWOFB",
+                            TwoFactorEnabled = false,
+                            UserName = "pesho@items.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b5b3b04-bf70-4018-ffbf-08db913996c1"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5a791e32-6035-4b8f-9100-ef55c918c980",
+                            Email = "stamat@items.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "STAMAT@ITEMS.COM",
+                            NormalizedUserName = "STAMAT@ITEMS.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJxHzEkoesvrPSbuQYb8c9Moqv/ZO0F34bIKTjGv+WhE4KY97nSLe65Eq3+dhFCTmg==",
+                            PhoneNumberConfirmed = false,
+                            RotationItemsDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "5NJNYJBBTCG5SWFQT2RSD7PJR746JEMM",
+                            TwoFactorEnabled = false,
+                            UserName = "stamat@items.com"
+                        });
                 });
 
             modelBuilder.Entity("Items.Data.Models.Category", b =>
@@ -537,7 +590,7 @@ namespace Items.Data.Migrations
                             Id = new Guid("70ab6375-3da7-41cb-b80c-dcee2ba4fbbb"),
                             AcquiredDate = new DateTime(2022, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 60m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9503),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 176, DateTimeKind.Utc).AddTicks(9939),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -547,7 +600,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("8d725141-2b5a-468f-9e1e-61ab0c7f8f5e"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9505),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 176, DateTimeKind.Utc).AddTicks(9941),
                             Name = "Ford Mustang Mach1 1973",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -563,7 +616,7 @@ namespace Items.Data.Migrations
                             Id = new Guid("e4d2697e-8edf-49f5-bac0-bc76dfbb43ee"),
                             AcquiredDate = new DateTime(2022, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 10m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9647),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(54),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -572,7 +625,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("a78c2eda-79cb-4acc-a7e4-92e0b45e20eb"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9648),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(54),
                             Name = "Toyota Rav 4",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -588,7 +641,7 @@ namespace Items.Data.Migrations
                             Id = new Guid("ea486471-25ca-40c5-bdce-c7c4157eb1b0"),
                             AcquiredDate = new DateTime(2022, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 11m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9669),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(74),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -597,7 +650,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("0fb06c25-8e6f-4fd2-a1d9-3cebb4621d2e"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9669),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(74),
                             Name = "Trabant",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -613,14 +666,14 @@ namespace Items.Data.Migrations
                             Id = new Guid("2aa8b934-59f3-473b-842e-3df2a3590b92"),
                             AcquiredDate = new DateTime(2020, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 22m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9688),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(91),
                             CurrencyId = 1,
                             Deleted = false,
                             Description = "The Porsche 911 (pronounced Nine Eleven or in German: Neunelf) is a two-door 2+2 high performance rear-engined sports car introduced in September 1964 by Porsche AG of Stuttgart, Germany. It has a rear-mounted flat-six engine and originally a torsion bar suspension. The car has been continuously enhanced through the years but the basic concept has remained unchanged.[1] The engines were air-cooled until the introduction of the 996 series in 1998.[",
                             ItemVisibilityId = new Guid("a33dd8ed-4619-4d18-a25c-2bb25b7bb456"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9689),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(92),
                             Name = "1997 Porsche 911 Carrera, Red",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -635,14 +688,14 @@ namespace Items.Data.Migrations
                             Id = new Guid("7ec3d946-d2ef-4d54-a98e-00ea2b2e8b45"),
                             AcquiredDate = new DateTime(2020, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 23m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9700),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(102),
                             CurrencyId = 1,
                             Deleted = false,
                             Description = "Hollywood Rides 1:24 Scale 2006",
                             ItemVisibilityId = new Guid("d009129e-5655-4cd2-ba67-114e2e792b8c"),
                             LocationId = new Guid("f9182575-b31f-4d24-bb44-17a062dfe6fe"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9701),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(102),
                             Name = "Chevrolet Camaro",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -657,7 +710,7 @@ namespace Items.Data.Migrations
                             Id = new Guid("ea9141c8-8c5b-4126-9a30-7a82796e922c"),
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 110m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9714),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(114),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -667,7 +720,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("c0bbcabf-5c24-4ca6-86bc-eca11ae46eb8"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9715),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(114),
                             Name = "Land Rover Discovery",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -683,7 +736,7 @@ namespace Items.Data.Migrations
                             Id = new Guid("cc1a92ff-e773-4d37-8d66-ddb31ab612b2"),
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 8m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9734),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(133),
                             CurrencyId = 1,
                             CurrentPrice = 55m,
                             Deleted = false,
@@ -692,7 +745,7 @@ namespace Items.Data.Migrations
                             ItemVisibilityId = new Guid("61c89a18-8bda-4d12-9a70-cdb17aedd752"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9734),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(133),
                             Name = "Puzzle Cars",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -708,14 +761,14 @@ namespace Items.Data.Migrations
                             Id = new Guid("a0f0c44b-1ba4-484d-9c36-498579b61d37"),
                             AcquiredDate = new DateTime(2021, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 9m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9827),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(150),
                             CurrencyId = 1,
                             Deleted = false,
                             Description = "Hape knob puzzle vehicles",
                             ItemVisibilityId = new Guid("cbd7bd12-aa21-4e33-95cf-fd9c342db010"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9827),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(151),
                             Name = "puzzle vehicles",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -730,13 +783,13 @@ namespace Items.Data.Migrations
                             Id = new Guid("a676af29-2fd2-4e17-918d-73ec948cdc73"),
                             AcquiredDate = new DateTime(2022, 2, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AcquiredPrice = 50m,
-                            AddedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9841),
+                            AddedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(166),
                             CurrencyId = 1,
                             Deleted = false,
                             ItemVisibilityId = new Guid("49abfa42-69f7-4240-a2ef-4e1b3ef7c16c"),
                             LocationId = new Guid("6e1f7be8-13dc-4c6b-bb59-d6ee7cec35d8"),
                             MainPictureId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            ModifiedOn = new DateTime(2024, 3, 16, 15, 3, 34, 950, DateTimeKind.Utc).AddTicks(9841),
+                            ModifiedOn = new DateTime(2024, 3, 24, 18, 12, 10, 177, DateTimeKind.Utc).AddTicks(166),
                             Name = "Puzzle Cadillac",
                             OnRotation = true,
                             OnRotationNow = false,
@@ -1597,6 +1650,13 @@ namespace Items.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("04023b09-a38e-48e1-1082-08db8d0db110"),
+                            RoleId = new Guid("b8e078af-5cbc-4360-a99a-0aa387c563e1")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>

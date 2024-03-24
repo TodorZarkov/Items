@@ -161,6 +161,36 @@
 			}
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> CreateFromDeal(Guid id)
+		{
+			try
+			{
+				Guid userId = Guid.Parse(User.GetId());
+				bool isBuyer = await contractService.IsBuyerAsync(id, userId);
+				if (!isBuyer)
+				{
+					TempData[ErrorMessage] = "You must be The Buyer to Create from Deal!";
+					return RedirectToAction("All", "Item");
+				}
+
+				ItemEditFormModel model = await itemService.CopyFromContract(id, userId);
+
+				model.ItemVisibility = new ItemFormVisibilityModel();
+				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
+				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
+				model.AvailableUnits = await unitService.AllForSelectAsync();
+				model.AvailableLocations = await locationService.GetForSelectAsync(userId);
+				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+
+				return View("Edit", model);
+			}
+			catch (Exception e)
+			{
+				return GeneralError(e);
+			}
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> CreateFromDeal(ItemEditFormModel model, Guid id)
 		{
@@ -465,35 +495,7 @@
 		}
 
 
-		[HttpGet]
-		public async Task<IActionResult> CreateFromDeal(Guid id)
-		{
-			try
-			{
-				Guid userId = Guid.Parse(User.GetId());
-				bool isBuyer = await contractService.IsBuyerAsync(id, userId);
-				if (!isBuyer)
-				{
-					TempData[ErrorMessage] = "You must be The Buyer to Create from Deal!";
-					return RedirectToAction("All", "Item");
-				}
-
-				ItemEditFormModel model = await itemService.CopyFromContract(id, userId);
-
-				model.ItemVisibility = new ItemFormVisibilityModel();
-				model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
-				model.AvailableCurrencies = await currencyService.AllForSelectAsync();
-				model.AvailableUnits = await unitService.AllForSelectAsync();
-				model.AvailableLocations = await locationService.GetForSelectAsync(userId);
-				model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
-
-				return View("Edit", model);
-			}
-			catch (Exception e)
-			{
-				return GeneralError(e);
-			}
-		}
+		
 
 
 

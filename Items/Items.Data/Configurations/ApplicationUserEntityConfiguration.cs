@@ -5,7 +5,7 @@
 	using Microsoft.EntityFrameworkCore;
 	using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-	public class ApplicationUserEC// : IEntityTypeConfiguration<ApplicationUser>
+	public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<ApplicationUser>
 	{
 		public void Configure(EntityTypeBuilder<ApplicationUser> builder)
 		{

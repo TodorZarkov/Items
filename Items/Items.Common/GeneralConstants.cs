@@ -6,6 +6,9 @@
 
 		public const int ReleaseYear = 2023;
 
+		//This is due to fast fix with the reverse proxy
+		public const string Scheme = "https";
+
 
 
 		public const int LastPublicItemsNumber = 5;

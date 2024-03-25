@@ -2,6 +2,7 @@
 @using Items.Web.ViewModels.Currency;
 @using Items.Web.ViewModels.Unit;
 @using static Items.Common.EntityValidationConstants.Item;
+@using static Items.Common.GeneralConstants;
 @model ItemFormModel
 
 @{
@@ -260,7 +261,9 @@
 
 </form>
 @{
-	string baseHost = $"{Context.Request.Scheme}://{Context.Request.Host}";
+	//string scheme = Context.Request.Scheme;
+	string scheme = Scheme;
+	string baseHost = $"{scheme}://{Context.Request.Host}";
 }
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />

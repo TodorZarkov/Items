@@ -5,6 +5,7 @@
 	using Items.Web.ViewModels.Item;
 	using static Common.EntityValidationErrorMessages.General;
 	using static Common.NotificationMessages;
+	using static Common.GeneralConstants;
 	using Items.Web.ViewModels.Base;
 	using Items.Services.Data.Models.Item;
 
@@ -152,6 +153,8 @@
 				{
 					return RedirectToAction("Add", "Item", new { placeId = model.PlaceId });
 				}
+				await itemService
+					.SetDailyRotationsAsync(userId, CarouselItemsNumber);
 
 				return RedirectToAction("Details", "Item", new { id = itemId });
 			}

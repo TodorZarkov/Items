@@ -5,7 +5,8 @@
 	@foreach (MyItemViewModel item in Model)
 	{
 		<div class="card border-primary @(item.IsOnMarket?" border-danger border-3":string.Empty)" style="width: 18rem;">
-			<img src="@Url.Action("File", "Home", new {id = @item.MainPictureId})" class="card-img-top" alt="...">
+			<img src="@Url.Action("File", "Home", new {id = @item.MainPictureId})"
+				 class="card-img-top" alt="..." style="max-height: 260px; object-fit:contain">
 			<div class="card-body">
 				<h5 class="card-title">@item.Name</h5>
 				<p class="card-subtitle mb-2 text-muted">@($"Categories: {string.Join(", ", item.Categories)}")</p>

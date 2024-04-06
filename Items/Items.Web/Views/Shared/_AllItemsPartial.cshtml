@@ -6,7 +6,8 @@
 	@foreach (AllItemViewModel item in Model)
 	{
 		<div class="card border-success mb-3" style="width: 18rem;">
-			<img src="@Url.Action("File","Home", new {id = @item.MainPictureId})" class="card-img-top" alt="...">
+			<img src="@Url.Action("File","Home", new {id = @item.MainPictureId})" 
+			class="card-img-top" alt="..." style="max-height: 260px; object-fit:contain">
 			<div class="card-body">
 				<h5 class="card-title">@item.Name</h5>
 

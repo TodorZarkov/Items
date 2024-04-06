@@ -38,6 +38,15 @@
 		}
 
 
+		public async Task<long> CountCompleted()
+		{
+			long completedCount = await dbContext.Contracts
+				.AsNoTracking()
+				.LongCountAsync(c => c.BuyerReceived && c.SellerReceived);
+
+			return completedCount;
+		}
+
 		public async Task<AllContractServiceModel> AllAsync(Guid userId, QueryFilterModel? queryModel = null)
 		{
 			var dealsQuery = dbContext.Contracts

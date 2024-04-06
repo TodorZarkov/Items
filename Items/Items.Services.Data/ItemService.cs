@@ -44,6 +44,15 @@
 			this.fileService = fileService;
 		}
 
+
+		public async Task<long> Count()
+		{
+			long itemsCount = await dbContext.Items
+				.AsNoTracking()
+				.LongCountAsync(i => !i.Deleted);
+
+			return itemsCount;
+		}
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IndexViewModel[] items = await dbContext.Items

@@ -8,6 +8,7 @@
 
 	public interface IItemService
 	{
+		Task<long> Count();
 		Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems);
 
 

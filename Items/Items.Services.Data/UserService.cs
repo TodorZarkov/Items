@@ -31,8 +31,7 @@
 		{
 			long usersCount = await dbContext.Users
 				.AsNoTracking()
-				.Where(u => u.Email != null || u.UserName != null)
-				.LongCountAsync();
+				.LongCountAsync(u => u.Email != null || u.UserName != null);
 
 			return usersCount;
 		}

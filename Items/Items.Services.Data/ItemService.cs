@@ -53,6 +53,19 @@
 
 			return itemsCount;
 		}
+		public async Task<long> CountOnMarket()
+		{
+			long count = await dbContext.Items
+				.AsNoTracking()
+				.LongCountAsync(i => 
+					!i.Deleted &&
+					i.EndSell != null &&
+					i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
+					i.Quantity >= (decimal)QuantityMinValue
+				);
+
+			return count;
+		}
 		public async Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems)
 		{
 			IndexViewModel[] items = await dbContext.Items
@@ -269,7 +282,7 @@
 
 			int currentPage = queryModel?.CurrentPage ?? DefaultCurrentPage;
 			int hitsPerPage = queryModel?.HitsPerPage ?? DefaultHitsPerPage;
-			
+
 			itemsQuery = itemsQuery
 				.Skip((currentPage - 1) * hitsPerPage)
 				.Take(hitsPerPage);
@@ -348,7 +361,7 @@
 								i.Location.Name.ToLower().Contains(searchTerm.ToLower()) ||
 								i.Place.Name.ToLower().Contains(searchTerm.ToLower()));
 			}
-			
+
 			int[]? categoryIds = queryModel?.CategoryIds;
 			if (categoryIds != null && categoryIds.Length != 0)
 			{
@@ -361,7 +374,7 @@
 			{
 				itemsQuery = itemsQuery
 				.Where(i => i.OwnerId == userId
-						|| (i.EndSell != null && 
+						|| (i.EndSell != null &&
 							i.EndSell > dateTimeProvider.GetCurrentDateTime() &&
 							i.Quantity > (decimal)QuantityMinValue));
 			}
@@ -467,16 +480,16 @@
 					Quantity = userId == i.OwnerId ? i.Quantity.ToString("N2") : null,
 					Unit = userId == i.OwnerId ? i.Unit.Symbol : null,
 
-					IsAuction = 
-								i.IsAuction != null 
-								&& (bool)i.IsAuction 
-								&& i.EndSell.HasValue 
-								&& i.EndSell > dateTimeProvider.GetCurrentDateTime() 
+					IsAuction =
+								i.IsAuction != null
+								&& (bool)i.IsAuction
+								&& i.EndSell.HasValue
+								&& i.EndSell > dateTimeProvider.GetCurrentDateTime()
 								&& i.Quantity > (decimal)QuantityMinValue,
 
-					IsOnMarket = 
-								i.EndSell.HasValue 
-								&& i.EndSell > dateTimeProvider.GetCurrentDateTime() 
+					IsOnMarket =
+								i.EndSell.HasValue
+								&& i.EndSell > dateTimeProvider.GetCurrentDateTime()
 								&& i.Quantity > (decimal)QuantityMinValue,
 
 
@@ -629,7 +642,7 @@
 
 			}
 
-			
+
 			var totalSellsCount = await sellsQuery.CountAsync();
 
 
@@ -734,7 +747,7 @@
 				}
 			};
 
-			
+
 
 			return model;
 		}
@@ -1000,9 +1013,9 @@
 		{
 			bool result = await dbContext.Items
 				.Where(i => !i.Deleted)
-				.AnyAsync(i => 
-				i.Id == id 
-				&& i.IsAuction != null 
+				.AnyAsync(i =>
+				i.Id == id
+				&& i.IsAuction != null
 				&& i.IsAuction == true
 				);
 
@@ -1023,8 +1036,8 @@
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == itemId)
 				.Select(i => i.Quantity)
-				.SingleAsync() ;// TODO: seller must have an option to restrict the quantity threshold!!!
-												  // todo: globally, quantity must be integer and the measurement units must be supplemented
+				.SingleAsync();// TODO: seller must have an option to restrict the quantity threshold!!!
+							   // todo: globally, quantity must be integer and the measurement units must be supplemented
 
 			return itemQuantity - quantity;
 		}
@@ -1115,7 +1128,7 @@
 				CurrentPrice = model.CurrentPrice,//4.1
 				IsAuction = model.IsAuction,//4.2
 				OwnerId = userId,
-				
+
 
 				StartSell = model.StartSell,//4.3
 				EndSell = model.EndSell,//4.4
@@ -1177,7 +1190,7 @@
 						MimeType = image.ContentType
 					});
 					pictureIds.Add(pictureId);
-					
+
 					FileIdentifier fi = new FileIdentifier
 					{
 						Item = item,
@@ -1191,7 +1204,7 @@
 			item.MainPictureId = pictureIds.First();
 
 
-				dbContext.Items.Add(item);
+			dbContext.Items.Add(item);
 			await dbContext.SaveChangesAsync();
 			await fileService.SaveChangesAsync();
 			return item.Id;
@@ -1274,11 +1287,11 @@
 				.Where(fi => model.ImagesToDelete.Contains(fi.FileId))
 				.ToArrayAsync();
 				dbContext.FileIdentifiers.RemoveRange(fiToDelete);
-				
+
 				await fileService.DeleteManyAsync(model.ImagesToDelete);
 			}
 
-			
+
 
 			await dbContext.SaveChangesAsync();
 			await fileService.SaveChangesAsync();
@@ -1359,7 +1372,7 @@
 			return model;
 		}
 
-		
+
 	}
 
 

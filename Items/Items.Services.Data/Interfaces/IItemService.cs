@@ -9,6 +9,9 @@
 	public interface IItemService
 	{
 		Task<long> Count();
+
+		Task<long> CountOnMarket();
+
 		Task<IEnumerable<IndexViewModel>> LastPublicItemsAsync(int numberOfItems);
 
 

@@ -27,6 +27,15 @@
 			this.signInManager = signInManager;
 			this.fileService = fileService;
 		}
+		public async Task<long> Count()
+		{
+			long usersCount = await dbContext.Users
+				.AsNoTracking()
+				.Where(u => u.Email != null || u.UserName != null)
+				.LongCountAsync();
+
+			return usersCount;
+		}
 
 		public async Task<ApplicationUser?> GetByEmailAsync(string email)
 		{

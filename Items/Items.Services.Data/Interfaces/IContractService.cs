@@ -6,7 +6,7 @@
 
 	public interface IContractService
 	{
-		Task<long> CountCompleted();
+		Task<long> CountCompletedAsync();
 		Task<AllContractServiceModel> AllAsync(Guid userId, QueryFilterModel? queryModel = null);
 		Task CancelAsync(Guid id, Guid userId);
 		Task<bool> CanComplainAsync(Guid id, Guid userId);

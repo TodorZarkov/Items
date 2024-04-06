@@ -20,14 +20,16 @@
 		private readonly IUserService userService;
 		private readonly IFileService fileService;
 		private readonly IFileIdentifierService fileIdentifierService;
+		private readonly IContractService contractService;
 
-		public HomeController(IDateTimeProvider dateTimeProvider, IItemService itemService, IUserService userService, IFileIdentifierService fileIdentifierService, IFileService fileService)
+		public HomeController(IDateTimeProvider dateTimeProvider, IItemService itemService, IUserService userService, IFileIdentifierService fileIdentifierService, IFileService fileService, IContractService contractService)
 		{
 			this.dateTimeProvider = dateTimeProvider;
 			this.itemService = itemService;
 			this.userService = userService;
 			this.fileIdentifierService = fileIdentifierService;
 			this.fileService = fileService;
+			this.contractService = contractService;
 		}
 
 		[AllowAnonymous]
@@ -38,10 +40,18 @@
 				return RedirectToAction("DailyRotation");
 			}
 
-			IEnumerable<IndexViewModel> viewModel =
+			IEnumerable<IndexViewModel> indexModel =
 				await itemService.LastPublicItemsAsync(LastPublicItemsNumber);
+			IndexStatViewModel indexStatViewModel = new IndexStatViewModel
+			{
+				IndexViewModels = indexModel,
+				DealsCompletedCount = await contractService.CountCompletedAsync(),
+				ItemsCount = await itemService.CountAsync(),
+				ItemsOnMarketCount = await itemService.CountOnMarketAsync(),
+				UsersCount = await userService.CountAsync()
+			};
 
-			return View(viewModel);
+			return View(indexStatViewModel);
 		}
 
 		public async Task<IActionResult> DailyRotation()

@@ -38,7 +38,7 @@
 		}
 
 
-		public async Task<long> CountCompleted()
+		public async Task<long> CountCompletedAsync()
 		{
 			long completedCount = await dbContext.Contracts
 				.AsNoTracking()

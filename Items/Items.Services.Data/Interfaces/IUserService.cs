@@ -7,7 +7,7 @@
 
 	public interface IUserService
 	{
-		Task<long> Count();
+		Task<long> CountAsync();
 		Task<ApplicationUser?> GetByEmailAsync(string email);
 		Task<ApplicationUser?> GetByIdAsync(Guid userId);
 		Task<AllRoleServiceModel[]> GetRolesAsync(ApplicationUser user);

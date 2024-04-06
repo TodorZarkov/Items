@@ -45,7 +45,7 @@
 		}
 
 
-		public async Task<long> Count()
+		public async Task<long> CountAsync()
 		{
 			long itemsCount = await dbContext.Items
 				.AsNoTracking()
@@ -53,7 +53,7 @@
 
 			return itemsCount;
 		}
-		public async Task<long> CountOnMarket()
+		public async Task<long> CountOnMarketAsync()
 		{
 			long count = await dbContext.Items
 				.AsNoTracking()

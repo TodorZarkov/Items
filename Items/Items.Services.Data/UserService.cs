@@ -27,7 +27,7 @@
 			this.signInManager = signInManager;
 			this.fileService = fileService;
 		}
-		public async Task<long> Count()
+		public async Task<long> CountAsync()
 		{
 			long usersCount = await dbContext.Users
 				.AsNoTracking()

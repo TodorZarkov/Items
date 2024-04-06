@@ -10,7 +10,8 @@
 
 @if (Items.Any())
 {
-	<div id="carouselCaptions" class="carousel carousel-dark slide" data-bs-ride="carousel">
+
+	<div id="carouselCaptions" class="carousel carousel-dark slide " data-bs-ride="carousel">
 		<div class="carousel-indicators">
 			@for (int i = 0; i < Items.Count(); i++)
 			{
@@ -18,9 +19,8 @@
 						data-bs-target="#carouselCaptions"
 						data-bs-slide-to="@i"
 						aria-label="Slide @(i+1)"
-						@(i==0?"class=active":string.Empty)
-						@(i == 0 ? "aria-current=true":string.Empty)
-				></button>
+				@(i == 0 ? "class=active" : string.Empty)
+				@(i == 0 ? "aria-current=true" : string.Empty)></button>
 			}
 
 		</div>
@@ -36,27 +36,29 @@
 								 style="max-height: 500px; object-fit:contain;"
 								 class="img-fluid">
 						</div>
-						
+
 						<div style="width: 300px; min-width: 100px"
 							 class="me-auto ms-auto d-flex flex-wrap align-items-center align-content-center ps-1">
 
-							<h5 class="w-100"
-							>@Items[i].Name</h5>
+							<h5 class="w-100">
+								@Items[i].Name
+							</h5>
 							@if (Items[i].IsAuction ?? false)
 							{
-								<p class="w-100"
-								>On Auction!</p>
-								<h6 class="w-100"
-								>Starting Price: @Items[i].CurrentPrice @Items[i].CurrencySymbol</h6>
+								<p class="w-100">On Auction!</p>
+								<h6 class="w-100">
+									Starting Price: @Items[i].CurrentPrice @Items[i].CurrencySymbol
+								</h6>
 							}
 							else
 							{
 								<p class="w-100">On Sale!</p>
-								<h6 class="w-100"
-								>Price: @Items[i].CurrentPrice @Items[i].CurrencySymbol</h6>
+								<h6 class="w-100">
+									Price: @Items[i].CurrentPrice @Items[i].CurrencySymbol
+								</h6>
 							}
-							<p class="w-100">Categories: @string.Join(", ",Items[i].Categories)</p>
-							
+							<p class="w-100">Categories: @string.Join(", ", Items[i].Categories)</p>
+
 						</div>
 
 					</div>
@@ -73,6 +75,7 @@
 			<span class="visually-hidden">Next</span>
 		</button>
 	</div>
+
 }
 else
 {

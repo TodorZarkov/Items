@@ -57,6 +57,11 @@
 			public const string InvalidEndAuctionDate = "Invalid End Auction Date. Must be after or on {0}!";
 		}
 
+		public static class Category
+		{
+			public const string ExistingCategory = "The specified Category already exists.";
+		}
+
 		public static class General
 		{
 			public const string GeneralFormError = "Some of the Input Data is Invalid!";

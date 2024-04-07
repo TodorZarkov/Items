@@ -9,6 +9,7 @@
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 	using Items.Data.Models;
+	using System.Diagnostics.Eventing.Reader;
 
 	public class CategoryService : ICategoryService
 	{
@@ -177,11 +178,19 @@
 			};
 
 			await dbContext.Categories.AddAsync(category);
+
 			await dbContext.SaveChangesAsync();
 
 			return category.Id;
 		}
+		public async Task DeleteAsync(int id)
+		{
+			Category? category = await dbContext.Categories.FindAsync(id) 
+				?? throw new ArgumentNullException();
+			dbContext.Categories.Remove(category);
 
+			await dbContext.SaveChangesAsync();
+		}
 
 
 		public async Task<bool> IsAllowedIdsAsync(int[] ids, Guid userId)
@@ -210,7 +219,7 @@
 		}
 
 		//todo: index the name
-		public async Task<bool> ExistNameAsync(string name, Guid userId, Guid )
+		public async Task<bool> ExistNameAsync(string name, Guid userId)
 		{
 			var adminIds = await GetAdminIds();
 			bool result = await dbContext.Categories
@@ -222,6 +231,24 @@
 
 			return result;
 		}
+
+		public async Task<long> CountReferencesAsync(int categoryId)
+		{
+			long numberOfReferences = await dbContext.ItemsCategories
+				.AsNoTracking()
+				.LongCountAsync(ic => ic.CategoryId == categoryId);
+
+			return numberOfReferences;
+		}
+
+		public async Task<bool> IsOwnerAsync(Guid userId, int categoryId)
+		{
+			Category category = await dbContext.Categories.FindAsync(categoryId)
+				?? throw new ArgumentNullException("Category id doesn't exist.");
+
+			return category.CreatorId == userId;
+		}
+
 
 		private async Task<HashSet<Guid>> GetAdminIds()
 		{

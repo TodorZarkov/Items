@@ -1222,6 +1222,23 @@
 				.FindAsync(item.ItemVisibilityId)
 				?? throw new ArgumentException(string.Format(ItemVisibilityNotPresentInDb, "", ""));
 
+			ItemCategory[] itemCategories = await dbContext.ItemsCategories
+				.Where(ic => ic.ItemId == itemId)
+				.ToArrayAsync();
+			dbContext.ItemsCategories.RemoveRange(itemCategories);
+
+			List<ItemCategory> newItemsCategories = new();
+			foreach (var cid in model.CategoryIds)
+			{
+				ItemCategory itemCategory = new ItemCategory
+				{
+					CategoryId = cid,
+					ItemId = itemId
+				};
+				newItemsCategories.Add(itemCategory);
+			}
+			await dbContext.ItemsCategories.AddRangeAsync(newItemsCategories);
+
 			item.Name = model.Name;//1.2
 			item.Quantity = model.Quantity;//1.3
 			item.Description = model.Description;//2.1

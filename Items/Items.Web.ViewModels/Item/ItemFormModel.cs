@@ -91,7 +91,7 @@
 
 
 
-		[RequiredIfPresent("CurrentPrice", "CurrencyId", "IsAuction", ErrorMessage = StartSellPriceCurrencyRequired)]
+		[RequiredIfPresent("CurrentPrice", "CurrencyId", "IsAuction", "StartSell", ErrorMessage = StartSellPriceCurrencyRequired)]
 		public DateTime? EndSell { get; set; }
 
 

@@ -11,6 +11,7 @@
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
+	using Items.Services.Common.Interfaces;
 
 	public class ItemController : BaseController
 	{
@@ -22,6 +23,7 @@
 		private readonly IContractService contractService;
 		private readonly ILocationService locationService;
 		private readonly IFileService fileService;
+		private readonly IDateTimeProvider dateTimeProvider;
 
 		public ItemController(
 			  IItemService itemService
@@ -31,7 +33,8 @@
 			, IUnitService unitService
 			, IContractService contractService
 			, ILocationService locationService
-			, IFileService fileService)
+			, IFileService fileService
+			,IDateTimeProvider dateTimeProvider)
 
 		{
 			this.itemService = itemService;
@@ -42,6 +45,7 @@
 			this.contractService = contractService;
 			this.locationService = locationService;
 			this.fileService = fileService;
+			this.dateTimeProvider = dateTimeProvider;
 		}
 
 		[HttpGet]
@@ -312,7 +316,13 @@
 					await itemService.IsValidMainImageAsync(model.MainImageId, userId, id);
 				bool isValidImagesToDelete =
 					await itemService.IsAllowedImagesToDeleteAsync(model.ImagesToDelete, model.MainImageId, userId, id);
-				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories && isValidMainImage && isValidImagesToDelete))
+				bool validAuction = model.IsAuction 
+					? 
+					model.EndSell != null 
+					&& model.EndSell>dateTimeProvider.GetCurrentDateTime() 
+					&& model.CurrentPrice != null
+					: true;
+				if (!(isValidUnitId && isValidPlaceId && isValidCurrencyId && isValidCategories && isValidMainImage && isValidImagesToDelete && validAuction))
 				{
 					isValidAsync = false;
 					ModelState.AddModelError("", GeneralFormError);

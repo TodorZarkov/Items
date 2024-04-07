@@ -1177,32 +1177,37 @@
 			//- virus and malware
 			//if everything above is fine proceed with the IFileService
 			//todo it in Update method!
-			if (model.Images?.Any() ?? false)
+			if ((model.Images?.Any() ?? false) && (model.Images?.Any(i => i!=null) ?? false))
 			{
 				List<Guid> pictureIds = new List<Guid>();
-				foreach (IFormFile image in model.Images)
+				foreach (IFormFile? image in model.Images)
 				{
-					using (var memoryStream = new MemoryStream())
+					if (image != null)
 					{
-						await image.CopyToAsync(memoryStream);
-						Guid pictureId = await fileService.AddAsync(new FileServiceModel
+						using (var memoryStream = new MemoryStream())
 						{
-							Bytes = memoryStream.ToArray(),
-							Name = image.FileName,
-							MimeType = image.ContentType
-						});
-						pictureIds.Add(pictureId);
+							await image.CopyToAsync(memoryStream);
+							Guid pictureId = await fileService.AddAsync(new FileServiceModel
+							{
+								Bytes = memoryStream.ToArray(),
+								Name = image.FileName,
+								MimeType = image.ContentType
+							});
+							pictureIds.Add(pictureId);
 
-						FileIdentifier fi = new FileIdentifier
-						{
-							Item = item,
-							FileId = pictureId,
-							OwnerId = userId,
-							IsPublic = model.EndSell != null && model.EndSell > dateTimeProvider.GetCurrentDateTime()
-						};
-						item.ItemPictures.Add(fi);
+							FileIdentifier fi = new FileIdentifier
+							{
+								Item = item,
+								FileId = pictureId,
+								OwnerId = userId,
+								IsPublic = model.EndSell != null && model.EndSell > dateTimeProvider.GetCurrentDateTime()
+							};
+							item.ItemPictures.Add(fi);
+						}
 					}
+					
 				}
+				item.MainPictureId = pictureIds.First();
 			}
 			
 

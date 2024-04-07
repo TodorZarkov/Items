@@ -71,12 +71,6 @@
 		public DateTime? AcquiredDate { get; set; }
 
 
-
-		// todo(fc): remove mainpictureuri
-		//[Required]
-		//[StringLength(UriMaxLength, MinimumLength = UriMinLength)]
-		public string? MainPictureUri { get; set; } //= null!;
-
 		[RequiredFor(typeof(ItemFormModel))]
 		virtual public IEnumerable<IFormFile?>? Images { get; set; }
 

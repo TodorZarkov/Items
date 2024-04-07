@@ -193,7 +193,7 @@
 		}
 
 
-		public async Task<bool> IsAllowedIdsAsync(int[] ids, Guid userId)
+		public async Task<bool> IsAllowedIdsAsync(int[]? ids, Guid userId)
 		{
 
 			HashSet<Guid> adminIdsHS = await GetAdminIds();

@@ -59,12 +59,12 @@
 			{
 				dealsQuery = dealsQuery
 					.Where(c => c.ItemName.ToLower().Contains(searchTerm.ToLower()) ||
-								(c.ItemDescription != null && c.ItemDescription.ToLower().Contains(searchTerm.ToLower())) );
+								(c.ItemDescription != null && c.ItemDescription.ToLower().Contains(searchTerm.ToLower())));
 			}
 
 			Criteria[]? criteria = queryModel?.Criteria;
 			if (criteria != null && criteria.Length > 0)
-			
+
 			{
 				if (criteria.Contains(Criteria.Bought) && !criteria.Contains(Criteria.Sold))
 				{
@@ -135,7 +135,7 @@
 				.Skip((currentPage - 1) * hitsPerPage)
 				.Take(hitsPerPage);
 
-			
+
 
 
 
@@ -188,7 +188,7 @@
 			return result;
 		}
 
-		
+
 
 		public async Task<ContractFormViewModel> GetForPreviewAsync(Guid itemId, Guid buyerId)
 		{
@@ -211,10 +211,10 @@
 					SellerName = i.ItemVisibility.Owner == Public ? i.Owner.UserName : null,
 					SellerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
 					SellerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
-					
-					BuyerName = buyerData.Name ,
-					BuyerEmail = buyerData.Email ,
-					BuyerPhone = buyerData.Phone ,
+
+					BuyerName = buyerData.Name,
+					BuyerEmail = buyerData.Email,
+					BuyerPhone = buyerData.Phone,
 
 					ItemId = i.Id,
 					Price = (decimal)i.CurrentPrice!,
@@ -279,7 +279,7 @@
 					SellerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
 					SellerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
 
-					BuyerName = offerData.UseBuyerName?buyerData.Name : null,
+					BuyerName = offerData.UseBuyerName ? buyerData.Name : null,
 					BuyerEmail = offerData.UseBuyerEmail ? buyerData.Email : null,
 					BuyerPhone = offerData.UseBuyerPhone ? buyerData.Phone : null,
 
@@ -306,7 +306,7 @@
 					BarterUnitSymbol = offerData.BarterUnitSymbol,
 
 					OfferId = offerId
-					
+
 					//DeliveryAddress = ...  TODO: get address from new user property Address (if set)
 
 				})
@@ -395,7 +395,7 @@
 					SellerEmail = i.ItemVisibility.Owner == Public ? i.Owner.Email : null,
 					SellerPhone = i.ItemVisibility.Owner == Public ? i.Owner.PhoneNumber : null,
 
-					
+
 					ItemId = i.Id,
 					Price = offerData.OfferValue,
 					Quantity = offerData.OfferQuantity,
@@ -404,9 +404,9 @@
 					ItemName = i.Name,
 					ItemPictureId = i.MainPictureId,
 					ItemDescription = i.ItemVisibility.Description == Public ? i.Description : null,
-					
-					
-					
+
+
+
 					BarterId = offerData.BarterItemId,
 					BarterName = offerData.BarterName,
 					BarterDescription = offerData.BarterDescription,
@@ -422,7 +422,7 @@
 					BuyerPhone = model.ConsentBuyerInfo ? model.BuyerPhone : null,
 					TotalPrice = (offerData.OfferValue * offerData.OfferQuantity).ToString("N2"),//
 					ConsentBuyerInfo = model.ConsentBuyerInfo,
-					
+
 					SendDue = model.SendDue,
 					DeliverDue = model.DeliverDue,
 					SellerComment = model.SellerComment,
@@ -432,7 +432,7 @@
 				})
 				.SingleAsync();
 
-			return previewModel ;
+			return previewModel;
 		}
 
 		public async Task CreateAsync(ContractFormViewModel previewModel, Guid itemId, Guid buyerId)
@@ -477,12 +477,12 @@
 				DeliveryAddress = previewModel.DeliveryAddress
 			};
 
-			
+
 			var publicItemImageIds = await fileIdentifierService.PublicFilesByItemIdAsync(itemId);
 			var mainItemPictureId = previewModel.ItemPictureId;
 
-			IEnumerable<FileServiceModel> itemFiles = 
-				await fileService.GetManyAsync(publicItemImageIds.Except(new List<Guid> { mainItemPictureId}));
+			IEnumerable<FileServiceModel> itemFiles =
+				await fileService.GetManyAsync(publicItemImageIds.Except(new List<Guid> { mainItemPictureId }));
 			var copiedItemImageIds = (await fileService.AddManyAsync(itemFiles)).ToList();
 
 			var itemMainPicture = await fileService.GetAsync(mainItemPictureId);
@@ -550,17 +550,22 @@
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == itemId)
 				.FirstAsync();
-			Item barterItem = await dbContext.Items
+			Item? barterItem = null;
+			if (offerData.BarterItemId != null)
+			{
+				barterItem = await dbContext.Items
 				.Where(i => !i.Deleted)
 				.Where(i => i.Id == offerData.BarterItemId)
 				.FirstAsync();
 
-			
+				barterItem.Quantity -= (decimal)offerData.BarterQuantity!;
+				barterItem.PromisedQuantity -= (decimal)offerData.BarterQuantity!;
+			}
+
+
 			item.Quantity -= offerData.OfferQuantity; // TODO: extract to different service
 			item.PromisedQuantity -= offerData.OfferQuantity;
 
-			barterItem.Quantity -= (decimal)offerData.BarterQuantity!;
-			barterItem.PromisedQuantity -= (decimal)offerData.BarterQuantity!;
 
 			dbContext.Offers.Remove(offer);
 
@@ -597,9 +602,9 @@
 				BarterId = offerData.BarterItemId,
 				BarterDescription = offerData.BarterDescription,
 				BarterName = offerData.BarterName,
-				BarterQuantity = (decimal)offerData.BarterQuantity,
-				BarterUnitId = barterItem.UnitId,
-				
+				BarterQuantity = offerData.BarterQuantity??0,
+				BarterUnitId = barterItem?.UnitId,
+
 			};
 
 
@@ -629,30 +634,34 @@
 				dbContext.FileIdentifiers.Add(fi);
 			}
 			//------------copy barter images to  contract------------
-			var publicBarterImageIds = await fileIdentifierService.PublicFilesByItemIdAsync(barterItem.Id);
-			var mainBarterPictureId = (Guid)offerData.BarterPictureId!;
-
-			IEnumerable<FileServiceModel> barterFiles =
-				await fileService.GetManyAsync(publicBarterImageIds.Except(new List<Guid> { mainBarterPictureId }));
-			var copiedBarterImageIds = (await fileService.AddManyAsync(barterFiles)).ToList();
-
-			var barterMainPicture = await fileService.GetAsync(mainBarterPictureId);
-			var copiedBarterMainPictureId = await fileService.AddAsync(barterMainPicture);
-
-			copiedBarterImageIds.Add(copiedBarterMainPictureId);
-			contract.BarterMainPictureId = copiedBarterMainPictureId;
-
-			foreach (var copiedBarterImageId in copiedBarterImageIds)
+			if (barterItem != null)
 			{
-				FileIdentifier fi = new FileIdentifier
+				var publicBarterImageIds = await fileIdentifierService.PublicFilesByItemIdAsync(barterItem.Id);
+				var mainBarterPictureId = (Guid)offerData.BarterPictureId!;
+
+				IEnumerable<FileServiceModel> barterFiles =
+					await fileService.GetManyAsync(publicBarterImageIds.Except(new List<Guid> { mainBarterPictureId }));
+				var copiedBarterImageIds = (await fileService.AddManyAsync(barterFiles)).ToList();
+
+				var barterMainPicture = await fileService.GetAsync(mainBarterPictureId);
+				var copiedBarterMainPictureId = await fileService.AddAsync(barterMainPicture);
+
+				copiedBarterImageIds.Add(copiedBarterMainPictureId);
+				contract.BarterMainPictureId = copiedBarterMainPictureId;
+
+				foreach (var copiedBarterImageId in copiedBarterImageIds)
 				{
-					SellerContractId = contract.Id,
-					FileId = copiedBarterImageId,
-					OwnerId = contract.BuyerId,
-					CoOwnerId = contract.SellerId
-				};
-				dbContext.FileIdentifiers.Add(fi);
+					FileIdentifier fi = new FileIdentifier
+					{
+						SellerContractId = contract.Id,
+						FileId = copiedBarterImageId,
+						OwnerId = contract.BuyerId,
+						CoOwnerId = contract.SellerId
+					};
+					dbContext.FileIdentifiers.Add(fi);
+				}
 			}
+			
 			//-----------------------------
 
 			dbContext.Contracts.Add(contract);
@@ -721,9 +730,9 @@
 		public async Task<bool> CanReviseAsync(Guid id, Guid userId)
 		{
 			bool result = await dbContext.Contracts
-				.AnyAsync(c => 
+				.AnyAsync(c =>
 					(c.Id == id && (c.SellerId == userId || c.BuyerId == userId)) &&
-					((c.SellerOk && !c.BuyerOk && c.BuyerId == userId) || 
+					((c.SellerOk && !c.BuyerOk && c.BuyerId == userId) ||
 					(!c.SellerOk && c.BuyerOk && c.SellerId == userId)));
 
 			return result;
@@ -805,7 +814,7 @@
 				{
 					barter.Quantity += contract.BarterQuantity;
 				}
-				
+
 
 
 				contract.ItemId = null;
@@ -822,7 +831,7 @@
 		public async Task SetSignedAsync(Guid id)
 		{
 			Items.Data.Models.Contract deal = await dbContext.Contracts
-				.SingleAsync(c => c.Id == id );
+				.SingleAsync(c => c.Id == id);
 
 			deal.BuyerOk = true;
 			deal.SellerOk = true;
@@ -842,19 +851,19 @@
 
 			bool isBuyerReviser = !contract.BuyerOk;
 
-			if (isBuyerReviser && (contract.BuyerComment??string.Empty).Trim() != (model.BuyerComment??string.Empty).Trim())
+			if (isBuyerReviser && (contract.BuyerComment ?? string.Empty).Trim() != (model.BuyerComment ?? string.Empty).Trim())
 			{
 				contract.BuyerComment = model.BuyerComment;
 			}
 			else if (
-				!isBuyerReviser && 
+				!isBuyerReviser &&
 				(contract.SellerComment ?? string.Empty).Trim() != (model.SellerComment ?? string.Empty).Trim())
 			{
 				contract.SellerComment = model.SellerComment;
 			}
 
 			await dbContext.SaveChangesAsync();
-			
+
 		}
 
 		public async Task ChangeReviserAsync(Guid id)
@@ -912,13 +921,13 @@
 			return result;
 		}
 
-		public async Task CopyBuyerContractImagesToItemAsync(Guid contractId, Guid itemId)
+		public async Task CopyBuyerContractImagesToItemAsync(Guid contractId, Guid itemId, IEnumerable<Guid> imagesToDelete, Guid mainImageId)
 		{
 			var item = await dbContext.Items
 				.FindAsync(itemId) ?? throw new ArgumentNullException("Item id doesn't exist!");
 
 			var contractItemImageIds = await dbContext.FileIdentifiers
-				.Where(fi => fi.BuyerContractId == contractId)
+				.Where(fi => fi.BuyerContractId == contractId && !imagesToDelete.Contains(fi.FileId))
 				.Select(fi => fi.FileId)
 				.ToArrayAsync();
 			var contractItemImages = await fileService.GetManyAsync(contractItemImageIds);
@@ -937,13 +946,13 @@
 				};
 				await dbContext.FileIdentifiers.AddAsync(fi);
 			}
-
+			item.MainPictureId = mainImageId;
 
 			await fileService.SaveChangesAsync();
 			await dbContext.SaveChangesAsync();
-			
+
 		}
 
-		
+
 	}
 }

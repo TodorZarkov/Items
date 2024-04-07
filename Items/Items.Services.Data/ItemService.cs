@@ -1177,31 +1177,34 @@
 			//- virus and malware
 			//if everything above is fine proceed with the IFileService
 			//todo it in Update method!
-			List<Guid> pictureIds = new List<Guid>();
-			foreach (IFormFile image in model.Images)
+			if (model.Images?.Any() ?? false)
 			{
-				using (var memoryStream = new MemoryStream())
+				List<Guid> pictureIds = new List<Guid>();
+				foreach (IFormFile image in model.Images)
 				{
-					await image.CopyToAsync(memoryStream);
-					Guid pictureId = await fileService.AddAsync(new FileServiceModel
+					using (var memoryStream = new MemoryStream())
 					{
-						Bytes = memoryStream.ToArray(),
-						Name = image.FileName,
-						MimeType = image.ContentType
-					});
-					pictureIds.Add(pictureId);
+						await image.CopyToAsync(memoryStream);
+						Guid pictureId = await fileService.AddAsync(new FileServiceModel
+						{
+							Bytes = memoryStream.ToArray(),
+							Name = image.FileName,
+							MimeType = image.ContentType
+						});
+						pictureIds.Add(pictureId);
 
-					FileIdentifier fi = new FileIdentifier
-					{
-						Item = item,
-						FileId = pictureId,
-						OwnerId = userId,
-						IsPublic = model.EndSell != null && model.EndSell > dateTimeProvider.GetCurrentDateTime()
-					};
-					item.ItemPictures.Add(fi);
+						FileIdentifier fi = new FileIdentifier
+						{
+							Item = item,
+							FileId = pictureId,
+							OwnerId = userId,
+							IsPublic = model.EndSell != null && model.EndSell > dateTimeProvider.GetCurrentDateTime()
+						};
+						item.ItemPictures.Add(fi);
+					}
 				}
 			}
-			item.MainPictureId = pictureIds.First();
+			
 
 
 			dbContext.Items.Add(item);

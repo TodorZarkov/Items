@@ -19,7 +19,7 @@
 		Task<int> AddAsync(CategoryFormViewModel model, Guid userId);
 		Task DeleteAsync(int categoryId);
 
-		Task<bool> IsAllowedIdsAsync(int[] ids, Guid userId);
+		Task<bool> IsAllowedIdsAsync(int[]? ids, Guid userId);
 		Task<bool> IsAllowedPublicIdsAsync(int[] ids);
 		/// <summary>
 		/// Checks if the the given category name is already added by one of the admins or by the user (userId) itself.

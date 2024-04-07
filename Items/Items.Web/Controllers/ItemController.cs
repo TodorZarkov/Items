@@ -219,20 +219,25 @@
 				}
 				if (!(ModelState.IsValid && isValidAsync))
 				{
+					model = await itemService.CopyFromContract(id, userId);
+
+					model.ItemVisibility = new ItemFormVisibilityModel();
 					model.AvailableCategories = await categoryService.AllForSelectAsync(userId);
 					model.AvailableCurrencies = await currencyService.AllForSelectAsync();
 					model.AvailableUnits = await unitService.AllForSelectAsync();
-					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
 					model.AvailableLocations = await locationService.GetForSelectAsync(userId);
-					return View(model);
+					model.AvailablePlaces = await placeService.AllForSelectAsync(userId);
+					return View("Edit", model);
 				}
 
 
 				Guid itemId = await itemService.CreateItemAsync(model, userId);
-				await contractService.CopyBuyerContractImagesToItemAsync(id, itemId);
+				await contractService.CopyBuyerContractImagesToItemAsync(id, itemId, model.ImagesToDelete, model.MainImageId);
 
 				// todo: replace all messages with constants from Common
 				TempData[SuccessMessage] = "Item successfully Created!";
+				await itemService
+					.SetDailyRotationsAsync(userId, CarouselItemsNumber);
 
 				return RedirectToAction("Details", "Item", new { id = itemId });
 			}

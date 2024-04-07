@@ -8,8 +8,8 @@
 @{
 	ViewData["Title"] = "Add Deal";
 	ViewBag.ActiveLink = "AllDeal";
-	string action = Model.BarterId == null ? "Preview" : "FromOfferPreview";
-	string? routeId = Model.BarterId == null ? Model.ItemId.ToString() : Model.OfferId.ToString();
+	string action = Model.OfferId == null ? "Preview" : "FromOfferPreview";
+	string? routeId = Model.OfferId == null ? Model.ItemId.ToString() : Model.OfferId.ToString();
 }
 
 <form asp-area="" asp-controller="Deal" asp-action=@action asp-route-id=@routeId method="post" class="mx-auto row">

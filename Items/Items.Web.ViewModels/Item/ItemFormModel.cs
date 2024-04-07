@@ -51,7 +51,7 @@
 
 
 		[Required]
-		[Range(QuantityMinValue, QuantityMaxValue)]
+		[Range(QuantityFrontMinValue, QuantityFrontMaxValue)]
 		// TODO: add Display to  reduce view code (in <label asp-for)
 		public decimal Quantity { get; set; }
 
@@ -62,7 +62,7 @@
 
 
 
-		[Range(ValueMinValue, ValueMaxValue)]
+		[Range(ValueFrontMinValue, ValueFrontMaxValue)]
 		[RequiredIfPresent("CurrencyId", "AcquiredDate", ErrorMessage = PriceCurrencyRequired)]
 		public decimal? AcquiredPrice { get; set; }
 
@@ -81,7 +81,7 @@
 		virtual public IEnumerable<IFormFile?>? Images { get; set; }
 
 
-        [Range(ValueMinValue, ValueMaxValue)]
+		[Range(ValueFrontMinValue, ValueFrontMaxValue)]
 		public decimal? CurrentPrice { get; set; }
 
 

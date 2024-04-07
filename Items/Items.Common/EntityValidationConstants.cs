@@ -68,7 +68,7 @@
             public const double QuantityMaxValue = 999999999999999.999;
             
             public const double QuantityFrontMinValue = 0.001;
-            public const double QuantityFrontMaxValue = 999999999999.999;
+            public const double QuantityFrontMaxValue = 999999999999999.999;
 
 			public const int PromisedQuantityPrecision = 18;
 			public const int PromisedQuantityScale = 3;

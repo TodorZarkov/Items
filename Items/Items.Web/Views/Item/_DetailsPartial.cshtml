@@ -9,7 +9,9 @@
 				<div class="d-flex flex-wrap overflow-auto gap-1 vh-100 ">
 					@foreach (var imageId in Model.Images)
 					{
-						<img src="@(Url.Action("File","Home",new{id = imageId}))" class="card-img-top" alt="...">
+						<img src="@(Url.Action("File","Home",new{id = imageId}))"
+							 class="card-img-top img-fluid" alt="..."
+							 style="object-fit:contain">
 					}
 				</div>
 			</div>

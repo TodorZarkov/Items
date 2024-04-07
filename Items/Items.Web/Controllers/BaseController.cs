@@ -19,6 +19,7 @@
 		//todo: is here anonymous?
 		protected IActionResult GeneralError(Exception? e = null)
 		{
+
 			TempData[ErrorMessage] = "Unexpected error has occurred! Try again later or contact the administrator.";
 			return RedirectToAction("Index", "Home");
 		}

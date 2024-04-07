@@ -1,0 +1,32 @@
+﻿@using Items.Web.ViewModels.Category;
+@model CategoryFormViewModel
+
+@{
+	ViewData["Title"] = "Add Category";
+	ViewBag.ActiveLink = "AllItem";
+}
+
+<h3 class="text-center">Add Category</h3>
+<hr class="w-50 mx-auto" />
+
+<form method="post"
+	  class="w-50 mx-auto form-floating mb-3"
+	  id="CategoryFormId">
+
+	<div class="form-floating mb-3 ">
+		<input asp-for="@Model.Name" type="text" class="form-control form-control-sm" />
+		<label asp-for="@Model.Name"></label>
+		<span asp-validation-for="@Model.Name" class="text-danger text-sm-start"></span>
+	</div>
+
+</form>
+
+
+
+<div class="  w-50 mx-auto mt-2">
+	<button form="CategoryFormId"
+			type="submit"
+			class="btn btn-primary">
+		Create
+	</button>
+</div>

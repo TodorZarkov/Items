@@ -32,5 +32,7 @@
 		Task<long> CountReferencesAsync(int categoryId);
 		Task<bool> IsOwnerAsync(Guid userId, int categoryId);
 
+		Task<bool> ExistAsync(int categoryId);
+
 	}
 }

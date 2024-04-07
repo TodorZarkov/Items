@@ -266,5 +266,17 @@
 			HashSet<Guid> adminIdsHS = adminIds.ToHashSet();
 			return adminIdsHS;
 		}
+
+		public async Task<bool> ExistAsync(int categoryId)
+		{
+			Category? category = await dbContext.Categories.FindAsync(categoryId);
+
+			if (category == null)
+			{
+				return false;
+			}
+
+			return true;
+		}
 	}
 }

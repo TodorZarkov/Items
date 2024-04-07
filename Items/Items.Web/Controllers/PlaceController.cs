@@ -55,7 +55,7 @@
 			}
 			catch (Exception)
 			{
-				return StatusCode(500);
+				return StatusCode(StatusCodes.Status500InternalServerError);
 			}
 		}
 

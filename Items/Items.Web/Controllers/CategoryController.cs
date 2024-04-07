@@ -5,6 +5,7 @@
 	using Items.Web.ViewModels.Category;
 	using Items.Web.ViewModels.Item;
 	using static Common.EntityValidationErrorMessages.Category;
+	using static Common.NotificationMessages;
 
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Http.Extensions;
@@ -49,6 +50,35 @@
 
 			return RedirectToAction("Mine", "Item");
 
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> Delete(int id)
+		{
+			bool exist = await categoryService.ExistAsync(id);
+			if (!exist)
+			{
+				return StatusCode(StatusCodes.Status404NotFound);
+			}
+
+			Guid userId = Guid.Parse(User.GetId());
+			bool isOwner = await categoryService.IsOwnerAsync(userId, id);
+			if (!isOwner)
+			{
+				return StatusCode(StatusCodes.Status403Forbidden);
+			}
+
+			long numberOfReferences = await categoryService.CountReferencesAsync(id);
+			if (numberOfReferences > 0)
+			{
+				TempData[ErrorMessage] = string.Format(CategoryHasItems, numberOfReferences);
+				return RedirectToAction("All", "Item");
+			}
+
+			await categoryService.DeleteAsync(id);
+
+			return RedirectToAction("All", "Item");
 		}
 	}
 }

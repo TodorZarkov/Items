@@ -60,6 +60,7 @@
 		public static class Category
 		{
 			public const string ExistingCategory = "The specified Category already exists.";
+			public const string CategoryHasItems = "Cannot Delete! Still has {0} items whit this category.";
 		}
 
 		public static class General

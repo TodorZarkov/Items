@@ -24,13 +24,19 @@
 			@foreach (var category in Model.MyAvailableCategories)
 			{
 				string isChecked = Model.CategoryIds.Contains(category.Id) ? "checked" : string.Empty;
-				<li class="dropdown-item">
+				<li class="dropdown-item d-flex flex-nowrap">
+
 					<input class="form-check-input me-1"
 						   type="checkbox"
 						   value="@category.Id"
 						   name="CategoryIds"
 					@isChecked>
-					@(Html.DisplayFor(e => category.Name))
+
+					<div>@(Html.DisplayFor(e => category.Name))</div>
+					
+					<div class="ps-3">
+						<a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id"><i class="fas fa-trash-alt"></i></a>
+					</div>
 				</li>
 			}
 			<li><a class="dropdown-item" 

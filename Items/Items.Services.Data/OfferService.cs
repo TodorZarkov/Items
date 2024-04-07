@@ -114,7 +114,7 @@
 
 			IEnumerable<AllBidViewModel> bids = await offerQuery
 
-				//.Where(o => o.Expires > DateTime.UtcNow)
+				.Where(o => o.Expires > dateTimeProvider.GetCurrentDateTime())
 				.Select(o => new AllBidViewModel
 				{
 					OfferId = o.Id,

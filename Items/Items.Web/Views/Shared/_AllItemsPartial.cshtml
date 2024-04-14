@@ -72,8 +72,9 @@
 
 				<p class="card-text pt-3">Categories: @string.Join(", ",item.Categories)</p>
 
-				<a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info ms-auto d-block">Details</a>
 			</div>
+			<a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info m-1 p-1 d-block">Details</a>
+			
 		</div>
 	}
 

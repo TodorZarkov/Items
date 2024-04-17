@@ -62,6 +62,8 @@
                 Assembly.GetExecutingAssembly();
 
             builder.ApplyConfigurationsFromAssembly(configAssembly);
+
+
         }
     }
 }

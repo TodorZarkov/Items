@@ -20,7 +20,8 @@
                 .SeedCurrencies()
                 .SeedItemsCategories()
                 .SeedItems()
-                .SeedItemsVisibilities();
+                .SeedItemsVisibilities()
+                .SeedLocations();
 
 
             return builder;

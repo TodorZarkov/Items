@@ -15,7 +15,8 @@
         {
 
             builder
-                .SeedUsers();
+                .SeedUsers()
+                .SeedCategories();
 
 
             return builder;

@@ -3,20 +3,19 @@
     using Items.Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using System;
-    using System.Collections.Generic;
 
-    public class UserSeeder : IEntityTypeConfiguration<ApplicationUser>
+    public static class UserSeeder
     {
-        public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+        public static ModelBuilder SeedUsers(this ModelBuilder builder)
         {
-
             builder
+                .Entity<ApplicationUser>()
                 .HasData(GenerateUsers());
-
+            
+            return builder;
         }
-        private ApplicationUser[] GenerateUsers()
+
+        private static ApplicationUser[] GenerateUsers()
         {
             PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
 
@@ -29,7 +28,6 @@
                 NormalizedUserName = "SUPERADMIN@ITEMS.BG",
                 Email = "superadmin@items.bg",
                 NormalizedEmail = "SUPERADMIN@ITEMS.BG",
-                //PasswordHash = "AQAAAAEAACcQAAAAEFUS+MjcEzJ8yNttLlA2VAmOLDlrGAC3SVa8UbFU/rttk1Mq+6WeJbPg3o0U7TJVzQ==",
                 SecurityStamp = "VG5NFKHCN2YOVRDWKLO4OC2UC5RDSZC2",
                 EmailConfirmed = false,
                 ConcurrencyStamp = "c9037b4e-9232-4448-bf59-2e340aac49c6",
@@ -50,7 +48,6 @@
                 NormalizedUserName = "PESHO@ITEMS.COM",
                 Email = "pesho@items.com",
                 NormalizedEmail = "PESHO@ITEMS.COM",
-                //PasswordHash = "AQAAAAEAACcQAAAAEFIzHhinhyWRtQCiiJEFDwFMJw+PlFiYdlQ1hL5W2W5E15lL1VLQbETklj++X/y1tg==",
                 SecurityStamp = "JMCTVP5CHQTQAB4TCG25FN2NPAKIWOFB",
                 EmailConfirmed = false,
                 ConcurrencyStamp = "aea9a9f8-e1bb-40b5-a8d4-48ba39c8e336",
@@ -71,7 +68,6 @@
                 NormalizedUserName = "STAMAT@ITEMS.COM",
                 Email = "stamat@items.com",
                 NormalizedEmail = "STAMAT@ITEMS.COM",
-                //PasswordHash = "AQAAAAEAACcQAAAAEJxHzEkoesvrPSbuQYb8c9Moqv/ZO0F34bIKTjGv+WhE4KY97nSLe65Eq3+dhFCTmg==",
                 SecurityStamp = "5NJNYJBBTCG5SWFQT2RSD7PJR746JEMM",
                 EmailConfirmed = false,
                 ConcurrencyStamp = "5a791e32-6035-4b8f-9100-ef55c918c980",

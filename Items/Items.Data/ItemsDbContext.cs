@@ -8,6 +8,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using Items.Data.Models;
+    using Items.Data.Seeders;
 
     public class ItemsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
@@ -61,7 +62,7 @@
             Assembly configAssembly = Assembly.GetAssembly(typeof(ItemsDbContext)) ??
                 Assembly.GetExecutingAssembly();
 
-            builder.ApplyConfigurationsFromAssembly(configAssembly);
+            builder.ApplyConfigurationsFromAssembly(configAssembly).Seed();
 
 
         }

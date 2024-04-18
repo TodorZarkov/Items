@@ -8,7 +8,7 @@
         public static ModelBuilder SeedOffers(this ModelBuilder builder)
         {
             builder
-                .Entity<Currency>()
+                .Entity<Offer>()
                 .HasData(GenerateOffers());
 
             return builder;

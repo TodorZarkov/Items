@@ -9,7 +9,7 @@
         public static ModelBuilder SeedItemsVisibilities(this ModelBuilder builder)
         {
             builder
-                .Entity<Currency>()
+                .Entity<ItemVisibility>()
                 .HasData(GenerateItemVisibilities());
 
             return builder;

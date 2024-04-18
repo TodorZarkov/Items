@@ -8,7 +8,7 @@
         public static ModelBuilder SeedLocationsVisibilities(this ModelBuilder builder)
         {
             builder
-                .Entity<Currency>()
+                .Entity<LocationVisibility>()
                 .HasData(GenerateLocationVisibilities());
 
             return builder;

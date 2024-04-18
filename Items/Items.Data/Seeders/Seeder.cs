@@ -24,7 +24,10 @@
                 .SeedLocations()
                 .SeedLocationsVisibilities()
                 .SeedOffers()
-                .SeedPlaces();
+                .SeedPlaces()
+                .SeedRoles()
+                
+                .SeedTicketStatuses();
 
 
             return builder;

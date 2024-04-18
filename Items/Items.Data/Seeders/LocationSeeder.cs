@@ -13,7 +13,7 @@
         public static ModelBuilder SeedLocations(this ModelBuilder builder)
         {
             builder
-                .Entity<Currency>()
+                .Entity<Location>()
                 .HasData(GenerateLocations());
 
             return builder;

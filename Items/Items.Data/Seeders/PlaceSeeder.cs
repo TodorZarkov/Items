@@ -8,7 +8,7 @@
         public static ModelBuilder SeedPlaces(this ModelBuilder builder)
         {
             builder
-                .Entity<Currency>()
+                .Entity<Place>()
                 .HasData(GeneratePlaces());
 
             return builder;

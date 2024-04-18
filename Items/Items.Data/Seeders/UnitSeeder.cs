@@ -1,19 +1,20 @@
-﻿namespace Items.Data.Configurations
+﻿namespace Items.Data.Seeders
 {
     using Items.Data.Models;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-    public class UnitEntityConfiguration : IEntityTypeConfiguration<Unit>
+    public static class UnitSeeder
     {
-        public void Configure(EntityTypeBuilder<Unit> builder)
+        public static ModelBuilder SeedUnits(this ModelBuilder builder)
         {
             builder
+                .Entity<Unit>()
                 .HasData(GenerateUnits());
+
+            return builder;
         }
 
-        //todo: set constants for the units
-        private Unit[] GenerateUnits()
+        private static Unit[] GenerateUnits()
         {
             List<Unit> units = new List<Unit>();
 
@@ -24,7 +25,7 @@
                 Name = "Pieces"
             };
             units.Add(unit);
-            
+
             unit = new Unit
             {
                 Id = 2,
@@ -32,7 +33,7 @@
                 Name = "Meter"
             };
             units.Add(unit);
-            
+
             unit = new Unit
             {
                 Id = 3,
@@ -40,7 +41,7 @@
                 Name = "Square Meter"
             };
             units.Add(unit);
-            
+
             unit = new Unit
             {
                 Id = 4,

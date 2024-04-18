@@ -26,8 +26,10 @@
                 .SeedOffers()
                 .SeedPlaces()
                 .SeedRoles()
-                
-                .SeedTicketStatuses();
+                .SeedUnits()
+
+                .SeedTicketStatuses()
+                .SeedTicketTypes();
 
 
             return builder;

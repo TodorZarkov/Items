@@ -8,8 +8,8 @@
 	{
 		public void Configure(EntityTypeBuilder<ItemVisibility> builder)
 		{
-			builder
-				.HasData(GenerateItemVisibilities());
+			//builder
+			//	.HasData(GenerateItemVisibilities());
 		}
 
 		private ItemVisibility[] GenerateItemVisibilities()

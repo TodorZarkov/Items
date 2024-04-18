@@ -5,7 +5,6 @@
     using Microsoft.AspNetCore.Identity;
 	using System.ComponentModel.DataAnnotations;
 	using Microsoft.EntityFrameworkCore;
-	using System.ComponentModel.DataAnnotations.Schema;
 
 	[Index(nameof(Email),IsUnique = true)]
     public class ApplicationUser : IdentityUser<Guid>

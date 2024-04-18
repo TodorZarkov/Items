@@ -9,7 +9,7 @@
         public static ModelBuilder SeedTicketTypes(this ModelBuilder builder)
         {
             builder
-                .Entity<TicketStatus>()
+                .Entity<TicketType>()
                 .HasData(GenerateTicketTypes());
 
             return builder;

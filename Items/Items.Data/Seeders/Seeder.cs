@@ -27,6 +27,7 @@
                 .SeedPlaces()
                 .SeedRoles()
                 .SeedUnits()
+                .SeedUsersRoles()
 
                 .SeedTicketStatuses()
                 .SeedTicketTypes();

@@ -17,7 +17,9 @@
             builder
                 .SeedUsers()
                 .SeedCategories()
-                .SeedCurrencies();
+                .SeedCurrencies()
+                .SeedItemsCategories()
+                .SeedItems();
 
 
             return builder;

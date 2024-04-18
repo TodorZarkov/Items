@@ -1,18 +1,20 @@
-﻿namespace Items.Data.Configurations
+﻿namespace Items.Data.Seeders
 {
     using Items.Data.Models;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-    public class CurrencyEntityConfiguration : IEntityTypeConfiguration<Currency>
+    public static class CurrencySeeder
     {
-        public void Configure(EntityTypeBuilder<Currency> builder)
+        public static ModelBuilder SeedCurrencies(this ModelBuilder builder)
         {
             builder
+                .Entity<Currency>()
                 .HasData(GenerateCurrencies());
+
+            return builder;
         }
 
-        private Currency[] GenerateCurrencies()
+        private static Currency[] GenerateCurrencies()
         {
             List<Currency> currencies = new List<Currency>();
 
@@ -24,7 +26,7 @@
                 Name = "United States dollar"
             };
             currencies.Add(currency);
-            
+
             currency = new Currency
             {
                 Id = 2,
@@ -33,7 +35,7 @@
                 Name = "Euro"
             };
             currencies.Add(currency);
-            
+
             currency = new Currency
             {
                 Id = 3,

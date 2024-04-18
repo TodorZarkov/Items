@@ -16,7 +16,8 @@
 
             builder
                 .SeedUsers()
-                .SeedCategories();
+                .SeedCategories()
+                .SeedCurrencies();
 
 
             return builder;

@@ -23,7 +23,8 @@
                 .SeedItemsVisibilities()
                 .SeedLocations()
                 .SeedLocationsVisibilities()
-                .SeedOffers();
+                .SeedOffers()
+                .SeedPlaces();
 
 
             return builder;

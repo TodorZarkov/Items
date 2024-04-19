@@ -12,9 +12,16 @@
 
     public class ItemsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
-        public ItemsDbContext(DbContextOptions<ItemsDbContext> options)
+        private bool seed;
+
+        public ItemsDbContext(DbContextOptions<ItemsDbContext> options, bool seed = true)
             : base(options)
         {
+            this.seed = seed;
+            if (!Database.IsRelational())
+            {
+                Database.EnsureCreated();
+            }
         }
 
         public DbSet<Category> Categories { get; set; } = null!;
@@ -62,8 +69,13 @@
             Assembly configAssembly = Assembly.GetAssembly(typeof(ItemsDbContext)) ??
                 Assembly.GetExecutingAssembly();
 
-            builder.ApplyConfigurationsFromAssembly(configAssembly).Seed();
+            builder.ApplyConfigurationsFromAssembly(configAssembly);
 
+
+            if (seed)
+            {
+                builder.Seed();
+            }
 
         }
     }

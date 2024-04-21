@@ -59,5 +59,17 @@
                 , "Checks whether the expected category ids 2, 3, 6 , 4 , 5 are actually these.");
         }
 
+        [Test]
+        public async Task GetAllPublicIdsAsync_ShouldReturnOnlyCategoryIdsCreatedByAdmins()
+        {
+            var adminCategoryIds =
+               await categoryService.GetAllPublicIdsAsync();
+
+
+            Assert.That(adminCategoryIds.Count, Is.EqualTo(3), "Checks the number of admin category ids.");
+
+            Assert.That(adminCategoryIds.Intersect(new int[] { 6, 4, 5 }).Count(), Is.EqualTo(3), "Checks whether the expected category ids 4,5,6 are actually these.");
+        }
+
     }
 }

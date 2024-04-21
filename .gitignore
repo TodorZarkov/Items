@@ -410,3 +410,5 @@ DbConfig.cs
 Configuration.cs
 appsettings.json
 /Items/Items.Web/appsettings.Production.json
+/Items/Items.AdminApi/appsettings.Production.json
+/Items/Items.AdminApi/appsettings.Production.json

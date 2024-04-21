@@ -47,6 +47,10 @@
         public Category SuperAdminCategory2 { get; private set; }
         public Category AdminCategory { get; private set; }
 
+        public Item ItemWithCategory2 { get; private set; }
+
+        public ItemCategory ItemCategory2 { get; set; }
+
 
         private void SeedDatabase()
         {
@@ -213,6 +217,40 @@
                 Name = "AdminCategory"
             };
 
+            ItemWithCategory2 = new Item()
+            {
+                Id = Guid.Parse("70AB6375-3DA7-41CB-B80C-DCEE2BA4FBBB"),
+                OwnerId = Guid.Parse("8BEE3220-A1A1-4502-EFEA-08DB9037BC59"),//Category23Owner
+                ItemVisibilityId = Guid.Parse("8D725141-2B5A-468F-9E1E-61AB0C7F8F5E"),
+                Name = "Ford Mustang Mach1 1973",
+                Quantity = 1m,
+                UnitId = 1,//pcs
+                Description = "The Ford Mustang Mach 1 is a performance-oriented option package[1] of the Ford Mustang muscle car, originally introduced in August 1968 for the 1969 model year. It was available until 1978, returned briefly in 2003, 2004, and most recently in 2021.\r\n\r\nAs part of a Ford heritage program, the Mach 1 package returned in 2003 as a high-performance version of the New Edge platform. Visual connections to the 1969 model were integrated into the design to pay homage to the original. This generation of the Mach 1 was discontinued after the 2004 model year, with the introduction of the fifth generation Mustang.\r\n\r\nFord first used the name \"Mach 1\" in its 1969 display of a concept called the \"Levacar Mach I\" at the Ford Rotunda. This concept vehicle used a cushion of air as propulsion on a circular dais. ",
+                AcquiredPrice = 60m,
+                AcquiredDate = DateTime.Parse("10-10-2022"),
+                //ItemCategory - toys, cars
+                PlaceId = 1,
+                LocationId = Guid.Parse("F9182575-B31F-4D24-BB44-17A062DFE6FE"),
+
+                CurrencyId = 1,
+
+
+                StartSell = DateTime.Parse("12-12-2023"),
+                EndSell = DateTime.Parse("01-08-2024"),
+                CurrentPrice = 55m,
+                IsAuction = true,
+
+                //todo: set predefined MainPictureId
+                OnRotation = true,
+                OnRotationNow = false
+            };
+
+            ItemCategory2 = new ItemCategory()
+            {
+                CategoryId = 2,
+                ItemId = ItemWithCategory2.Id
+            };
+
 
 
             dbContext.Users.Add(SuperAdmin);
@@ -233,6 +271,11 @@
             dbContext.Categories.Add(SuperAdminCategory1);
             dbContext.Categories.Add(SuperAdminCategory2);
             dbContext.Categories.Add(AdminCategory);
+
+            dbContext.Items.Add(ItemWithCategory2);
+
+            dbContext.ItemsCategories.Add(ItemCategory2);
+
 
             dbContext.SaveChanges();
         }

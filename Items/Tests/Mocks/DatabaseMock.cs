@@ -3,7 +3,7 @@
     using Items.Data;
     using Microsoft.EntityFrameworkCore;
 
-    internal static class DatabaseMock
+    public static class DatabaseMock
     {
         public static ItemsDbContext Instance 
         {

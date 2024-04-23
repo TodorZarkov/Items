@@ -18,9 +18,24 @@
 			this.dbContext = dbContext;
 		}
 
-        public Task<AllUnitInfoServiceModel> AllAsync()
+        public async Task<AllUnitInfoServiceModel> AllAsync()
         {
-            throw new NotImplementedException();
+            IEnumerable<AllUnitServiceModel> serviceModel = await dbContext.Units
+                .Select(u => new AllUnitServiceModel
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Symbol = u.Symbol
+                })
+                .ToArrayAsync();
+
+
+            AllUnitInfoServiceModel infoModel = new AllUnitInfoServiceModel()
+            {
+                Units = serviceModel,
+                TotalCount = serviceModel.Count()
+            };
+            return infoModel;
         }
 
         public async Task<IEnumerable<ForSelectUnitViewModel>> AllForSelectAsync()
@@ -36,14 +51,31 @@
 			return forSelectUnits;
 		}
 
-        public Task<long> CountRelationsAsync(int unitId)
+        public async Task<long> CountRelationsAsync(int unitId)
         {
-            throw new NotImplementedException();
+            long relatedItems = await dbContext.Items
+                .LongCountAsync(i => i.UnitId == unitId);
+
+            long relatedContracts = await dbContext.Contracts
+                .LongCountAsync(c => c.UnitId == unitId || c.BarterUnitId == unitId);
+
+
+            return relatedItems + relatedContracts;
         }
 
-        public Task<int> CreateAsync(UnitServiceModel unitModel)
+        public async Task<int> CreateAsync(UnitServiceModel unitModel)
         {
-            throw new NotImplementedException();
+            Unit unit = new Unit()
+            {
+                Name = unitModel.Name,
+                Symbol = unitModel.Symbol
+            };
+
+            await dbContext.Units.AddAsync(unit);
+
+            await dbContext.SaveChangesAsync();
+
+            return unit.Id;
         }
 
         public Task DeleteByIdAsync(int unitId)

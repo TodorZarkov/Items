@@ -169,6 +169,7 @@ namespace Items.AdminApi
 			builder.Services.AddScoped<IUserValidatorService, UserValidatorService>();
 			builder.Services.AddScoped<ITicketService, TicketService>();
 			builder.Services.AddScoped<IFileService, InDbFileService>();
+			builder.Services.AddScoped<IUnitService, UnitService>();
 
 
 			var app = builder.Build();

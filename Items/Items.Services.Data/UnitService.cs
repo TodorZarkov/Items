@@ -78,19 +78,44 @@
             return unit.Id;
         }
 
-        public Task DeleteByIdAsync(int unitId)
+        /// <summary>
+        /// DbUpdateException if the unit with the specified unitId is already used in Item or Contract due to on delete restrict behavior.
+        /// </summary>
+        /// <param name="unitId"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"> if the unitId doesn't exist</exception>
+        /// <exception cref="DbUpdateException"  ></exception>
+        public async Task DeleteByIdAsync(int unitId)
         {
-            throw new NotImplementedException();
+            Unit unit = await dbContext.Units.FindAsync(unitId) 
+                ?? throw new ArgumentNullException("Can not find Unit with specified unitId.");
+
+            dbContext.Units.Remove(unit);
+            await dbContext.SaveChangesAsync();
         }
 
-        public Task<bool> ExistByNameAsync(string unitName)
+        public async Task<bool> ExistByNameAsync(string unitName)
         {
-            throw new NotImplementedException();
+            bool result = await dbContext.Units
+                .AnyAsync(u => u.Name.ToLower() == unitName.ToLower());
+
+            return result;
         }
 
-        public Task<UnitServiceModel> GetByIdAsync(int unitId)
+        public async Task<UnitServiceModel> GetByIdAsync(int unitId)
         {
-            throw new NotImplementedException();
+
+            Unit unit = await dbContext.Units.FindAsync(unitId) 
+                ?? throw new ArgumentNullException("No unit with the specified id.");
+
+            UnitServiceModel model = new UnitServiceModel()
+            {
+                Id = unit.Id,
+                Name = unit.Name,
+                Symbol = unit.Symbol
+            };
+
+            return model;
         }
 
         public async Task<bool> IsValidIdAsync(int unitId)

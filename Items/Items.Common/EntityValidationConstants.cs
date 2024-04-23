@@ -197,5 +197,15 @@
             public const int NameMin = 2;
             public const int NameMax = 50;
         }
-	}
+
+        public static class Unit
+        {
+            public const int NameMinLength = 1;
+            public const int NameMaxLength = 200;
+
+            public const int SymbolMinLength = 1;
+            public const int SymbolMaxLength = 90;
+
+        }
+    }
 }

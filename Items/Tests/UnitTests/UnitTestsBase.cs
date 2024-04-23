@@ -14,7 +14,7 @@
     public class UnitTestsBase
     {
         protected ItemsDbContext dbContext;
-        protected IMapper mapper;
+        //protected IMapper mapper;
         protected PasswordHasher<ApplicationUser> hasher;
 
         [OneTimeSetUp]

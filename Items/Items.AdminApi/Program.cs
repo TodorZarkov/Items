@@ -31,7 +31,8 @@ namespace Items.AdminApi
 				options.AddPolicy(name: "CORSPolicy", p =>
 				{
 					p.WithOrigins("http://127.0.0.1:5173"
-									, "https://127.0.0.1:5173"
+						, "http://127.0.0.1:5001"
+                                    , "https://127.0.0.1:5173"
 									, "https://localhost:7229");
 				});
 			});

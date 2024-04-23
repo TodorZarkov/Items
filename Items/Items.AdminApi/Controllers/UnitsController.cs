@@ -25,5 +25,19 @@
 
             return Ok(units);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get([FromRoute] int id)
+        {
+            bool exist = await unitService.IsValidIdAsync(id);
+            if (!exist)
+            {
+                ModelState.AddModelError(nameof(id), "Invalid unit id.");
+                return BadRequest(ModelState);
+            }
+            var unit = await unitService.GetByIdAsync(id);
+
+            return Ok(unit);
+        }
     }
 }

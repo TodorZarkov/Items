@@ -249,5 +249,23 @@
 				return StatusCode(StatusCodes.Status500InternalServerError);
 			}
 		}
+
+
+		[HttpGet]
+        [Authorize(Roles = SuperAdmin)]
+        public async Task<IActionResult> GetAll()
+		{
+			try
+			{
+                var users = await userService.AllAsync();
+
+                return Ok(users);
+            }
+			catch (Exception)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+			
+		}
 	}
 }

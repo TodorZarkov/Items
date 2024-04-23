@@ -172,5 +172,20 @@
 			await dbContext.SaveChangesAsync();
 			await fileService.SaveChangesAsync();
 		}
-	}
+
+        public async Task<IEnumerable<AllUserServiceModel>> AllAsync()
+        {
+			AllUserServiceModel[] users = await dbContext.Users
+				//todo: fix with deleted users (the id remains)
+				.Select(u => new AllUserServiceModel()
+				{
+					id = u.Id,
+					Email = u.Email,
+					UserName = u.UserName
+				})
+				.ToArrayAsync();
+
+			return users;
+        }
+    }
 }

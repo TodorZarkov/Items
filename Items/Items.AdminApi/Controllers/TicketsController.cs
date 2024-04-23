@@ -64,7 +64,7 @@
 			return Ok(new { id = ticketId });
 		}
 
-		[Authorize(Roles = Admin)]
+		[Authorize(Roles = $"{Admin}, {SuperAdmin}")]
 		[HttpPut("{ticketId}")]
 		public async Task<IActionResult> Edit([FromRoute] Guid ticketId, [FromBody] TicketEditServiceModel ticketEditModel)
 		{

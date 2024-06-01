@@ -5,7 +5,7 @@
     - Items
     - Places and Locations where you store items
     - Easy way to search and locate items
-    - Market to sell your unused or buy new items
+    - Market, so you can sell your unused or buy new items
     - There's a way to transfer the data from the new bought item 
     and use it to create your own
     - There's daily rotation  of number of items in randoom, so you can 

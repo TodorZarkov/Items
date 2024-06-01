@@ -4,6 +4,7 @@
     using Items.Services.Data;
     using Items.Services.Data.Interfaces;
     using Items.Web.ViewModels.Category;
+    using NUnit.Framework.Legacy;
     using Tests.UnitTests;
 
     [TestFixture]
@@ -150,17 +151,17 @@
             var selectedCategories = new int[] { 2, 3, 6 };
             var allowed = await categoryService
                 .IsAllowedIdsAsync(selectedCategories, Category23Owner.Id);
-            Assert.True(allowed,"Is allowed to select his won ids(2,3) and the admin's ones 6)");
+            ClassicAssert.True(allowed,"Is allowed to select his won ids(2,3) and the admin's ones 6)");
 
             selectedCategories = new int[] { 1 };
             allowed = await categoryService
                .IsAllowedIdsAsync(selectedCategories, Category23Owner.Id);
-            Assert.False(allowed, "Is Not allowed to select other user's category ids (1)");
+            ClassicAssert.False(allowed, "Is Not allowed to select other user's category ids (1)");
 
             selectedCategories = new int[] { 50 , 51 };
             allowed = await categoryService
                .IsAllowedIdsAsync(selectedCategories, Category23Owner.Id);
-            Assert.False(allowed, "Is Not allowed to select not existing ids (50 , 51)");
+            ClassicAssert.False(allowed, "Is Not allowed to select not existing ids (50 , 51)");
         }
 
         [Test]
@@ -169,12 +170,12 @@
             var selectedCategories = new int[] { 4, 5, 6 };
             var allowed = await categoryService
                 .IsAllowedPublicIdsAsync(selectedCategories);
-            Assert.True(allowed, "Is allowed to select  admin ids (4 , 5 , 6)");
+            ClassicAssert.True(allowed, "Is allowed to select  admin ids (4 , 5 , 6)");
 
             selectedCategories = new int[] { 3, 4, 5, 6 };
             allowed = await categoryService
                 .IsAllowedPublicIdsAsync(selectedCategories);
-            Assert.False(allowed
+            ClassicAssert.False(allowed
                 , "Is not allowed to select  admin plus user ids (3, 4 , 5 , 6)");
         }
 
@@ -183,25 +184,25 @@
         {
             string categoryName = Category1.Name;
             bool isTaken = await categoryService.ExistNameAsync(categoryName, Category23Owner.Id);
-            Assert.False(isTaken, "The Category1 is not category of Category23Owner neither is admin's category, so it should give negative result.");
+            ClassicAssert.False(isTaken, "The Category1 is not category of Category23Owner neither is admin's category, so it should give negative result.");
 
             categoryName = Category2.Name;
             isTaken = await categoryService.ExistNameAsync(categoryName, Category23Owner.Id);
-            Assert.True(isTaken, "The Category2 is category of Category23Owner, so it should give positive result.");
+            ClassicAssert.True(isTaken, "The Category2 is category of Category23Owner, so it should give positive result.");
 
             categoryName = SuperAdminCategory1.Name;
             isTaken = await categoryService.ExistNameAsync(categoryName, Category23Owner.Id);
-            Assert.True(isTaken, "The SuperAdminCategory1 is category of an admin, so it should give positive result.");
+            ClassicAssert.True(isTaken, "The SuperAdminCategory1 is category of an admin, so it should give positive result.");
         }
 
         [Test]
         public async Task IsOwnerAsync_ShoudCheckWhetherTheGivenUserIsTheOwnerOfTheGivenCategory()
         {
             bool isOwner = await categoryService.IsOwnerAsync(Category1Owner.Id, Category1.Id);
-            Assert.True(isOwner, "The Category1Owner should be owner of Category1.");
+            ClassicAssert.True(isOwner, "The Category1Owner should be owner of Category1.");
 
             isOwner = await categoryService.IsOwnerAsync(Category1Owner.Id, AdminCategory.Id);
-            Assert.False(isOwner, "The Category1Owner should NOT be owner of the AdminCategory.");
+            ClassicAssert.False(isOwner, "The Category1Owner should NOT be owner of the AdminCategory.");
         }
 
 
@@ -209,10 +210,10 @@
         public async Task ExistAsync_ShoudReturnPositiveIfTheGivenCategoryIdExist()
         {
             bool exist = await categoryService.ExistAsync(Category1.Id);
-            Assert.True(exist, "Should be positive when checked Category1's id");
+            ClassicAssert.True(exist, "Should be positive when checked Category1's id");
 
             exist = await categoryService.ExistAsync(50);
-            Assert.False(exist, "Should be negative when checked id = 50");
+            ClassicAssert.False(exist, "Should be negative when checked id = 50");
         }
 
         [Test]

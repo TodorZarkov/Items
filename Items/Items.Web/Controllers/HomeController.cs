@@ -42,13 +42,26 @@
 
 			IEnumerable<IndexViewModel> indexModel =
 				await itemService.LastPublicItemsAsync(LastPublicItemsNumber);
+
+			var dealsCompletedCount = contractService.CountCompletedAsync();
+			var itemsCount = itemService.CountAsync();
+			var itemsOnMarketCount = itemService.CountOnMarketAsync();
+			var usersCount = userService.CountAsync();
+
+
+            var result = await Task.WhenAll(
+				dealsCompletedCount, 
+				itemsCount,
+				itemsOnMarketCount,
+				usersCount);
+
 			IndexStatViewModel indexStatViewModel = new IndexStatViewModel
 			{
 				IndexViewModels = indexModel,
-				DealsCompletedCount = await contractService.CountCompletedAsync(),
-				ItemsCount = await itemService.CountAsync(),
-				ItemsOnMarketCount = await itemService.CountOnMarketAsync(),
-				UsersCount = await userService.CountAsync()
+				DealsCompletedCount = result[0],
+				ItemsCount = result[1],
+				ItemsOnMarketCount = result[2],
+				UsersCount = result[3]
 			};
 
 			return View(indexStatViewModel);

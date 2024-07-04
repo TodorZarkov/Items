@@ -41,6 +41,7 @@
 			TicketDetailsServiceModel ticket = await ticketService.GetAsync(ticketId);
 
 			MultipartFormDataContent content = new MultipartFormDataContent();
+
 			ByteArrayContent snapshotContent = new ByteArrayContent(ticket.Snapshot);
 			snapshotContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Image.Jpeg);
 
@@ -50,7 +51,7 @@
 
 			content.Add(ticketContent);
 
-			return Ok(ticket);
+			return Ok(content);
 		}
 
 

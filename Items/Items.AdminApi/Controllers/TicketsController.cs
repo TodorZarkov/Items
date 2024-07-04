@@ -42,11 +42,14 @@
 
 			MultipartFormDataContent content = new MultipartFormDataContent();
 
-			ByteArrayContent snapshotContent = new ByteArrayContent(ticket.Snapshot);
-			snapshotContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Image.Jpeg);
+			if (ticket.Snapshot != null)
+			{
+                ByteArrayContent snapshotContent = new ByteArrayContent(ticket.Snapshot);
+                snapshotContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Image.Jpeg);
 
-			content.Add(snapshotContent);
-
+                content.Add(snapshotContent);
+            }
+			
 			JsonContent ticketContent = JsonContent.Create(ticket);
 
 			content.Add(ticketContent);

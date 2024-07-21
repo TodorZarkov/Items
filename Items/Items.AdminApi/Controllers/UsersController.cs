@@ -91,7 +91,7 @@
 
 
 		[AllowAnonymous]
-		[HttpPost]
+		[HttpPost("/api/Register")]
 		public async Task<IActionResult> Register([FromBody] RegisterUserServiceModel model)
 		{
 			IdentityResult result = await userService.RegisterAsync(model);

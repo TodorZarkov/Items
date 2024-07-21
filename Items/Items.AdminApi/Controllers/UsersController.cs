@@ -107,7 +107,13 @@
 						.Value.InvalidModelStateResponseFactory(ControllerContext);
 			}
 
-			return Ok();
+			LoginUserServiceModel loginModel = new LoginUserServiceModel
+			{
+				Email = model.Email,
+				Password = model.Password
+			};
+
+			return await (Login(loginModel));
 		}
 
 

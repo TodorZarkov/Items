@@ -129,11 +129,17 @@
 
 		public async Task<TicketDetailsServiceModel> GetAsync(Guid ticketId)
 		{
-			Ticket ticket = await dbContext.Tickets.FindAsync(ticketId) ??
-				throw new ArgumentNullException(nameof(ticketId), "The ticket id doesn't match any Ticket.");
+			Ticket ticket = await dbContext.Tickets
+				.Include(t => t.TicketType)
+				.Include(t => t.TicketStatus)
+				.Include(t => t.Assignee)
+				.Include(t => t.Assigner)
+				.Include(t => t.Author)
+				.FirstAsync(t => t.Id == ticketId) ??
+                throw new ArgumentNullException(nameof(ticketId), "The ticket id doesn't match any Ticket.");
 
 
-			TicketDetailsServiceModel ticketModel =
+            TicketDetailsServiceModel ticketModel =
 				new TicketDetailsServiceModel
 				{
 					Title = ticket.Title,

@@ -39,22 +39,8 @@
 		{
 			//todo: validate id if needed
 			TicketDetailsServiceModel ticket = await ticketService.GetAsync(ticketId);
-
-			MultipartFormDataContent content = new MultipartFormDataContent();
-
-			if (ticket.Snapshot != null)
-			{
-                ByteArrayContent snapshotContent = new ByteArrayContent(ticket.Snapshot);
-                snapshotContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Image.Jpeg);
-
-                content.Add(snapshotContent);
-            }
-			
-			JsonContent ticketContent = JsonContent.Create(ticket);
-
-			content.Add(ticketContent);
-
-			return Ok(content);
+		
+			return Ok(ticket);
 		}
 
 

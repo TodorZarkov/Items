@@ -91,7 +91,7 @@
 
 
 		[AllowAnonymous]
-		[HttpPost]
+		[HttpPost("/api/Register")]
 		public async Task<IActionResult> Register([FromBody] RegisterUserServiceModel model)
 		{
 			IdentityResult result = await userService.RegisterAsync(model);
@@ -107,7 +107,13 @@
 						.Value.InvalidModelStateResponseFactory(ControllerContext);
 			}
 
-			return Ok();
+			LoginUserServiceModel loginModel = new LoginUserServiceModel
+			{
+				Email = model.Email,
+				Password = model.Password
+			};
+
+			return await (Login(loginModel));
 		}
 
 

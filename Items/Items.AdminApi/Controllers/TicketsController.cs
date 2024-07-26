@@ -43,7 +43,6 @@
 			return Ok(ticket);
 		}
 
-
 		[HttpPost]
 		public async Task<IActionResult> Add([FromForm] TicketFormServiceModel ticketFormModel)
 		{

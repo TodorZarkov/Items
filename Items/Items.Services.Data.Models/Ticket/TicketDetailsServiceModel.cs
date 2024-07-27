@@ -11,7 +11,7 @@
 		public string? Description { get; set; }
 
 		//formfile?
-		public byte[]? Snapshot { get; set; }
+		public byte[]? SnapShot { get; set; }
 
 
 		
@@ -29,5 +29,15 @@
 
 		public Guid? AssigneeId { get; set; }
 		public string? AssigneeName { get; set; }
-	}
+
+        public Guid? SnapshotId { get; set; }
+
+        public string Created { get; set; } = null!;
+
+        public int Severity { get; set; }
+
+        public long WithSameProblem { get; set; }
+
+		public string Modified { get; set; } = null!;
+    }
 }

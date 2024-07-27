@@ -1,4 +1,4 @@
-﻿namespace Items.Services.Data.Models.Ticket
+﻿ namespace Items.Services.Data.Models.Ticket
 {
 	using static Items.Common.EntityValidationConstants;
 	using System.ComponentModel.DataAnnotations.Schema;
@@ -14,9 +14,11 @@
 
 		public string Status { get; set; } = null!;
 
-        public byte[]? snapShot { get; set; }
+        public byte[]? SnapShot { get; set; }
 
-		public string Created { get; set; } = null!;
+        public Guid? SnapshotId { get; set; }
+
+        public string Created { get; set; } = null!;
 
         public int Severity { get; set; }
 

@@ -12,7 +12,7 @@
             builder.HasKey(stu => new { stu.TicketId, stu.UserId });
 
             builder.HasOne(stu => stu.Ticket)
-                .WithMany()
+                .WithMany(t => t.WithSameProblem)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(stu => stu.User)

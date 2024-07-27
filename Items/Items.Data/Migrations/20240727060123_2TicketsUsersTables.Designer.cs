@@ -4,6 +4,7 @@ using Items.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
@@ -12,9 +13,10 @@ using NetTopologySuite.Geometries;
 namespace Items.Data.Migrations
 {
     [DbContext(typeof(ItemsDbContext))]
-    partial class ItemsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240727060123_2TicketsUsersTables")]
+    partial class _2TicketsUsersTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,7 +111,7 @@ namespace Items.Data.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "SUPERADMIN@ITEMS.BG",
                             NormalizedUserName = "SUPERADMIN@ITEMS.BG",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIHifC3r0PVqrhIYb6LfG5qYlLrcdCJ0iJJDEE4EgmZdqCr4gyW9tj5DW+w1UecbGQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBYOtxhQSkHEK8ilHPj/BPspgNwZNylwdiF9OEjgDPbkZdlseyaUuNBZGSvnl/cOaQ==",
                             PhoneNumberConfirmed = false,
                             RotationItemsDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "VG5NFKHCN2YOVRDWKLO4OC2UC5RDSZC2",
@@ -126,7 +128,7 @@ namespace Items.Data.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "PESHO@ITEMS.COM",
                             NormalizedUserName = "PESHO@ITEMS.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAELjZNxDdI6HMnRsEMG7nCrOyJp15frbd5tDh/Ili3JQpAAhHYLS7a0lv+pWb4TNkeQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEM5DCWFX9a72xcWlS/yd+P7FFx70kTG2sfBxkVVOxHZWyUuaEB26AlmLRLhDb1S44A==",
                             PhoneNumberConfirmed = false,
                             RotationItemsDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "JMCTVP5CHQTQAB4TCG25FN2NPAKIWOFB",
@@ -143,7 +145,7 @@ namespace Items.Data.Migrations
                             LockoutEnabled = true,
                             NormalizedEmail = "STAMAT@ITEMS.COM",
                             NormalizedUserName = "STAMAT@ITEMS.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBlcplkeNgHZhIlf56jYu+eTGbkkAMawjUcy3qOLLCTOhq8Mk2whPFhciX+aAT5KpQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKpF3UNfF3DYutA5T/xEctD4qSl8yurfvYF5fPRkpQ9fPI3lY5km3oBddnmnpz7T8Q==",
                             PhoneNumberConfirmed = false,
                             RotationItemsDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "5NJNYJBBTCG5SWFQT2RSD7PJR746JEMM",
@@ -172,7 +174,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -352,7 +354,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Contracts", (string)null);
+                    b.ToTable("Contracts");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Currency", b =>
@@ -379,7 +381,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
 
                     b.HasData(
                         new
@@ -413,7 +415,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Documents", (string)null);
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Items.Data.Models.File", b =>
@@ -435,7 +437,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Items.Data.Models.FileIdentifier", b =>
@@ -480,7 +482,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FileIdentifiers", (string)null);
+                    b.ToTable("FileIdentifiers");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Item", b =>
@@ -582,7 +584,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("Items.Data.Models.ItemCategory", b =>
@@ -597,7 +599,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemsCategories", (string)null);
+                    b.ToTable("ItemsCategories");
                 });
 
             modelBuilder.Entity("Items.Data.Models.ItemVisibility", b =>
@@ -638,7 +640,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ItemVisibilities", (string)null);
+                    b.ToTable("ItemVisibilities");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Location", b =>
@@ -689,7 +691,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
 
                     b.HasData(
                         new
@@ -743,7 +745,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LocationVisibilities", (string)null);
+                    b.ToTable("LocationVisibilities");
 
                     b.HasData(
                         new
@@ -829,7 +831,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Place", b =>
@@ -856,7 +858,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Places", (string)null);
+                    b.ToTable("Places");
 
                     b.HasData(
                         new
@@ -897,7 +899,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SimilarTicketsUsers", (string)null);
+                    b.ToTable("SimilarTicketsUsers");
                 });
 
             modelBuilder.Entity("Items.Data.Models.Ticket", b =>
@@ -915,18 +917,9 @@ namespace Items.Data.Migrations
                     b.Property<Guid>("AuthorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("Modified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Severity")
-                        .HasColumnType("int");
 
                     b.Property<Guid?>("SnapshotId")
                         .HasColumnType("uniqueidentifier");
@@ -954,7 +947,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Items.Data.Models.TicketStatus", b =>
@@ -972,7 +965,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TicketStatuses", (string)null);
+                    b.ToTable("TicketStatuses");
 
                     b.HasData(
                         new
@@ -1009,7 +1002,7 @@ namespace Items.Data.Migrations
 
                     b.HasIndex("SubscriberId");
 
-                    b.ToTable("TicketsSubscribers", (string)null);
+                    b.ToTable("TicketsSubscribers");
                 });
 
             modelBuilder.Entity("Items.Data.Models.TicketType", b =>
@@ -1027,7 +1020,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TicketTypes", (string)null);
+                    b.ToTable("TicketTypes");
 
                     b.HasData(
                         new
@@ -1072,7 +1065,7 @@ namespace Items.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units", (string)null);
+                    b.ToTable("Units");
 
                     b.HasData(
                         new

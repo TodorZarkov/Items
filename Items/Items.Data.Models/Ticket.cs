@@ -7,6 +7,13 @@
 
     public class Ticket
     {
+        public Ticket()
+        {
+            WithSameProblem = new HashSet<SimilarTicketUser>();
+            Subscribers = new HashSet<TicketSubscriber>();
+        }
+
+
         [Key]
         public Guid Id { get; set; }
 
@@ -52,5 +59,15 @@
 		[ForeignKey(nameof(Assignee))]
 		public Guid? AssigneeId { get; set; }
 		public ApplicationUser? Assignee { get; set; }
-	}
+
+        public DateTime Created { get; set; }
+
+        public DateTime Modified { get; set; }
+
+        public int Severity { get; set; }
+
+        public ICollection<SimilarTicketUser> WithSameProblem { get; set; }
+
+        public ICollection<TicketSubscriber> Subscribers { get; set; }
+    }
 }

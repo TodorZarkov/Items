@@ -10,6 +10,7 @@
         public Ticket()
         {
             WithSameProblem = new HashSet<SimilarTicketUser>();
+            Subscribers = new HashSet<TicketSubscriber>();
         }
 
 
@@ -66,5 +67,7 @@
         public int Severity { get; set; }
 
         public ICollection<SimilarTicketUser> WithSameProblem { get; set; }
+
+        public ICollection<TicketSubscriber> Subscribers { get; set; }
     }
 }

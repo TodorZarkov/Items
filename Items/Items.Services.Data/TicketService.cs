@@ -150,7 +150,7 @@
 
         }
 
-        public async Task<TicketDetailsServiceModel> GetAsync(Guid ticketId)
+        public async Task<TicketDetailsServiceModel> GetAsync(Guid ticketId, Guid? userId)
         {
             var ticket = await dbContext.Tickets
                 .Include(t => t.TicketType)
@@ -159,6 +159,7 @@
                 .Include(t => t.Assigner)
                 .Include(t => t.Author)
                 .Include(t => t.WithSameProblem)
+                .Include(t => t.Subscribers)
                 .FirstAsync(t => t.Id == ticketId) ??
                 throw new ArgumentNullException(nameof(ticketId), "The ticket id doesn't match any Ticket.");
 
@@ -183,7 +184,14 @@
                         .LongCount(),
                     SnapShot = null,
                     SnapshotId = ticket.SnapshotId,
-                    Modified = ticket.Modified.ToString(TicketDatetimeFormat)
+                    Modified = ticket.Modified.ToString(TicketDatetimeFormat),
+                    Subscribers = ticket.Subscribers
+                        .Where(s => s.TicketId == ticket.Id)
+                        .LongCount(),
+                    Subscribed = userId != null && ticket.Subscribers
+                            .Any(s => s.SubscriberId == userId && s.TicketId == ticket.Id),
+                    IHaveSameProblem = userId != null && ticket.WithSameProblem
+                            .Any(wp => wp.UserId == userId && wp.TicketId == ticket.Id)
                 };
 
             if (ticket.SnapshotId != null)

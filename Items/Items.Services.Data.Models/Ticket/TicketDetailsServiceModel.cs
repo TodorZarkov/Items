@@ -38,6 +38,12 @@
 
         public long WithSameProblem { get; set; }
 
+        public bool IHaveSameProblem { get; set; }
+
 		public string Modified { get; set; } = null!;
+
+        public long Subscribers { get; set; }
+
+        public bool Subscribed { get; set; }
     }
 }

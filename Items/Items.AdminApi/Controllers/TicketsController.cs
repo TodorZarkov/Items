@@ -37,8 +37,8 @@
 		[HttpGet("{ticketId}")]
 		public async Task<IActionResult> Details([FromRoute] Guid ticketId)
 		{
-			//todo: validate id if needed
-			TicketDetailsServiceModel ticket = await ticketService.GetAsync(ticketId);
+            Guid? userId = User.GetId();
+            TicketDetailsServiceModel ticket = await ticketService.GetAsync(ticketId, userId);
 		
 			return Ok(ticket);
 		}

@@ -12,7 +12,7 @@
             builder.HasKey(ts => new { ts.TicketId, ts.SubscriberId });
 
             builder.HasOne(ts => ts.Ticket)
-                .WithMany()
+                .WithMany(t => t.Subscribers)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(ts => ts.Subscriber)

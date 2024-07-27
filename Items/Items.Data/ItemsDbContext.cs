@@ -58,6 +58,8 @@
 
         public DbSet<TicketSubscriber> TicketsSubscribers { get; set; } = null!;
 
+        public DbSet<SimilarTicketUser> SimilarTicketsUsers { get; set; } = null!;
+
 
         //to be deleted if using not db file service. it has no references apart from InDbFileService
         public DbSet<File> Files { get; set; } = null!;

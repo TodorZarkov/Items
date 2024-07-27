@@ -16,6 +16,6 @@
 		[StringLength(DescriptionMax, MinimumLength = DescriptionMin)]
 		public string? Description { get; set; }
 
-		public IFormFile? Snapshot { get; set; }
+		public IFormFile? SnapShot { get; set; }
 	}
 }

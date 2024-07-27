@@ -48,11 +48,11 @@
                 Modified = dateTimeProvider.GetCurrentDateTime()
             };
 
-            if (model.Snapshot != null)
+            if (model.SnapShot != null)
             {
                 using (MemoryStream stream = new MemoryStream())
                 {
-                    await model.Snapshot.CopyToAsync(stream);
+                    await model.SnapShot.CopyToAsync(stream);
                     var fileModel = new FileServiceModel
                     {
                         Bytes = stream.ToArray(),
@@ -203,6 +203,52 @@
 
 
             return ticketModel;
+        }
+
+        public async Task<Guid> UpdateAsync(TicketUpdateServiceModel model, Guid ticketId, Guid userId)
+        {
+            if (model.ToggleSameProblem != null && (bool)model.ToggleSameProblem)
+            {
+                SimilarTicketUser? stu = await dbContext.SimilarTicketsUsers
+                    .FindAsync(ticketId, userId);
+                if (stu != null)
+                {
+                    dbContext.SimilarTicketsUsers.Remove(stu);
+                }
+                else
+                {
+                    stu = new SimilarTicketUser
+                    {
+                        TicketId = ticketId,
+                        UserId = userId
+                    };
+                    await dbContext.SimilarTicketsUsers.AddAsync(stu);
+                }
+                await dbContext.SaveChangesAsync();
+            }
+
+            if (model.ToggleSubscribe != null && (bool)model.ToggleSubscribe)
+            {
+                TicketSubscriber? ts = await dbContext.TicketsSubscribers
+                    .FindAsync(ticketId, userId);
+                if (ts != null)
+                {
+                    dbContext.TicketsSubscribers.Remove(ts);
+                }
+                else
+                {
+                    ts = new TicketSubscriber
+                    {
+                        TicketId = ticketId,
+                        SubscriberId = userId
+                    };
+                    await dbContext.TicketsSubscribers.AddAsync(ts);
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            return ticketId;
         }
     }
 }

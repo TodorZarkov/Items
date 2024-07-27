@@ -10,7 +10,12 @@
         public void Configure(EntityTypeBuilder<TicketSubscriber> builder)
         {
             builder.HasKey(ts => new { ts.TicketId, ts.SubscriberId });
+
             builder.HasOne(ts => ts.Ticket)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(ts => ts.Subscriber)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
         }

@@ -14,6 +14,10 @@
             builder.HasOne(stu => stu.Ticket)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(stu => stu.User)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

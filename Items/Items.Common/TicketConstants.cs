@@ -15,7 +15,7 @@
 			public const string BUG = "Bug";
 			public const string NEW_CATEGORY = "NewCategory";
 			public const string NEW_CURRENCY = "NewCurrency";
-            //public const string NEW_UNIT = "NewUnit";
+            public const string NEW_UNIT = "NewUnit";
         }
 
         public static class Query

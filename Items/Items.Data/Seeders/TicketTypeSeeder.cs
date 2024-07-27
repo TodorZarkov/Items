@@ -33,6 +33,11 @@
                 {
                     Id = 3,
                     Name = NEW_CURRENCY
+                },
+                new TicketType
+                {
+                    Id = 4,
+                    Name = NEW_UNIT
                 }
             };
 

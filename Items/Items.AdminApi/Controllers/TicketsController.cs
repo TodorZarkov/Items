@@ -47,6 +47,8 @@
 		public async Task<IActionResult> Add([FromForm] TicketFormServiceModel ticketFormModel)
 		{
 			//todo: async check the model
+			
+
 			Guid? userId = User.GetId();
 			Guid ticketId = await ticketService.AddAsync((Guid)userId!, ticketFormModel);
 

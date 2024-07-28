@@ -36,7 +36,8 @@
 			return Ok(tickets);
 		}
 
-		[HttpGet("Types")]
+        [AllowAnonymous]
+        [HttpGet("Types")]
 		public async Task<IActionResult> AllTypes()
 		{
 			AllTicketTypesServiceModel[] types = (await ticketTypeService.AllAsync())

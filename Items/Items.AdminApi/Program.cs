@@ -36,7 +36,7 @@ namespace Items.AdminApi
                         , "https://127.0.0.1:5173"
 						, "https://localhost:7229"
 						, "http://localhost:5173");
-					p.WithHeaders("Content-Type");
+					p.WithHeaders("Content-Type", "Authorize");
 				});
 			});
 

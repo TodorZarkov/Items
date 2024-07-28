@@ -9,21 +9,24 @@
 	using Items.AdminApi.Infrastructure.Extensions;
 	using System.Net.Mime;
 	using System.Net.Http.Headers;
+    using Items.Services.Data.Models.TicketType;
 
-	[Authorize]
+    [Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class TicketsController : Controller
 	{
 		private readonly ITicketService ticketService;
+		private readonly ITicketTypeService ticketTypeService;
 
-		public TicketsController(ITicketService ticketService)
-		{
-			this.ticketService = ticketService;
-		}
+        public TicketsController(ITicketService ticketService, ITicketTypeService ticketTypeService)
+        {
+            this.ticketService = ticketService;
+            this.ticketTypeService = ticketTypeService;
+        }
 
 
-		[AllowAnonymous]
+        [AllowAnonymous]
 		[HttpGet]
 		public async Task<IActionResult> All([FromQuery] TicketQueryModel? queryModel)
 		{
@@ -31,6 +34,15 @@
 			AllTicketInfoServiceModel tickets = await ticketService.GetAllAsync(queryModel);
 
 			return Ok(tickets);
+		}
+
+		[HttpGet("Types")]
+		public async Task<IActionResult> AllTypes()
+		{
+			AllTicketTypesServiceModel[] types = (await ticketTypeService.AllAsync())
+				.ToArray();
+
+			return Ok(types);
 		}
 
 		[AllowAnonymous]

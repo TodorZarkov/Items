@@ -37,6 +37,7 @@ namespace Items.AdminApi
 						, "https://localhost:7229"
 						, "http://localhost:5173");
 					p.WithHeaders("Content-Type", "Authorization");
+					p.AllowAnyMethod();
 				});
 			});
 

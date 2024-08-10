@@ -85,12 +85,14 @@
 			[FromRoute] Guid ticketId, 
 			[FromBody] TicketUpdateServiceModel model)
         {
-            //there's five types of users related to Ticket:
-            //creator - can modify certain fields before ticket assignment
-            //user - not admin and not creator - only can toggle subscribe and same problem
-            //admin-assigner - 
-            //admin-assignee - 
-            //super-admin - 
+            //there's six types of users regarding the Ticket:
+            //creator - can modify certain fields before ticket assignment. The
+            //	fields are the same as on create.
+            //user - not admin and not creator - only can toggle subscribe and same problem. This is implemented in the  patch verb.
+            //admin-before-assignment - is like user-not-author plus can assign to self and change severity but only if assigning is happened. cannot assign to super admins.
+            //admin-assigner - is like user-not-author after assigning
+            //admin-assignee - cannot change the user data. Can change: severity, reject assignment, ticket status, ticket type
+            //super-admin - like admin but can assign to anyone.
 
             Guid? userId = User.GetId();
 			Guid id = await ticketService.UpdateAsync(model, ticketId, (Guid)userId!);

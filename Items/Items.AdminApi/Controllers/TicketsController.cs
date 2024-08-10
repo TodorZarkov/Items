@@ -10,6 +10,7 @@
 	using System.Net.Mime;
 	using System.Net.Http.Headers;
     using Items.Services.Data.Models.TicketType;
+    using Microsoft.Extensions.Configuration.UserSecrets;
 
     [Authorize]
 	[Route("api/[controller]")]
@@ -96,5 +97,33 @@
 
             return Ok(new {updatedTicket = id});
         }
+
+		[HttpDelete("{ticketId}")]
+		public async Task<IActionResult> Delete(
+			[FromRoute] Guid ticketId)
+		{
+			//to delete:
+			//must be owner,
+			//ticket mustn't be assigned(assignee must be null)
+			Guid? userId = User.GetId();
+			bool canDelete = await ticketService.CanDeleteAsync(userId!, ticketId);
+			if (!canDelete)
+			{
+				ModelState.AddModelError("", "Cannot delete. Either not allowed, the ticket is assigned or there's already another user with the same problem."); 
+				return BadRequest(ModelState);
+			}
+
+			try
+			{
+				await ticketService.DeleteAsync(ticketId);
+			}
+			catch (Exception)
+			{
+
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+
+			return NoContent();
+		}
     }
 }

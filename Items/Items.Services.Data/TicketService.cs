@@ -15,6 +15,7 @@
     using System.Net.Mime;
     using static Items.Common.EntityValidationConstants;
     using Items.Services.Common.Interfaces;
+    using Microsoft.IdentityModel.Tokens;
 
     public class TicketService : ITicketService
     {
@@ -67,6 +68,41 @@
             await dbContext.SaveChangesAsync();
             await fileService.SaveChangesAsync();
             return ticket.Id;
+        }
+
+        public async Task<bool> CanDeleteAsync(Guid? userId, Guid ticketId)
+        {
+            bool result = await dbContext.Tickets
+                .AnyAsync(t => t.Id == ticketId
+                                && t.AuthorId == userId
+                                && t.AssigneeId == null
+                                && t.AssignerId == null
+                                && t.WithSameProblem.Count == 0);
+
+            return result;
+        }
+
+        public async Task DeleteAsync(Guid ticketId)
+        {
+            var ticket = await dbContext.Tickets.FindAsync(ticketId)
+                ?? throw new NullReferenceException("Ticket not found");
+
+            var statusDelete = await dbContext.TicketStatuses
+                .FirstOrDefaultAsync(ts => ts.Name == Statuses.DELETE) ??
+                throw new NullReferenceException("Status Delete not found");
+
+            var ticketsSubscribers = await dbContext.TicketsSubscribers
+                .Where(ts => ts.TicketId == ticketId)
+                .ToArrayAsync();
+            if (!ticketsSubscribers.IsNullOrEmpty())
+            {
+                dbContext.TicketsSubscribers.RemoveRange(ticketsSubscribers);
+            }
+
+            ticket.TicketStatus = statusDelete;
+            ticket.Modified = dateTimeProvider.GetCurrentDateTime();
+
+            await dbContext.SaveChangesAsync();
         }
 
         public Task EditAsync(Guid guid, Guid ticketId, TicketEditServiceModel ticketEditModel)
@@ -160,7 +196,8 @@
                 .Include(t => t.Author)
                 .Include(t => t.WithSameProblem)
                 .Include(t => t.Subscribers)
-                .FirstAsync(t => t.Id == ticketId) ??
+                .FirstOrDefaultAsync(t => t.Id == ticketId &&
+                            t.TicketStatus.Name != Statuses.DELETE) ??
                 throw new ArgumentNullException(nameof(ticketId), "The ticket id doesn't match any Ticket.");
 
 

@@ -10,5 +10,7 @@
 		Task EditAsync(Guid guid, Guid ticketId, TicketEditServiceModel ticketEditModel);
 		Task<TicketDetailsServiceModel> GetAsync(Guid ticketId,  Guid? userId);
         Task<Guid> UpdateAsync(TicketUpdateServiceModel model, Guid ticketId, Guid userId);
+        Task<bool> CanDeleteAsync(Guid? v, Guid ticketId);
+        Task DeleteAsync(Guid ticketId);
     }
 }

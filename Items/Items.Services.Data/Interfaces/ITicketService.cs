@@ -16,6 +16,6 @@
 
         Task DeleteAsync(Guid ticketId);
         Task<TicketUserState> GetStateAsync(Guid ticketId, Guid userId);
-        Task EditAsUserAsync(Guid ticketId, Guid userId, TicketUpdateServiceModel model);
+        Task EditAsUserAsync(Guid ticketId, TicketEditAsUserServiceModel model);
     }
 }

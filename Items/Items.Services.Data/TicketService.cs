@@ -110,7 +110,8 @@
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task EditAsUserAsync(Guid ticketId, Guid userId, TicketUpdateServiceModel model)
+        public async Task EditAsUserAsync(Guid ticketId,
+            TicketEditAsUserServiceModel model)
         {
             var ticket = await dbContext.Tickets
                 .FindAsync(ticketId)

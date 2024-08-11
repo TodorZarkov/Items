@@ -71,7 +71,7 @@
 
         //make overloads with  different models
         [HttpPut("{ticketId}")]
-        public async Task<IActionResult> Edit([FromRoute] Guid ticketId, [FromForm] TicketUpdateServiceModel model)
+        public async Task<IActionResult> Edit([FromRoute] Guid ticketId, [FromForm] TicketEditAsUserServiceModel model)
         {
             //TODO: VALIDATE PARAMETERS!!!
 
@@ -86,7 +86,7 @@
                 try
                 {
                     //TODO: VALIDATE PARTICULARY THE  MODEL!!!
-                    await ticketService.EditAsUserAsync(ticketId, userId, model);
+                    await ticketService.EditAsUserAsync(ticketId, model);
                     return NoContent();
                 }
                 catch (Exception)

@@ -35,7 +35,8 @@ namespace Items.AdminApi
 						, "http://127.0.0.1:5001"
                         , "https://127.0.0.1:5173"
 						, "https://localhost:7229"
-						, "http://localhost:5173");
+						, "http://localhost:5173"
+                        , "https://testing-items-admin-panel.onrender.com");
 					p.WithHeaders("Content-Type", "Authorization");
 					p.AllowAnyMethod();
 				});

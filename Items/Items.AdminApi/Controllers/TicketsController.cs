@@ -1,24 +1,24 @@
 ﻿namespace Items.AdminApi.Controllers
 {
-	using Items.Services.Data.Interfaces;
-	using Items.Services.Data.Models.Ticket;
-	using static Items.Common.RoleConstants;
+    using Items.Services.Data.Interfaces;
+    using Items.Services.Data.Models.Ticket;
+    using static Items.Common.RoleConstants;
 
-	using Microsoft.AspNetCore.Authorization;
-	using Microsoft.AspNetCore.Mvc;
-	using Items.AdminApi.Infrastructure.Extensions;
-	using System.Net.Mime;
-	using System.Net.Http.Headers;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using Items.AdminApi.Infrastructure.Extensions;
+    using System.Net.Mime;
+    using System.Net.Http.Headers;
     using Items.Services.Data.Models.TicketType;
     using Microsoft.Extensions.Configuration.UserSecrets;
 
     [Authorize]
-	[Route("api/[controller]")]
-	[ApiController]
-	public class TicketsController : Controller
-	{
-		private readonly ITicketService ticketService;
-		private readonly ITicketTypeService ticketTypeService;
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TicketsController : Controller
+    {
+        private readonly ITicketService ticketService;
+        private readonly ITicketTypeService ticketTypeService;
 
         public TicketsController(ITicketService ticketService, ITicketTypeService ticketTypeService)
         {
@@ -28,104 +28,134 @@
 
 
         [AllowAnonymous]
-		[HttpGet]
-		public async Task<IActionResult> All([FromQuery] TicketQueryModel? queryModel)
-		{
-			//todo: validate query model
-			AllTicketInfoServiceModel tickets = await ticketService.GetAllAsync(queryModel);
+        [HttpGet]
+        public async Task<IActionResult> All([FromQuery] TicketQueryModel? queryModel)
+        {
+            //todo: validate query model
+            AllTicketInfoServiceModel tickets = await ticketService.GetAllAsync(queryModel);
 
-			return Ok(tickets);
-		}
+            return Ok(tickets);
+        }
 
         [AllowAnonymous]
         [HttpGet("Types")]
-		public async Task<IActionResult> AllTypes()
-		{
-			AllTicketTypesServiceModel[] types = (await ticketTypeService.AllAsync())
-				.ToArray();
-
-			return Ok(types);
-		}
-
-		[AllowAnonymous]
-		[HttpGet("{ticketId}")]
-		public async Task<IActionResult> Details([FromRoute] Guid ticketId)
-		{
-			Guid? userId = User.GetId();
-			TicketDetailsServiceModel ticket = await ticketService.GetAsync(ticketId, userId);
-
-			return Ok(ticket);
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> Add([FromForm] TicketFormServiceModel ticketFormModel)
-		{
-			//todo: async check the model
-
-
-			Guid? userId = User.GetId();
-			Guid ticketId = await ticketService.AddAsync((Guid)userId!, ticketFormModel);
-
-			return Ok(new { id = ticketId });
-		}
-
-		[Authorize(Roles = $"{Admin}, {SuperAdmin}")]
-		[HttpPut("{ticketId}")]
-		public async Task<IActionResult> Edit([FromRoute] Guid ticketId, [FromBody] TicketEditServiceModel ticketEditModel)
-		{
-			//todo: static and async validation
-			Guid? userId = User.GetId();
-			await ticketService.EditAsync((Guid)userId!, ticketId, ticketEditModel);
-			return Ok(new { id = ticketId });
-		}
-
-		
-		[HttpPatch("{ticketId}")]
-		public async Task<IActionResult> Edit(
-			[FromRoute] Guid ticketId, 
-			[FromBody] TicketUpdateServiceModel model)
+        public async Task<IActionResult> AllTypes()
         {
-            //there's six types of users regarding the Ticket:
-            //creator - can modify certain fields before ticket assignment. The
-            //	fields are the same as on create.
-            //user - not admin and not creator - only can toggle subscribe and same problem. This is implemented in the  patch verb.
-            //admin-before-assignment - is like user-not-author plus can assign to self and change severity but only if assigning is happened. cannot assign to super admins.
-            //admin-assigner - is like user-not-author after assigning
-            //admin-assignee - cannot change the user data. Can change: severity, reject assignment, ticket status, ticket type
-            //super-admin - like admin but can assign to anyone.
+            AllTicketTypesServiceModel[] types = (await ticketTypeService.AllAsync())
+                .ToArray();
 
-            Guid? userId = User.GetId();
-			Guid id = await ticketService.UpdateAsync(model, ticketId, (Guid)userId!);
-
-            return Ok(new {updatedTicket = id});
+            return Ok(types);
         }
 
-		[HttpDelete("{ticketId}")]
-		public async Task<IActionResult> Delete(
-			[FromRoute] Guid ticketId)
-		{
-			//to delete:
-			//must be owner,
-			//ticket mustn't be assigned(assignee must be null)
-			Guid? userId = User.GetId();
-			bool canDelete = await ticketService.CanDeleteAsync(userId!, ticketId);
-			if (!canDelete)
-			{
-				ModelState.AddModelError("", "Cannot delete. Either not allowed, the ticket is assigned or there's already another user with the same problem."); 
-				return BadRequest(ModelState);
-			}
+        [AllowAnonymous]
+        [HttpGet("{ticketId}")]
+        public async Task<IActionResult> Details([FromRoute] Guid ticketId)
+        {
+            Guid? userId = User.GetId();
+            TicketDetailsServiceModel ticket = await ticketService.GetAsync(ticketId, userId);
 
-			try
-			{
-				await ticketService.DeleteAsync(ticketId);
-			}
-			catch (Exception)
-			{
+            return Ok(ticket);
+        }
 
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}
+        [HttpPost]
+        public async Task<IActionResult> Add([FromForm] TicketFormServiceModel ticketFormModel)
+        {
+            //todo: async check the model
 
-			return NoContent();
-		}
+
+            Guid? userId = User.GetId();
+            Guid ticketId = await ticketService.AddAsync((Guid)userId!, ticketFormModel);
+
+            return Ok(new { id = ticketId });
+        }
+
+        //make overloads with  different models
+        [HttpPut("{ticketId}")]
+        public async Task<IActionResult> Edit([FromRoute] Guid ticketId, [FromForm] TicketUpdateServiceModel model)
+        {
+            //TODO: VALIDATE PARAMETERS!!!
+
+            Guid userId = (Guid)User.GetId()!;
+            TicketUserState state = await ticketService.GetStateAsync(ticketId, userId);
+
+            if (state.isUser
+                && state.isCreator
+                && !state.isTicketAssigned
+                && !state.anyWithSameProblem)
+            {
+                try
+                {
+                    //TODO: VALIDATE PARTICULARY THE  MODEL!!!
+                    await ticketService.EditAsUserAsync(ticketId, userId, model);
+                    return NoContent();
+                }
+                catch (Exception)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+            }
+
+            return BadRequest();
+            //there's six types of users regarding the Ticket:
+
+
+            //creator - can modify certain fields before ticket assignment. The
+            //	fields are the same as on create.
+
+            //admin-before-assignment - is like user-not-author plus can assign to self and change severity but only if assigning is happened. cannot assign to super admins.
+
+            //admin-assigner - is like user-not-author after assigning
+
+            //admin-assignee - cannot change the user data. Can change: severity, reject assignment, ticket status, ticket type
+
+            //super-admin - like admin but can assign to anyone.
+
+            //isCreator, isUser, isAdmin, isSuperAdmin, isAssigner, isAssignee, isTicketAssigned
+
+
+        }
+
+
+        [HttpPatch("{ticketId}")]
+        public async Task<IActionResult> Update(
+            [FromRoute] Guid ticketId,
+            [FromBody] TicketUpdateServiceModel model)
+        {
+
+
+            Guid? userId = User.GetId();
+            Guid id = await ticketService.UpdateAsync(model, ticketId, (Guid)userId!);
+
+            return Ok(new { updatedTicket = id });
+        }
+
+        [HttpDelete("{ticketId}")]
+        public async Task<IActionResult> Delete(
+            [FromRoute] Guid ticketId)
+        {
+            //to delete:
+            //must be owner,
+            //ticket mustn't be assigned(assignee must be null)
+            Guid? userId = User.GetId();
+            bool canDelete = await ticketService.CanDeleteAsync(userId!, ticketId);
+            if (!canDelete)
+            {
+                ModelState.AddModelError("", "Cannot delete. Either not allowed, the ticket is assigned or there's already another user with the same problem.");
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await ticketService.DeleteAsync(ticketId);
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
     }
 }

@@ -16,21 +16,26 @@
     using static Items.Common.EntityValidationConstants;
     using Items.Services.Common.Interfaces;
     using Microsoft.IdentityModel.Tokens;
+    using Microsoft.AspNetCore.Identity;
+    using Items.Common;
 
     public class TicketService : ITicketService
     {
         private readonly ItemsDbContext dbContext;
         private readonly IFileService fileService;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public TicketService(
             ItemsDbContext dbContext,
             IFileService fileService,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            UserManager<ApplicationUser> userManager)
         {
             this.dbContext = dbContext;
             this.fileService = fileService;
             this.dateTimeProvider = dateTimeProvider;
+            this.userManager = userManager;
         }
 
         public async Task<Guid> AddAsync(Guid userId, TicketFormServiceModel model)
@@ -105,9 +110,38 @@
             await dbContext.SaveChangesAsync();
         }
 
-        public Task EditAsync(Guid guid, Guid ticketId, TicketEditServiceModel ticketEditModel)
+        public async Task EditAsUserAsync(Guid ticketId, Guid userId, TicketUpdateServiceModel model)
         {
-            throw new NotImplementedException();
+            var ticket = await dbContext.Tickets
+                .FindAsync(ticketId)
+                ?? throw new ArgumentException("No ticket with this id!");
+            ticket.Title = model.Title!;
+            ticket.Description = model.Description;
+            ticket.TypeId = (int)model.TypeId!;
+            ticket.Modified = dateTimeProvider.GetCurrentDateTime();
+
+            if (model.SnapShot != null)
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    await model.SnapShot.CopyToAsync(stream);
+                    var fileModel = new FileServiceModel
+                    {
+                        Bytes = stream.ToArray(),
+                        MimeType = MediaTypeNames.Image.Jpeg
+                    };
+                    if (ticket.SnapshotId != null)
+                    {
+                        await fileService.ModifyAsync((Guid)ticket.SnapshotId, fileModel);
+                    }
+                    else
+                    {
+                        ticket.SnapshotId = await fileService.AddAsync(fileModel);
+                    }
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<AllTicketInfoServiceModel> GetAllAsync(TicketQueryModel? queryModel = null)
@@ -240,6 +274,35 @@
 
 
             return ticketModel;
+        }
+
+        public async Task<TicketUserState> GetStateAsync(Guid ticketId, Guid userId)
+        {
+            var ticket = await dbContext.Tickets
+                .FindAsync(ticketId)
+                ?? throw new ArgumentException("No ticket with this id");
+
+            var anyWithSameProblem = await dbContext.SimilarTicketsUsers
+                .AnyAsync(stu => stu.TicketId == ticketId);
+
+            var user = await dbContext.Users
+                .FindAsync(userId) 
+                ?? throw new ArgumentException("No user with this id");
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            TicketUserState state = new TicketUserState
+            {
+                isTicketAssigned = ticket.AssigneeId != null && ticket.AssignerId != null,
+                isAssignee = ticket.AssigneeId != null && ticket.AssigneeId == userId,
+                isAssigner = ticket.AssignerId != null && ticket.AssignerId == userId,
+                isCreator = ticket.AuthorId == userId,
+                isUser = !userRoles.Any(),
+                isAdmin = userRoles.Any() && userRoles.Contains(RoleConstants.Admin),
+                isSuperAdmin = userRoles.Any() && userRoles.Contains(RoleConstants.SuperAdmin),
+                anyWithSameProblem = anyWithSameProblem
+            };
+
+            return state;
         }
 
         public async Task<Guid> UpdateAsync(TicketUpdateServiceModel model, Guid ticketId, Guid userId)

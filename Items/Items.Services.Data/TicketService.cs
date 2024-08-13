@@ -75,6 +75,44 @@
             return ticket.Id;
         }
 
+        public async Task AssignAsync(
+            Guid ticketId, 
+            Guid userId, 
+            TicketUpdateServiceModel model)
+        {
+            var ticket = await dbContext.Tickets
+                .Include(t => t.TicketStatus)
+                .FirstOrDefaultAsync(t => t.Id == ticketId)
+                ?? throw new ArgumentException("No ticket with this id");
+
+            var assignStatus = await dbContext.TicketStatuses
+                .FirstAsync(ts => ts.Name == Statuses.ASSIGN);
+
+            ticket.AssigneeId = model.AssigneeId;
+            ticket.AssignerId = userId;
+            ticket.TicketStatus = assignStatus;
+            ticket.Modified = dateTimeProvider.GetCurrentDateTime();
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task AssignToSelfAsync(Guid ticketId,Guid userId)
+        {
+            var ticket = await dbContext.Tickets
+                .Include(t => t.TicketStatus)
+                .FirstOrDefaultAsync(t => t.Id == ticketId)
+                ?? throw new ArgumentException("No ticket with this id");
+            var assignStatus = await dbContext.TicketStatuses
+                .FirstAsync(ts => ts.Name == Statuses.ASSIGN);
+
+            ticket.AssigneeId = userId;
+            ticket.AssignerId = userId;
+            ticket.TicketStatus = assignStatus;
+            ticket.Modified = dateTimeProvider.GetCurrentDateTime();
+
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<bool> CanDeleteAsync(Guid? userId, Guid ticketId)
         {
             bool result = await dbContext.Tickets
@@ -85,6 +123,20 @@
                                 && t.WithSameProblem.Count == 0);
 
             return result;
+        }
+
+        public async Task ChangeSeverityStatusTypeAsync( Guid ticketId, TicketUpdateServiceModel model)
+        {
+            var ticket = await dbContext.Tickets
+               .FindAsync(ticketId)
+               ?? throw new ArgumentException("No ticket with this id");
+            
+            if(model.TypeId != null) { ticket.TypeId = (int)model.TypeId; }
+            if(model.Severity != null) { ticket.Severity = (int)model.Severity; }
+            if(model.StatusId != null) { ticket.StatusId = (int)model.StatusId; }
+            ticket.Modified = dateTimeProvider.GetCurrentDateTime();
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid ticketId)
@@ -110,7 +162,8 @@
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task EditAsUserAsync(Guid ticketId, Guid userId, TicketUpdateServiceModel model)
+        public async Task EditAsUserAsync(Guid ticketId,
+            TicketEditAsUserServiceModel model)
         {
             var ticket = await dbContext.Tickets
                 .FindAsync(ticketId)
@@ -290,6 +343,14 @@
                 ?? throw new ArgumentException("No user with this id");
             var userRoles = await userManager.GetRolesAsync(user);
 
+            var actualStatus = await dbContext.Tickets
+                .Where(t => t.Id == ticketId)
+                .Select(t => t.TicketStatus.Name)
+                .FirstOrDefaultAsync();
+
+            var isDeleted = actualStatus == Statuses.DELETE;
+            var isClosed = actualStatus == Statuses.CLOSE;
+
             TicketUserState state = new TicketUserState
             {
                 isTicketAssigned = ticket.AssigneeId != null && ticket.AssignerId != null,
@@ -299,13 +360,15 @@
                 isUser = !userRoles.Any(),
                 isAdmin = userRoles.Any() && userRoles.Contains(RoleConstants.Admin),
                 isSuperAdmin = userRoles.Any() && userRoles.Contains(RoleConstants.SuperAdmin),
-                anyWithSameProblem = anyWithSameProblem
+                anyWithSameProblem = anyWithSameProblem,
+                isDeleted = isDeleted,
+                isClosed = isClosed
             };
 
             return state;
         }
 
-        public async Task<Guid> UpdateAsync(TicketUpdateServiceModel model, Guid ticketId, Guid userId)
+        public async Task<Guid> ToggleAsync(TicketUpdateServiceModel model, Guid ticketId, Guid userId)
         {
             if (model.ToggleSameProblem != null && (bool)model.ToggleSameProblem)
             {

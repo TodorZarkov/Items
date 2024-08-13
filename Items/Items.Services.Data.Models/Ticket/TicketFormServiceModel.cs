@@ -9,8 +9,8 @@
 	{
 		public int TypeId { get; set; }
 
-		[Required]
-		[StringLength(TitleMax, MinimumLength = TitleMin)]
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(TitleMax, MinimumLength = TitleMin)]
 		public string Title { get; set; } = null!;
 
 		[StringLength(DescriptionMax, MinimumLength = DescriptionMin)]

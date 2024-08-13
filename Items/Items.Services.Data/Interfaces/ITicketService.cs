@@ -10,12 +10,15 @@
 
 		Task<TicketDetailsServiceModel> GetAsync(Guid ticketId,  Guid? userId);
 
-        Task<Guid> UpdateAsync(TicketUpdateServiceModel model, Guid ticketId, Guid userId);
+        Task<Guid> ToggleAsync(TicketUpdateServiceModel model, Guid ticketId, Guid userId);
 
         Task<bool> CanDeleteAsync(Guid? v, Guid ticketId);
 
         Task DeleteAsync(Guid ticketId);
         Task<TicketUserState> GetStateAsync(Guid ticketId, Guid userId);
-        Task EditAsUserAsync(Guid ticketId, Guid userId, TicketUpdateServiceModel model);
+        Task EditAsUserAsync(Guid ticketId, TicketEditAsUserServiceModel model);
+        Task AssignToSelfAsync(Guid ticketId, Guid userId);
+        Task AssignAsync(Guid ticketId, Guid userId, TicketUpdateServiceModel model);
+        Task ChangeSeverityStatusTypeAsync(Guid ticketId, TicketUpdateServiceModel model);
     }
 }

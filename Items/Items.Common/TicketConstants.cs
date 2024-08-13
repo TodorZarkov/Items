@@ -23,5 +23,9 @@
 			public const int HitsPerPage = 20;
 			public const int CurrentPage = 1;
 		}
+
+		public static int[] Severities = { 0, 1, 2, 3 };
+        
+        
 	}
 }

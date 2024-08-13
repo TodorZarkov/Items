@@ -11,6 +11,7 @@
     using System.Net.Http.Headers;
     using Items.Services.Data.Models.TicketType;
     using Microsoft.Extensions.Configuration.UserSecrets;
+    using Items.Common;
 
     [Authorize]
     [Route("api/[controller]")]
@@ -73,19 +74,19 @@
         [HttpPut("{ticketId}")]
         public async Task<IActionResult> Edit([FromRoute] Guid ticketId, [FromForm] TicketEditAsUserServiceModel model)
         {
-            //TODO: VALIDATE PARAMETERS!!!
+            //TODO: VALIDATE PARAMETERS DYNAMICALLY!!!
 
             Guid userId = (Guid)User.GetId()!;
             TicketUserState state = await ticketService.GetStateAsync(ticketId, userId);
 
-            if (state.isUser
+            if ((state.isUser || state.isAdmin || state.isSuperAdmin)
                 && state.isCreator
                 && !state.isTicketAssigned
-                && !state.anyWithSameProblem)
+                && !state.anyWithSameProblem
+                && !state.isDeleted)
             {
                 try
                 {
-                    //TODO: VALIDATE PARTICULARY THE  MODEL!!!
                     await ticketService.EditAsUserAsync(ticketId, model);
                     return NoContent();
                 }
@@ -105,9 +106,9 @@
 
             //admin-before-assignment - is like user-not-author plus can assign to self and change severity but only if assigning is happened. cannot assign to super admins.
 
-            //admin-assigner - is like user-not-author after assigning
+            //admin-assigner-assignee - is like user-not-author after assigning
 
-            //admin-assignee - cannot change the user data. Can change: severity, reject assignment, ticket status, ticket type
+            //admin-assignee - cannot change the user data. Can change: severity, reject assignment(if not changed anything)(still not clear about this), ticket status, ticket type. Also can create new unit , to view all units, to delete unit if not in use.
 
             //super-admin - like admin but can assign to anyone.
 
@@ -122,12 +123,53 @@
             [FromRoute] Guid ticketId,
             [FromBody] TicketUpdateServiceModel model)
         {
+            Guid userId = (Guid)User.GetId()!;
+            TicketUserState state = await ticketService.GetStateAsync(ticketId, userId);
+
+            IActionResult result = BadRequest();
+
+            if (!state.isCreator && !state.isDeleted)
+            {
+                //TODO: separate this  so toggle with same problem is forbidden when ticket is closed
+                await ticketService.ToggleAsync(model, ticketId, (Guid)userId!);
+
+                result = Ok(new { updatedTicket = ticketId });
+            }
+            if (state.isAdmin
+                && !state.isTicketAssigned
+                && !state.isDeleted
+                && model.AssigneeId == userId)
+            {
+                await ticketService.AssignToSelfAsync(ticketId, userId);
+                result = Ok(new { updatedTicket = ticketId });
+            }
+            if (state.isSuperAdmin
+                && !state.isTicketAssigned
+                && !state.isDeleted
+                && model.AssigneeId != null)
+            {
+                await ticketService.AssignAsync(ticketId, userId, model);
+                result = Ok(new { updatedTicket = ticketId });
+            }
+            //TODO: REMOVE MAGIC 3 - Closed.(And check this status thing-is not ok)
+            if ((state.isAdmin || state.isSuperAdmin)
+                && state.isTicketAssigned
+                && state.isAssignee
+                && !state.isDeleted
+                && !state.isClosed
+                && (
+                (model.Severity != null && TicketConstants.Severities.Any(s => (s == model.Severity))) 
+                || model.StatusId == 3 
+                || model.TypeId != null))
+            {
+
+                //TODO: Validate model async (statuses, types, severities )
+                await ticketService.ChangeSeverityStatusTypeAsync(ticketId, model);
+                result = Ok(new { updatedTicket = ticketId });
+            }
 
 
-            Guid? userId = User.GetId();
-            Guid id = await ticketService.UpdateAsync(model, ticketId, (Guid)userId!);
-
-            return Ok(new { updatedTicket = id });
+            return result;
         }
 
         [HttpDelete("{ticketId}")]

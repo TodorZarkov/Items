@@ -17,5 +17,9 @@
         public bool isTicketAssigned { get; set; }
 
         public bool anyWithSameProblem { get; set; }
+
+        public bool isDeleted { get; set; }
+
+        public bool isClosed { get; set; }
     }
 }

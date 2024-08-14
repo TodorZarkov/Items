@@ -141,7 +141,7 @@ namespace Items.AdminApi
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(option =>
 			{
-				option.SwaggerDoc("v1", new OpenApiInfo { Title = "Items-AdminAPI", Version = "v1" });
+				option.SwaggerDoc("v1", new OpenApiInfo { Title = "Items-AdminAPI", Version = "v0.0.3" });
 				option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 				{
 					In = ParameterLocation.Header,

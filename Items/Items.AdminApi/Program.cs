@@ -38,6 +38,7 @@ namespace Items.AdminApi
 						, "http://localhost:5173"
                         , "https://testing-items-admin-panel.onrender.com"
 						, "https://todor.sytes.net");
+
 					p.WithHeaders("Content-Type", "Authorization");
 					p.AllowAnyMethod();
 				});

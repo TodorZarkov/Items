@@ -31,13 +31,11 @@ namespace Items.AdminApi
 				options.AddPolicy(name: "CORSPolicy", p =>
 				{
 					p.WithOrigins(
-						  "http://127.0.0.1:5173" 
-						, "http://127.0.0.1:5001"
-                        , "https://127.0.0.1:5173"
-						, "https://localhost:7229"
-						, "http://localhost:5173"
+						  "http://127.0.0.1"
+						, "https://localhost"
                         , "https://testing-items-admin-panel.onrender.com"
-						, "https://todor.sytes.net");
+						, "https://todor.sytes.net"
+						, "https://items.zarkov.it");
 
 					p.WithHeaders("Content-Type", "Authorization");
 					p.AllowAnyMethod();

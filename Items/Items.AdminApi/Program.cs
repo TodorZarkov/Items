@@ -34,9 +34,8 @@ namespace Items.AdminApi
 						  "http://127.0.0.1"
 						, "https://localhost"
                         , "https://testing-items-admin-panel.onrender.com"
-						, "https://todor.sytes.net"
 						, "https://items.zarkov.it"
-						, "items.zarkov.it");
+                        , "https://admin.items.zarkov.it");
 
 					p.WithHeaders("Content-Type", "Authorization");
 					p.AllowAnyMethod();

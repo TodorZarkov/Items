@@ -28,10 +28,11 @@ namespace Items.AdminApi
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy(name: "CORSPolicy", p =>
+                options.AddPolicy(name: "DevCORS", p =>
                 {
                     p.WithOrigins(
                           "http://localhost:5173"
+                        , "https://localhost:5173"
                         , "http://127.0.0.1"
                         , "https://localhost"
                         , "https://testing-items-admin-panel.onrender.com"
@@ -43,6 +44,19 @@ namespace Items.AdminApi
                     p.AllowAnyHeader();
                     p.AllowAnyMethod();
                 });
+
+                options.AddPolicy(name: "ProdCORS", p =>
+                {
+                    p.WithOrigins(
+                          "https://testing-items-admin-panel.onrender.com"
+                        , "https://items.zarkov.it"
+                        , "https://admin.items.zarkov.it");
+
+                    p.AllowCredentials();
+                    p.AllowAnyHeader();
+                    p.AllowAnyMethod();
+                });
+
             });
 
 
@@ -86,7 +100,7 @@ namespace Items.AdminApi
                 .AddDefaultTokenProviders();
 
             builder.Services
-                .AddAuthentication(options =>
+                .AddAuthentication(options =>//TODO: Add here IdentityCore instead to disable the identity cookie.Or use it and disable the jwt - transfer claims and user data to the frontend with custom token.
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -196,7 +210,7 @@ namespace Items.AdminApi
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseCors("CORSPolicy");
+            app.UseCors(builder.Configuration["CORS:Policy"]);
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

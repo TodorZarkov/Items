@@ -16,6 +16,7 @@
 	using Items.AdminApi.Infrastructure.Extensions;
 	using System.Net.Mime;
     using System.Text.Json;
+    using RTools_NTS.Util;
 
     [Authorize]
 	[Route("api/[controller]")]
@@ -131,6 +132,20 @@
 			};
 
 			return await (Login(loginModel));
+		}
+
+
+		[HttpGet("/api/Logout")]
+		public IActionResult Logout()
+		{
+            Response.Cookies.Append("AuthToken", string.Empty, new CookieOptions
+            {
+                HttpOnly = config.GetValue<bool>("AuthCookie:HttpOnly"),
+                Secure = config.GetValue<bool>("AuthCookie:Secure"),
+                SameSite = SameSiteMode.None,
+                Expires = dateTimeProvider.GetCurrentDateTime().AddMinutes(double.Parse(config["AuthCookie:BeforeOneMinute"]))
+            });
+            return Ok();
 		}
 
 

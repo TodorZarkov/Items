@@ -15,8 +15,10 @@
 	using Microsoft.AspNetCore.Authorization;
 	using Items.AdminApi.Infrastructure.Extensions;
 	using System.Net.Mime;
+    using System.Text.Json;
+    using RTools_NTS.Util;
 
-	[Authorize]
+    [Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class UsersController : ControllerBase
@@ -27,26 +29,32 @@
 		private readonly IUserService userService;
 		private readonly ITokenAuthService tokenAuthService;
 		private readonly IUserValidatorService userValidator;
+		private readonly IDateTimeProvider dateTimeProvider;
+		private readonly IConfiguration config;
 
-		public UsersController(
-			IOptions<ApiBehaviorOptions> apiBehaviorOptions,
-			IUserService userService,
-			SignInManager<ApplicationUser> signInManager,
-			ITokenAuthService tokenAuthService,
-			UserManager<ApplicationUser> userManager,
-			IUserValidatorService userValidator)
-		{
-			this.apiBehaviorOptions = apiBehaviorOptions;
-			this.userService = userService;
-			this.signInManager = signInManager;
-			this.tokenAuthService = tokenAuthService;
-			this.userManager = userManager;
-			this.userValidator = userValidator;
-		}
+        public UsersController(
+            IOptions<ApiBehaviorOptions> apiBehaviorOptions,
+            IUserService userService,
+            SignInManager<ApplicationUser> signInManager,
+            ITokenAuthService tokenAuthService,
+            UserManager<ApplicationUser> userManager,
+            IUserValidatorService userValidator,
+            IDateTimeProvider dateTimeProvider,
+            IConfiguration config)
+        {
+            this.apiBehaviorOptions = apiBehaviorOptions;
+            this.userService = userService;
+            this.signInManager = signInManager;
+            this.tokenAuthService = tokenAuthService;
+            this.userManager = userManager;
+            this.userValidator = userValidator;
+            this.dateTimeProvider = dateTimeProvider;
+            this.config = config;
+        }
 
 
 
-		[AllowAnonymous]
+        [AllowAnonymous]
 		[HttpPost("/api/Login")]
 		public async Task<IActionResult> Login([FromBody] LoginUserServiceModel model)
 		{
@@ -77,7 +85,17 @@
 					claims.Add(new Claim(ClaimTypes.Email, user.Email));
 					string token = tokenAuthService.BuildToken(claims.ToArray());
 
-					return Ok(new { token });
+					Response.Cookies.Append("AuthToken", token, new CookieOptions
+					{
+						HttpOnly = config.GetValue<bool>("AuthCookie:HttpOnly"),
+						Secure = config.GetValue<bool>("AuthCookie:Secure"),
+						SameSite = SameSiteMode.None,
+						Expires = dateTimeProvider.GetCurrentDateTime().AddMinutes(double.Parse(config["AuthCookie:ExpirationMinutes"]))
+					});
+
+					string strippedOfSignatureToken = $"{token.Remove(token.LastIndexOf('.')+1)}";
+
+					return Ok(new { token = strippedOfSignatureToken }) ;
 				}
 
 				return BadRequest();
@@ -114,6 +132,20 @@
 			};
 
 			return await (Login(loginModel));
+		}
+
+
+		[HttpGet("/api/Logout")]
+		public IActionResult Logout()
+		{
+            Response.Cookies.Append("AuthToken", string.Empty, new CookieOptions
+            {
+                HttpOnly = config.GetValue<bool>("AuthCookie:HttpOnly"),
+                Secure = config.GetValue<bool>("AuthCookie:Secure"),
+                SameSite = SameSiteMode.None,
+                Expires = dateTimeProvider.GetCurrentDateTime().AddMinutes(double.Parse(config["AuthCookie:BeforeOneMinute"]))
+            });
+            return Ok();
 		}
 
 

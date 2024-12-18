@@ -145,7 +145,7 @@
                 SameSite = SameSiteMode.None,
                 Expires = dateTimeProvider.GetCurrentDateTime().AddMinutes(double.Parse(config["AuthCookie:BeforeOneMinute"]))
             });
-            return Ok();
+            return StatusCode(StatusCodes.Status204NoContent);
 		}
 
 
